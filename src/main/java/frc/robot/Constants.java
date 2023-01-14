@@ -17,6 +17,7 @@ public static final class Constants {
         public static final double kTicksPerRevolution = 360 / 42;
         public static final double kContractedAnchorAngle;
         public static final double kContractedFloatingAngle;
+        public static final double kMotorPower;
     }
 
 }

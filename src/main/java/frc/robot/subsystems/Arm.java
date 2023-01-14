@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.MotorType;
 
 public class Arm extends SubsystemBase{
 
@@ -18,7 +20,7 @@ public class Arm extends SubsystemBase{
  }   
 
 //finds the two angles for the arm - will be above the line from joint to obj
- public double[] calculateAngles(double dy, double dz) {f
+ public double[] calculateAngles(double dy, double dz) {
     double[] angles = new double[2];
     double distanceToObj = Math.sqrt(dy*dy + dz*dz);
     double alpha = Math.acos((Constants.Arm.kFloatingArmLength*Constants.Arm.kFloatingArmLength - Constants.Arm.kAnchorArmLength*Constants.Arm.kAnchorArmLength - distanceToObj*distanceToObj)/(-2*Constants.Arm.kAnchorArmLength*distanceToObj));
@@ -41,5 +43,13 @@ public class Arm extends SubsystemBase{
     double angle = floatingJointMotor.getEncoder * Constants.Arm.kTicksPerRevolution;
     this.floatingJointAngle = angle;
     return angle;
+ }
+
+ public void setAnchorMotorPower(double power) {
+   anchorJointMotor.set(power);
+ }
+
+ public void setFloatingMotorPower(double power) {
+   floatingJointMotor.set(power);
  }
 }

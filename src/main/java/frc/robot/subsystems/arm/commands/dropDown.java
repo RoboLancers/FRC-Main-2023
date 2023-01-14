@@ -25,6 +25,7 @@ public class DropDown extends CommandBase{
             // TODO: Research using built in PID
             arm.anchorJointMotor.setPower(Constants.Arm.kMotorPower);
         }
+        // TODO: Check constants
         else if (arm.getAnchorAngleFromEncoder() == Constants.Arm.kMidNodeY) {
             arm.anchorJointMotor.setPower(Constants.Arm.kMotorPower);
         }

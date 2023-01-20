@@ -14,7 +14,7 @@ public class UseGrabber extends CommandBase {
 
     @Override
     public void execute() {        
-        if ((grabber.getGrabberSensor) && (grabber.isGrabberClosed())) {
+        if (grabber.grabberSensorBroken) {
             grabber.toggleDeploy(); 
         }
     }

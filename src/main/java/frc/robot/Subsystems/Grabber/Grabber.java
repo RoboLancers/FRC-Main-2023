@@ -14,14 +14,14 @@ public class Grabber extends SubsystemBase {
     public DoubleSolenoid grabberPiston;
     public boolean grabberClosed = false;
     private DigitalInput grabberSensor;
-    public boolean getGrabberSensor; 
+    public boolean grabberSensorBroken; 
 
 
     public Grabber() {
         this.grabberPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.Grabber.kPistonDeploy, Constants.Grabber.kPistonRetract);
         grabberPiston.set(Value.kReverse);
         this.grabberSensor = new DigitalInput(Constants.Grabber.kGrabberSensor);
-        getGrabberSensor = !grabberSensor.get();
+        grabberSensorBroken = !grabberSensor.get();
 
     } 
 
@@ -31,17 +31,12 @@ public class Grabber extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putBoolean("Intake Sensor", getGrabberSensor);
+        SmartDashboard.putBoolean("Intake Sensor", grabberSensorBroken);
 
     }
 
     private void initDefaultCommand(){
         setDefaultCommand(new UseGrabber(this));
-    }
-
-
-    public Value isGrabberClosed() {
-        return (grabberPiston.get());
     }
 
 }

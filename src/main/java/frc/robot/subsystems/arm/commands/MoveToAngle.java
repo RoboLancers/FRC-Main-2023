@@ -32,9 +32,9 @@ public class MoveToAngle extends CommandBase {
 
     @Override
     public boolean isFinished(){
-        if(arm.getAnchorAngleFromEncoder() == desiredAngles[0] && arm.getFloatingAngleFromEncoder() == desiredAngles[1]){
+        if(arm.isAnchorAtAngle(desiredAngles[0]) && arm.isFloatingAtAngle(desiredAngles[1])){
             return true;
-        } 
+        }
         return false;
         //look into finishing from PID controller 
     }

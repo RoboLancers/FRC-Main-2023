@@ -7,6 +7,11 @@ import frc.robot.Constants;
 public class Contract extends CommandBase{
     public Arm arm;
 
+    public Contract(Arm arm) {
+        this.arm = arm;
+        addRequirements(this.arm);
+    }
+
     @Override
     public void initialize() {
     }

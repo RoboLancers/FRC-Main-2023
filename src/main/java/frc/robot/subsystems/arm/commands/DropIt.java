@@ -7,10 +7,8 @@ import frc.robot.subsystems.arm.commands.MoveToAngle;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 enum DesiredHeight {
-        LOWCONE,
         MIDCONE,
         HIGHCONE,
-        LOWCUBE,
         MIDCUBE,
         HIGHCUBE
     }
@@ -34,10 +32,7 @@ public class DropIt extends CommandBase{
         double desiredY = Constants.Arm.Positions.kLowY;
         double desiredZ = Constants.Arm.Positions.kLowZ;
         switch(this.whatHeight) {
-            case LOWCONE:
-            desiredY = Constants.Arm.Positions.kLowY;
-            desiredZ = Constants.Arm.Positions.kLowZ;
-            break;
+
             case MIDCONE:
             desiredY = Constants.Arm.Positions.kMidNodeY;
             desiredZ = Constants.Arm.Positions.kMidNodeZ;
@@ -45,10 +40,6 @@ public class DropIt extends CommandBase{
             case HIGHCONE:
             desiredY = Constants.Arm.Positions.kHighNodeY;
             desiredZ = Constants.Arm.Positions.kHighNodeZ;
-            break;
-            case LOWCUBE:
-            desiredY = Constants.Arm.Positions.kLowY;
-            desiredZ = Constants.Arm.Positions.kLowZ;
             break;
             case MIDCUBE:
             desiredY = Constants.Arm.Positions.kMidShelfY;
@@ -60,7 +51,7 @@ public class DropIt extends CommandBase{
             break;
         }
         double[] calculatedAngles = arm.calculateAngles(desiredY, desiredZ);
-        InstandCommand(MoveToAngle, )
+        
     }
         // TODO: School stripper
         // Calculate angles, then move to position, then use grabber comands

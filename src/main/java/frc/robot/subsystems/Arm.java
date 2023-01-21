@@ -79,19 +79,14 @@ public class Arm extends SubsystemBase {
     return angle;
  }
 
- public void setAnchorMotorPower(double power) {
-   anchorJointMotor.set(power);
- }
 
- public void setFloatingMotorPower(double power) {
-   floatingJointMotor.set(power);
- }
-
-
- //Set angle of joints 
- public void setAngles(double anchorJointAngle, double floatingJointAngle){
-   this.anchorJointPIDController.setReference(anchorJointAngle, CANSparkMax.ControlType.kPosition);
+ //Sets angles of joints 
+ public void setFloatingAngle(double floatingJointAngle){
    this.floatingJointPIDController.setReference(floatingJointAngle, CANSparkMax.ControlType.kPosition);
+}
+
+public void setAnchorAngle(double anchorJointAngle) {
+   this.anchorJointPIDController.setReference(anchorJointAngle, CANSparkMax.ControlType.kPosition);
 }
 
 public boolean isAnchorAtAngle(double anchorJointAngleTarget){

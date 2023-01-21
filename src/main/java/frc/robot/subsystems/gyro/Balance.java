@@ -14,60 +14,49 @@ import frc.robot.subsystems.Drivetrain;
 
 public class Balance extends PIDCommand{
     
+    private AHRS gyro;
     private Drivetrain drivetrain;//replace with actual drivetrain
-    
-    AHRS gyro;
-  
 
-    public double gyroPitchInit()
+    public double gyroPitch()
     {
         //gets the angle of the robot throughout auto
-        double pitch = gyro.getPitch();
-        return pitch;
+        return gyro.getPitch();
     }
-
 
     public Balance(AHRS gyro, double setpoint, Drivetrain drivetrain) {
         super(
             new PIDController(BalanceConstants.kP, BalanceConstants.kI, BalanceConstants.kD),
-            gyro::getAngle,
+            () -> {
+                return this.gyroPitch();
+            },
             // Set reference to target
             () -> setpoint,
             // Pipe output to turn robot
             (outputPower) -> {
-                SmartDashboard.putNumber("Angular Output", outputPower);
+                SmartDashboard.putNumber("Balance Output", outputPower);
                 drivetrain.arcadeDrive(outputPower, 0);
             },
             drivetrain
         );
-
     
         this.getController().setTolerance(BalanceConstants.kErrorThreshold);
-        this.getController().enableContinuousInput(-180.0, 180.0);
 
-        SmartDashboard.putBoolean("Angular Running", true);
+        SmartDashboard.putBoolean("Balance Running", true);
     
+        this.gyro = gyro;
         this.drivetrain = drivetrain;
 
         addRequirements(drivetrain);
-
-
     }
+
     @Override
     public void end(boolean interrupted){
-        SmartDashboard.putBoolean("Angular Running", false);
+        SmartDashboard.putBoolean("Balance Running", false);
         drivetrain.arcadeDrive(0, 0);
- 
     }
-
 
     @Override
     public boolean isFinished(){
         return this.getController().atSetpoint();
     }
-
-
 }
-
-
-

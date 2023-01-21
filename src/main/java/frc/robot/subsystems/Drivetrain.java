@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 public class Drivetrain extends SubsystemBase{
-
     private final CANSparkMax leftMotor1 = new CANSparkMax(4, CANSparkMaxLowLevel.MotorType.kBrushless);
     private final CANSparkMax leftMotor2 = new CANSparkMax(5, CANSparkMaxLowLevel.MotorType.kBrushless);
     private final CANSparkMax leftMotor3 = new CANSparkMax(6, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -27,20 +26,18 @@ public class Drivetrain extends SubsystemBase{
 
     public final MotorControllerGroup rightMotors = new MotorControllerGroup(rightMotor1, rightMotor2, rightMotor3);
 
-    DifferentialDrive drive = new DifferentialDrive(leftMotors, rightMotors); 
+    DifferentialDrive drive = new DifferentialDrive(leftMotors, rightMotors);
+
+    SlewRateLimiter throttleLimit = new SlewRateLimiter(1.5);
+    SlewRateLimiter turnLimit = new SlewRateLimiter(1.5);
 
     public Drivetrain(XboxController driverController){
         rightMotor1.setInverted(true);
         rightMotor2.setInverted(true);
         rightMotor3.setInverted(true);
     }
-    SlewRateLimiter throttleLimit = new SlewRateLimiter(1.5);
-    SlewRateLimiter turnLimit = new SlewRateLimiter(1.5);
-
-
 
     public void arcadeDrive(double throttle, double turn) {
         drive.arcadeDrive(throttleLimit.calculate(throttle), turnLimit.calculate(turn));
     }
-
-    }
+}

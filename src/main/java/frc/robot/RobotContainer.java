@@ -6,6 +6,7 @@ import com.kauailabs.navx.frc.AHRS;
 //import edu.wpi.first.wpilibj.interfaces.Gyro;
 //import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.Drivetrain;
@@ -26,26 +27,17 @@ public class RobotContainer {
 
   private final Drivetrain drivetrain = new Drivetrain(driverController);
   
-
-
   SendableChooser<Command> autoChooser = new SendableChooser<>();
  
-  
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
     
     this.drivetrain.setDefaultCommand(new RunCommand(() ->
+      SmartDashboard.putNumber("pitch angle", gyro.getPitch());
+
       this.drivetrain.arcadeDrive(driverController.getAxisValue(XboxController.Axis.LEFT_Y), driverController.getAxisValue(XboxController.Axis.RIGHT_X)),
     drivetrain));
     driverController.whenPressed(XboxController.Button.X, new Balance(gyro, 0, drivetrain));
-
   }
 }
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
- 
- */

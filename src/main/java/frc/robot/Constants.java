@@ -10,6 +10,8 @@ public static final class Constants {
             public static final double kFF;
             public static final double kMinAngle;
             public static final double kMaxAngle;
+            public static double kFloatingJointErrorThreshold;
+            
         }
 
         public static final class AnchorJoint{
@@ -19,11 +21,14 @@ public static final class Constants {
             public static final double kFF;
             public static final double kMinAngle;
             public static final double kMaxAngle;
+            public static double kanchorJointErrorThreshold;
+            
         }
 
         public static final class Ports{
         public static final int kAnchorJointPort;
         public static final int kFloatingArmPort;
+        
         }
 
         public static final class Positions{

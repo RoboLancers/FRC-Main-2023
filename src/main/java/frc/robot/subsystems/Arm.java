@@ -1,9 +1,9 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.MotorType;
 
 public class Arm extends SubsystemBase {
 
@@ -15,8 +15,8 @@ public class Arm extends SubsystemBase {
 
  public Arm() {
      
-     this.anchorJointMotor = new CANSparkMax(Constants.Arm.kAnchorJointPort, CANSparkMax.MotorType.kBrushless);
-     this.floatingJointMotor = new CANSPARK(Constants.Arm.kFloatingArmPort, CANSparkMax.MotorType.kBrushless);
+     this.anchorJointMotor = new CANSparkMax(Constants.Arm.Ports.kAnchorJointPort, CANSparkMax.MotorType.kBrushless);
+     this.floatingJointMotor = new CANSparkMax(Constants.Arm.Ports.kFloatingArmPort, CANSparkMax.MotorType.kBrushless);
 
      this.anchorJointAngle = Constants.Arm.kContractedAnchorAngle;
      this.floatingJointAngle = Constants.Arm.kContractedFloatingAngle;
@@ -94,5 +94,12 @@ public class Arm extends SubsystemBase {
    this.floatingJointPIDController.setReference(floatingJointAngle, CANSparkMax.ControlType.kPosition);
 }
 
+public boolean isAnchorAtAngle(double anchorJointAngleTarget){
+   return Math.abs(getAnchorAngleFromEncoder() - anchorJointAngleTarget ) < Constants.Arm.AnchorJoint.kanchorJointErrorThreshold;
+}
+
+public boolean isFloatingAtAngle(double floatingJointAngleTarget){
+   return Math.abs(getFloatingAngleFromEncoder() - floatingJointAngleTarget ) < Constants.Arm.FloatingJoint.kFloatingJointErrorThreshold;
+}
 
 }

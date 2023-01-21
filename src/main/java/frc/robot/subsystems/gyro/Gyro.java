@@ -1,4 +1,4 @@
-package frc.robot.subsystems.gyro;
+/*package frc.robot.subsystems.gyro;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
@@ -78,3 +78,4 @@ public class Gyro extends SubsystemBase
         //when kP is within 1 degree of 0, stop
 
 }
+*/

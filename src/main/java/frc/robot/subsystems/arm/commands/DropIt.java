@@ -51,6 +51,7 @@ public class DropIt extends CommandBase{
             break;
         }
         double[] calculatedAngles = arm.calculateAngles(desiredY, desiredZ);
+        MoveToAngle movePlease = new MoveToAngle(calculatedAngles[0], calculatedAngles[1]);
         
     }
         // TODO: School stripper

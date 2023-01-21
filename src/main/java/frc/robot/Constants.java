@@ -25,10 +25,9 @@ public static final class Constants {
             
         }
 
-        public static final class Ports{
-        public static final int kAnchorJointPort;
-        public static final int kFloatingArmPort;
-        
+        public static final class Ports {
+            public static final int kAnchorJointPort;
+            public static final int kFloatingArmPort;
         }
 
         public static final class Positions{
@@ -41,7 +40,9 @@ public static final class Constants {
             public static final double kHighNodeY;
             public static final double kHighNodeZ;
             public static final double kHighShelfY;
-            public static final double kHighShelfZ;    
+            public static final double kHighShelfZ;
+            public static final double kIntakeShelfY;
+            public static final double kIntakeShelfZ;    
         }
         
         public static final double kAnchorArmLength;

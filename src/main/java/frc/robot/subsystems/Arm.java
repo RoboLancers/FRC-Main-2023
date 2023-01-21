@@ -7,10 +7,10 @@ import frc.robot.Constants;
 
 public class Arm extends SubsystemBase {
 
-    public CANSparkMax anchorJointMotor, floatingJointMotor;
+    private CANSparkMax anchorJointMotor, floatingJointMotor;
     private SparkMaxPIDController anchorJointPIDController, floatingJointPIDController;
-    public double floatingJointAngle, anchorJointAngle;
-    public boolean holdingObject;
+    private double floatingJointAngle, anchorJointAngle;
+    
     
 
  public Arm() {
@@ -21,6 +21,7 @@ public class Arm extends SubsystemBase {
      this.anchorJointAngle = Constants.Arm.kContractedAnchorAngle;
      this.floatingJointAngle = Constants.Arm.kContractedFloatingAngle;
       
+
      // For PID
      //This order might need to change as setting to angle ^ should be done after this (maybe) and 
      // the code below might not be needed sense we are taking canSpark motors delete below
@@ -55,6 +56,7 @@ public class Arm extends SubsystemBase {
    
 
 //finds the two angles for the arm - will be above the line from joint to obj
+//angle calculated from joint so maybe change to arm 2 horizontal
  public double[] calculateAngles(double dy, double dz) {
     double[] angles = new double[2];
     double distanceToObj = Math.sqrt(dy*dy + dz*dz);
@@ -68,13 +70,13 @@ public class Arm extends SubsystemBase {
 
  // TODO: We need a periodic for this
  public double getAnchorAngleFromEncoder() {
-    double angle = anchorJointMotor.getEncoder * Constants.Arm.kDegreesPerTick;
+    double angle = anchorJointMotor.getEncoder() * Constants.Arm.kDegreesPerTick;
     this.anchorJointAngle = angle;
     return angle;
  }
 
  public double getFloatingAngleFromEncoder() {
-    double angle = floatingJointMotor.getEncoder * Constants.Arm.kDegreesPerTick;
+    double angle = floatingJointMotor.getEncoder() * Constants.Arm.kDegreesPerTick;
     this.floatingJointAngle = angle;
     return angle;
  }

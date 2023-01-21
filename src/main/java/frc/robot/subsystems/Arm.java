@@ -5,19 +5,54 @@ import frc.robot.Constants;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.MotorType;
 
-public class Arm extends SubsystemBase{
+public class Arm extends SubsystemBase {
 
     public CANSparkMax anchorJointMotor, floatingJointMotor;
+    private SparkMaxPIDController anchorJointPIDController, floatingJointPIDController;
     public double floatingJointAngle, anchorJointAngle;
-    boolean holdingObject;
+    public boolean holdingObject;
     
 
- public Arm(CANSparkMax anchorJointMotor, CANSparkMax floatingJointMotor) {
-     this.anchorJointMotor = anchorJointMotor;
-     this.floatingJointMotor = floatingJointMotor;
+ public Arm() {
+     
+     this.anchorJointMotor = new CANSparkMax(Constants.Arm.kAnchorJointPort, CANSparkMax.MotorType.kBrushless);
+     this.floatingJointMotor = new CANSPARK(Constants.Arm.kFloatingArmPort, CANSparkMax.MotorType.kBrushless);
+
      this.anchorJointAngle = Constants.Arm.kContractedAnchorAngle;
      this.floatingJointAngle = Constants.Arm.kContractedFloatingAngle;
- }   
+      
+     // For PID
+     //This order might need to change as setting to angle ^ should be done after this (maybe) and 
+     // the code below might not be needed sense we are taking canSpark motors delete below
+
+     
+      // Set Limits for angles which arms can  go to 
+     this.anchorJointMotor.setSoftLimit(SoftLimitDirection.kReverse, Constants.Arm.AnchorJoint.kMinAngle);
+     this.anchorJointMotor.setSoftLimit(SoftLimitDirection.kForward, Constants.Arm.AnchorJoint.kMaxAngle);
+     this.anchorJointMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
+     this.anchorJointMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
+     
+     this.floatingJointMotor.setSoftLimit(SoftLimitDirection.kReverse, Constants.Arm.FloatingJoint.kMinAngle);
+     this.floatingJointMotor.setSoftLimit(SoftLimitDirection.kForward, Constants.Arm.FloatingJoint.kMaxAngle);
+     this.floatingJointMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
+     this.floatingJointMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
+     
+     // Get PID controllers for each arm which is each have their own PID values
+     this.anchorJointPIDController = this.anchorJointMotor.getPIDController();
+     this.floatingJointPIDController = this.floatingJointMotor.getPIDController();
+
+     this.anchorJointPIDController.setP(Constants.Arm.AnchorJoint.kP);
+     this.anchorJointPIDController.setI(Constants.Arm.AnchorJoint.kI);
+     this.anchorJointPIDController.setD(Constants.Arm.AnchorJoint.kD);
+     this.anchorJointPIDController.setFF(Constants.Arm.AnchorJoint.kFF);
+
+     this.floatingJointPIDController.setP(Constants.Arm.FloatingJoint.kP);
+     this.floatingJointPIDController.setI(Constants.Arm.FloatingJoint.kI);
+     this.floatingJointPIDController.setD(Constants.Arm.FloatingJoint.kD);
+     this.floatingJointPIDController.setFF(Constants.Arm.FloatingJoint.kFF);
+   
+   }  
+   
 
 //finds the two angles for the arm - will be above the line from joint to obj
  public double[] calculateAngles(double dy, double dz) {
@@ -31,16 +66,15 @@ public class Arm extends SubsystemBase{
     return angles;
  }
 
-
  // TODO: We need a periodic for this
  public double getAnchorAngleFromEncoder() {
-    double angle = anchorJointMotor.getEncoder * Constants.Arm.kTicksPerRevolution;
+    double angle = anchorJointMotor.getEncoder * Constants.Arm.kDegreesPerTick;
     this.anchorJointAngle = angle;
     return angle;
  }
 
  public double getFloatingAngleFromEncoder() {
-    double angle = floatingJointMotor.getEncoder * Constants.Arm.kTicksPerRevolution;
+    double angle = floatingJointMotor.getEncoder * Constants.Arm.kDegreesPerTick;
     this.floatingJointAngle = angle;
     return angle;
  }
@@ -52,4 +86,13 @@ public class Arm extends SubsystemBase{
  public void setFloatingMotorPower(double power) {
    floatingJointMotor.set(power);
  }
+
+
+ //Set angle of joints 
+ public void setAngles(double anchorJointAngle, double floatingJointAngle){
+   this.anchorJointPIDController.setReference(anchorJointAngle, CANSparkMax.ControlType.kPosition);
+   this.floatingJointPIDController.setReference(floatingJointAngle, CANSparkMax.ControlType.kPosition);
+}
+
+
 }

@@ -13,4 +13,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return new PrintCommand("No Auto Written Yet");
   }
+
+  // TODO: we should check if we have a cone or cube before calling command
 }

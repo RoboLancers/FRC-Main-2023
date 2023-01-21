@@ -1,9 +1,10 @@
 package frc.robot.subsystems.arm.commands;
 
 import frc.robot.subsystems.Arm;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 
-public class Contract {
+public class Contract extends CommandBase{
     public Arm arm;
 
     @Override
@@ -25,5 +26,6 @@ public class Contract {
         (arm.getFloatingAngleFromEncoder() == Constants.Arm.kContractedFloatingAngle)) {
             return true;
         }
+        return false;
     }
 }

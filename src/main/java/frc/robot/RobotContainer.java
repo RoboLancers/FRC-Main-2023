@@ -33,9 +33,9 @@ public class RobotContainer {
     configureButtonBindings();
 
     Limelight limelight = new Limelight();
-    BooleanSupplier isAprilTagVisible = () -> limelight.tV == 1;
+    BooleanSupplier isAprilTagVisible = limelight::tV;
 
-    this.driverController.whenPressed(Button.Y, new ConditionalCommand(new InstantCommand((() -> {
+    this.driverController.whileHeld(Button.Y, new ConditionalCommand(new RunCommand((() -> {
       SmartDashboard.putBoolean("visible", true);
 
       SmartDashboard.putNumber("dX", limelight.camTran.getX());
@@ -43,7 +43,7 @@ public class RobotContainer {
 
       SmartDashboard.putNumber("AprilTag ID", limelight.aprilTagID); 
 
-    })), new InstantCommand(() -> {
+    })), new RunCommand(() -> {
       SmartDashboard.putBoolean("visible", false);
     }), isAprilTagVisible));
 

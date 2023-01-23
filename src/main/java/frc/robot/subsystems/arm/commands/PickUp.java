@@ -1,12 +1,9 @@
 package frc.robot.subsystems.arm.commands;
 
 import java.time.chrono.ThaiBuddhistChronology;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Arm;
 import frc.robot.Constants;
-
-// TODO: THINK ABOUT THE BUTTONS ASK DANIEL
 public class PickUp extends CommandBase{
     private Arm arm;
     private LiftHeight desiredHeight;
@@ -43,7 +40,7 @@ public class PickUp extends CommandBase{
         // set y and z of to target via presets 
 
         //Calcuate desired angles 
-        double[] desiredAngles = arm.calculateAngles(Constants.Arm.Positions.kLowY, Constants.Arm.Positions.kLowZ)
+        double[] desiredAngles = arm.calculateAngles(Constants.Arm.Positions.kLowY, Constants.Arm.Positions.kLowZ);
         //Set power to motors until encoders get to the right values
 
         //Move to desired angles

@@ -18,8 +18,8 @@ public class Arm extends SubsystemBase {
      this.anchorJointMotor = new CANSparkMax(Constants.Arm.Ports.kAnchorJointPort, CANSparkMax.MotorType.kBrushless);
      this.floatingJointMotor = new CANSparkMax(Constants.Arm.Ports.kFloatingArmPort, CANSparkMax.MotorType.kBrushless);
 
-     this.anchorJointAngle = Constants.Arm.kContractedAnchorAngle;
-     this.floatingJointAngle = Constants.Arm.kContractedFloatingAngle;
+     this.anchorJointAngle = Constants.Arm.Miscellaneous.kContractedAnchorAngle;
+     this.floatingJointAngle = Constants.Arm.Miscellaneous.kContractedFloatingAngle;
       
 
      // For PID
@@ -60,23 +60,23 @@ public class Arm extends SubsystemBase {
  public double[] calculateAngles(double dy, double dz) {
     double[] angles = new double[2];
     double distanceToObj = Math.sqrt(dy*dy + dz*dz);
-    double alpha = Math.acos((Constants.Arm.kFloatingArmLength*Constants.Arm.kFloatingArmLength - Constants.Arm.kAnchorArmLength*Constants.Arm.kAnchorArmLength - distanceToObj*distanceToObj)/(-2*Constants.Arm.kAnchorArmLength*distanceToObj));
+    double alpha = Math.acos((Constants.Arm.Miscellaneous.kFloatingArmLength*Constants.Arm.Miscellaneous.kFloatingArmLength + distanceToObj*distanceToObj- Constants.Arm.Miscellaneous.kAnchorArmLength*Constants.Arm.Miscellaneous.kAnchorArmLength)/(2*Constants.Arm.Miscellaneous.kAnchorArmLength*distanceToObj));
     double gamma = Math.atan2(dy, dz);
     //finds theta1, the angle between the horizontal and anchorJoint
     angles[0] = alpha+gamma;
-    angles[1] = Math.acos((distanceToObj*distanceToObj - Constants.Arm.kFloatingArmLength*Constants.Arm.kFloatingArmLength - Constants.Arm.kAnchorArmLength*Constants.Arm.kAnchorArmLength)/(-2*Constants.Arm.kFloatingArmLength*Constants.Arm.kAnchorArmLength));
+    angles[1] = Math.PI - Math.acos((Constants.Arm.Miscellaneous.kAnchorArmLength * Constants.Arm.Miscellaneous.kAnchorArmLength + Constants.Arm.Miscellaneous.kFloatingArmLength * Constants.Arm.Miscellaneous.kFloatingArmLength - distanceToObj * distanceToObj) / (2 * Constants.Arm.Miscellaneous.kAnchorArmLength * Constants.Arm.Miscellaneous.kFloatingArmLength));
     return angles;
  }
 
  // TODO: We need a periodic for this
  public double getAnchorAngleFromEncoder() {
-    double angle = anchorJointMotor.getEncoder() * Constants.Arm.kDegreesPerTick;
+    double angle = anchorJointMotor.getEncoder() * Constants.Arm.Miscellaneous.kDegreesPerTick;
     this.anchorJointAngle = angle;
     return angle;
  }
 
  public double getFloatingAngleFromEncoder() {
-    double angle = floatingJointMotor.getEncoder() * Constants.Arm.kDegreesPerTick;
+    double angle = floatingJointMotor.getEncoder() * Constants.Arm.Miscellaneous.kDegreesPerTick;
     this.floatingJointAngle = angle;
     return angle;
  }

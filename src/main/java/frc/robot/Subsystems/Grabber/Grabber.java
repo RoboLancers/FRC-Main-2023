@@ -12,31 +12,30 @@ import frc.robot.Subsystems.Grabber.commands.UseGrabber;
 
 public class Grabber extends SubsystemBase {
     public DoubleSolenoid grabberPiston;
-    public boolean grabberClosed = false;
     private DigitalInput grabberSensor;
-    public boolean grabberSensorBroken; 
-
+    public boolean grabberClosed;
 
     public Grabber() {
         this.grabberPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.Grabber.kPistonDeploy, Constants.Grabber.kPistonRetract);
         grabberPiston.set(Value.kReverse);
         this.grabberSensor = new DigitalInput(Constants.Grabber.kGrabberSensor);
-        grabberSensorBroken = !grabberSensor.get();
-
+        grabberClosed = false;
     } 
 
     public void toggleDeploy() {
         grabberPiston.toggle();
     }
 
+    public boolean SensorTriggered(){
+        return grabberSensor.get();
+    }
+
     @Override
     public void periodic() {
-        SmartDashboard.putBoolean("Intake Sensor", grabberSensorBroken);
-
+        SmartDashboard.putBoolean("Intake Sensor", SensorTriggered());
     }
 
     private void initDefaultCommand(){
         setDefaultCommand(new UseGrabber(this));
     }
-
 }

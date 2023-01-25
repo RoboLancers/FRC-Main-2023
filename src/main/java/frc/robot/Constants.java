@@ -1,5 +1,6 @@
 package frc.robot;
 
+<<<<<<< HEAD
 public final class Constants {
     public static final class Arm {
 
@@ -56,3 +57,44 @@ public final class Constants {
     }
 
 }
+=======
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+
+// TODO: update constants to fit new robot
+public final class Constants {
+
+    public static final double kThrottleFilter = 1.25;
+    public static final double kTurnFilter = 3;
+    public static final int kGyroPort = 1;
+
+    public static class Trajectory {
+        public static final double ksVolts = 0.131;
+        public static final double ksVoltSecondsPerMeter =  4.03;
+        public static final double kaVoltSecondsSquaredPerMeter = 0.521;
+
+        public static final double kTrackWidthMeters = 0.702;
+        public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidthMeters);
+
+        public static final double kMaxSpeedMetersPerSecond = 2.5;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 2;
+
+        public static final double kRamseteB = 2;
+        public static final double kRamseteZeta = 0.7;
+
+        public static final double kPDriveVel = 0;
+    }
+    public static class Drivetrain {
+        public static final double kDistPerRot = (3.072/100);
+        public static class LeftMotors {
+            public static final int kLeftMotor1_Port = 1;
+            public static final int kLeftMotor2_Port = 2;
+            public static final int kLeftMotor3_Port = 3;
+        }
+        public static class RightMotors {
+            public static final int kRightMotor1_Port = 4;
+            public static final int kRightMotor2_Port = 5;
+            public static final int kRightMotor3_Port = 6;
+        }
+    }
+}
+>>>>>>> 5704c7d07c066370bd8cca33ba46522e98627af1

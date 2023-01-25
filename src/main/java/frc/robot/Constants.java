@@ -31,6 +31,9 @@ public final class Constants {
         public static final double kRumbleTime = 1;
         public static final double kInitialWeight = 1;
         public static final double kGridWeight = 2;
+
+        public static final double kAdjustZ  = 1;
+        public static final double kAdjustX = 1;
     }
 
     public static class Drivetrain {

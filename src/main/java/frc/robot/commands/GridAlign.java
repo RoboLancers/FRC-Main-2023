@@ -23,7 +23,7 @@ public class GridAlign extends CommandBase {
 
     public GridAlign(Drivetrain drivetrain) {
         this.limelight = new Limelight();
-        this.camTran = this.limelight.camTran;
+        this.camTran = Limelight.adjustForCenter(this.limelight.camPose());
 
         this.waypoints = new Waypoint[2];
 
@@ -32,7 +32,7 @@ public class GridAlign extends CommandBase {
         this.waypoints[0] = new Waypoint(0, 0, this.camTran.getRotation().getY(), Constants.GridAlign.kInitialWeight, 1);
 
         // grid waypoint (flipped x and y)
-        this.waypoints[1] = new Waypoint(this.camTran.getY(), this.camTran.getX(), 0, Constants.GridAlign.kGridWeight, 1);
+        this.waypoints[1] = new Waypoint(this.camTran.getZ(), this.camTran.getX(), 0, Constants.GridAlign.kGridWeight, 1);
         
         ParametricSpline spline = ParametricSpline.fromWaypoints(this.waypoints);
 

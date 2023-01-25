@@ -1,15 +1,20 @@
 package frc.robot.util.limelight;
 
+import java.lang.constant.Constable;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Limelight extends SubsystemBase {
 
@@ -25,64 +30,70 @@ public class Limelight extends SubsystemBase {
         this.table = NetworkTableInstance.getDefault().getTable("limelight");
 
         if (this.table == null) {
-            new PrintCommand("Fuck off");
+            new PrintCommand("Limelight table is null");
+
+            SmartDashboard.putString("Limelight table", "null");
+
         }
 
-        // this.tV = this.table.getEntry("tv").getDouble(0);
-        var rawBotPose = this.table.getEntry("botpose").getValue().toString();
-        var rawCamTran = this.table.getEntry("camtran").getValue().toString();
+        SmartDashboard.putString("Limelight table", "not null");
+
         this.aprilTagID = (int) this.table.getEntry("tid").getInteger(0);
-
-        ObjectMapper objMapper = new ObjectMapper();
-
-        try {
-            this.botPose = objMapper.readValue(rawBotPose, Pose3d.class);
-            this.camTran = objMapper.readValue(rawCamTran, Pose3d.class);
-        } catch (JsonMappingException e) {
-            new PrintCommand("LIMELIGHT ERROR" + e);
-        } catch (JsonProcessingException e) {
-            new PrintCommand("LIMELIGHT ERROR" + e);
-        }
-
     }
 
     @Override
-    public void periodic(){
-        double[] pose = this.currentPose();
-        double[] camtran = this.currentCamtran();
-        for(int i = 0;i<6;i++){
-            SmartDashboard.putNumber("botpose entry" + i, pose[i]);
-            SmartDashboard.putNumber("camtran entry" + i, camtran[i]);
-        }
+    public void periodic() {
+        Pose3d botPose = this.currentPose();
+        Pose3d camPose = this.camPose();
+
+        SmartDashboard.putNumber("campose X", camPose.getX());
+        SmartDashboard.putNumber("campose y", camPose.getY());
+        SmartDashboard.putNumber("campose z", camPose.getZ());
+
+        SmartDashboard.putNumber("campose rX", camPose.getRotation().getX());
+        SmartDashboard.putNumber("campose rY", camPose.getRotation().getY());
+        SmartDashboard.putNumber("campose rZ", camPose.getRotation().getZ());
+
+        SmartDashboard.putNumber("botpose X", botPose.getX());
+        SmartDashboard.putNumber("botpose y", botPose.getY());
+        SmartDashboard.putNumber("botpose z", botPose.getZ());
+
+        SmartDashboard.putNumber("botpose rX", botPose.getRotation().getX());
+        SmartDashboard.putNumber("botpose rY", botPose.getRotation().getY());
+        SmartDashboard.putNumber("botpose rZ", botPose.getRotation().getZ());
+
     }
 
-    public boolean tV(){
+    public boolean tV() {
         return this.table.getEntry("tv").getDouble(0) == 1;
     }
 
-    public double[] currentPose(){
+    public Pose3d getPose(String target) {
         double[] smd = new double[6];
 
-        double[] pose = this.table.getEntry("botpose").getDoubleArray(smd);
+        double[] poseRaw = this.table.getEntry(target).getDoubleArray(smd);
 
-        if(pose.length == 0){
-            return smd;
-        } else {
-            return pose;
-        }
+        Rotation3d rotationPose = new Rotation3d(poseRaw[3], poseRaw[4], poseRaw[5]);
+
+        Pose3d pose = new Pose3d(poseRaw[0], poseRaw[1], poseRaw[2], rotationPose);
+
+        return pose;
     }
 
-    public double[] currentCamtran(){
-        double[] smd = new double[6];
+    /** Returns an adjusted Pose3D based on camera pose */
+    public static Pose3d adjustForCenter(Pose3d camPose) {
 
-        double[] pose = this.table.getEntry("campose").getDoubleArray(smd);
+        return new Pose3d(camPose.getX() - Constants.GridAlign.kAdjustX, camPose.getY(),
+                camPose.getZ() - Constants.GridAlign.kAdjustZ, camPose.getRotation());
 
-        if(pose.length == 0){
-            return smd;
-        } else {
-            return pose;
-        }
     }
-    
-    
+
+    public Pose3d currentPose() {
+        return this.getPose("botpose");
+    }
+
+    public Pose3d camPose() {
+        return this.getPose("campose");
+    }
+
 }

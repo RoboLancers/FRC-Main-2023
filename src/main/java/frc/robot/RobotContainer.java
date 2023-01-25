@@ -38,8 +38,6 @@ public class RobotContainer {
     this.driverController.whileHeld(Button.Y, new ConditionalCommand(new RunCommand((() -> {
       SmartDashboard.putBoolean("visible", true);
 
-      SmartDashboard.putNumber("dX", limelight.camTran.getX());
-      SmartDashboard.putNumber("dZ", limelight.camTran.getZ());
 
       SmartDashboard.putNumber("AprilTag ID", limelight.aprilTagID); 
 

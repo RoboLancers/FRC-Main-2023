@@ -1,8 +1,8 @@
 package frc.robot;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 
-<<<<<<< HEAD
 public final class Constants {
-    public static final class Arm {
+    public static final class Arms {
 
         public static final class FloatingJoint{
             public static final double kP = 0.0;
@@ -32,18 +32,18 @@ public final class Constants {
         }
 
         public static final class Positions{
-            public static final double kLowY = 0.0;
-            public static final double kLowZ = 0.0;
-            public static final double kMidNodeY = 0.0;
-            public static final double kMidNodeZ = 0.0;
-            public static final double kMidShelfY = 0.0;
-            public static final double kMidShelfZ = 0.0;
-            public static final double kHighNodeY = 0.0;
-            public static final double kHighNodeZ = 0.0;
-            public static final double kHighShelfY = 0.0;
-            public static final double kHighShelfZ = 0.0;
-            public static final double kIntakeShelfY = 0.0;
-            public static final double kIntakeShelfZ = 0.0; 
+            public static final double kLowFloating = 0.0;
+            public static final double kLowAnchor = 0.0;
+            public static final double kMidNodeFloating = 0.0;
+            public static final double kMidNodeAnchor = 0.0;
+            public static final double kMidShelfFloating = 0.0;
+            public static final double kMidShelfAnchor = 0.0;
+            public static final double kHighNodeFloating = 0.0;
+            public static final double kHighNodeAnchor = 0.0;
+            public static final double kHighShelfFloating = 0.0;
+            public static final double kHighShelfAnchor = 0.0;
+            public static final double kIntakeShelfFloating = 0.0;
+            public static final double kIntakeShelfAnchor = 0.0; 
         }
         
         public static final class Miscellaneous {
@@ -56,12 +56,7 @@ public final class Constants {
         }
     }
 
-}
-=======
-import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
-
 // TODO: update constants to fit new robot
-public final class Constants {
 
     public static final double kThrottleFilter = 1.25;
     public static final double kTurnFilter = 3;
@@ -97,4 +92,3 @@ public final class Constants {
         }
     }
 }
->>>>>>> 5704c7d07c066370bd8cca33ba46522e98627af1

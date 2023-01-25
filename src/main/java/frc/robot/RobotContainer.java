@@ -1,56 +1,56 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
-<<<<<<< HEAD
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.arm.commands.MoveAnchorJoint;
 import frc.robot.subsystems.arm.commands.MoveFloatingJoint;
 import frc.robot.subsystems.Arm;
-
-public class RobotContainer {
-    private final Arm arm = new Arm();
-=======
-import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.subsystems.arm.commands.Contract;
+import frc.robot.subsystems.arm.commands.PickUp;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.XboxController;
 
 public class RobotContainer {
-
-  /*   Controllers   */
+  this.configureButtonBindings();
+  private RobotContainer robotContainer;
+  
+  // Contollers
   private final XboxController driverController = new XboxController(0);
   private final XboxController manipulatorController = new XboxController(1);
 
-  /*   Subsystems   */
-  private final Drivetrain drivetrain = new Drivetrain(driverController);
+  // Subsystems
+    double[] armAngles;  
+    private final Arm arm = new Arm();
+    private final Drivetrain drivetrain = new Drivetrain(driverController);
 
-  
-
-  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
-
->>>>>>> 5704c7d07c066370bd8cca33ba46522e98627af1
+    private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+    
   public RobotContainer() {
 
-    configureButtonBindings();
+    this.configureButtonBindings();
 
-<<<<<<< HEAD
-    double[] armAngles = arm.calculateAngles(); // TODO: Add angles
+    armAngles = arm.calculateAngles(0.1, 0.2); // TODO: Add angles
 
-    new SequentialCommandGroup(new MoveAnchorJoint((Math.PI / 2), arm), new MoveFloatingJoint(armAngles[1], arm),
-    new MoveAnchorJoint(armAngles[0], arm));
-=======
     this.drivetrain.setDefaultCommand(new RunCommand(
             () -> this.drivetrain.arcadeDrive(driverController.getAxisValue(XboxController.Axis.LEFT_Y), driverController.getAxisValue(XboxController.Axis.RIGHT_X)),
             drivetrain));
-
-    /* Add autos here */
+      
+      /* Add autos here */
     // autoChooser.addOption("name", auto);
->>>>>>> 5704c7d07c066370bd8cca33ba46522e98627af1
+    
   }
   
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    
+    manipulatorController.whenPressed(XboxController.Button.kX, new ParallelCommandGroup();
+
+  }
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();

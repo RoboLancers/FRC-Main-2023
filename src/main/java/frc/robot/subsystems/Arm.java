@@ -15,11 +15,11 @@ public class Arm extends SubsystemBase {
 
  public Arm() {
      
-     this.anchorJointMotor = new CANSparkMax(Constants.Arm.Ports.kAnchorJointPort, CANSparkMax.MotorType.kBrushless);
-     this.floatingJointMotor = new CANSparkMax(Constants.Arm.Ports.kFloatingArmPort, CANSparkMax.MotorType.kBrushless);
+     this.anchorJointMotor = new CANSparkMax(Constants.Arms.Ports.kAnchorJointPort, CANSparkMax.MotorType.kBrushless);
+     this.floatingJointMotor = new CANSparkMax(Constants.Arms.Ports.kFloatingArmPort, CANSparkMax.MotorType.kBrushless);
 
-     this.anchorJointAngle = Constants.Arm.Miscellaneous.kContractedAnchorAngle;
-     this.floatingJointAngle = Constants.Arm.Miscellaneous.kContractedFloatingAngle;
+     this.anchorJointAngle = Constants.Arms.Miscellaneous.kContractedAnchorAngle;
+     this.floatingJointAngle = Constants.Arms.Miscellaneous.kContractedFloatingAngle;
       
 
      // For PID
@@ -42,15 +42,15 @@ public class Arm extends SubsystemBase {
      this.anchorJointPIDController = this.anchorJointMotor.getPIDController();
      this.floatingJointPIDController = this.floatingJointMotor.getPIDController();
 
-     this.anchorJointPIDController.setP(Constants.Arm.AnchorJoint.kP);
-     this.anchorJointPIDController.setI(Constants.Arm.AnchorJoint.kI);
-     this.anchorJointPIDController.setD(Constants.Arm.AnchorJoint.kD);
-     this.anchorJointPIDController.setFF(Constants.Arm.AnchorJoint.kFF);
+     this.anchorJointPIDController.setP(Constants.Arms.AnchorJoint.kP);
+     this.anchorJointPIDController.setI(Constants.Arms.AnchorJoint.kI);
+     this.anchorJointPIDController.setD(Constants.Arms.AnchorJoint.kD);
+     this.anchorJointPIDController.setFF(Constants.Arms.AnchorJoint.kFF);
 
-     this.floatingJointPIDController.setP(Constants.Arm.FloatingJoint.kP);
-     this.floatingJointPIDController.setI(Constants.Arm.FloatingJoint.kI);
-     this.floatingJointPIDController.setD(Constants.Arm.FloatingJoint.kD);
-     this.floatingJointPIDController.setFF(Constants.Arm.FloatingJoint.kFF);
+     this.floatingJointPIDController.setP(Constants.Arms.FloatingJoint.kP);
+     this.floatingJointPIDController.setI(Constants.Arms.FloatingJoint.kI);
+     this.floatingJointPIDController.setD(Constants.Arms.FloatingJoint.kD);
+     this.floatingJointPIDController.setFF(Constants.Arms.FloatingJoint.kFF);
    
    }  
    
@@ -60,23 +60,23 @@ public class Arm extends SubsystemBase {
  public double[] calculateAngles(double dy, double dz) {
     double[] angles = new double[2];
     double distanceToObj = Math.sqrt(dy*dy + dz*dz);
-    double alpha = Math.acos((Constants.Arm.Miscellaneous.kFloatingArmLength*Constants.Arm.Miscellaneous.kFloatingArmLength + distanceToObj*distanceToObj- Constants.Arm.Miscellaneous.kAnchorArmLength*Constants.Arm.Miscellaneous.kAnchorArmLength)/(2*Constants.Arm.Miscellaneous.kAnchorArmLength*distanceToObj));
+    double alpha = Math.acos((Constants.Arms.Miscellaneous.kFloatingArmLength*Constants.Arms.Miscellaneous.kFloatingArmLength + distanceToObj*distanceToObj- Constants.Arms.Miscellaneous.kAnchorArmLength*Constants.Arms.Miscellaneous.kAnchorArmLength)/(2*Constants.Arms.Miscellaneous.kAnchorArmLength*distanceToObj));
     double gamma = Math.atan2(dy, dz);
     //finds theta1, the angle between the horizontal and anchorJoint
     angles[0] = alpha+gamma;
-    angles[1] = Math.PI - Math.acos((Constants.Arm.Miscellaneous.kAnchorArmLength * Constants.Arm.Miscellaneous.kAnchorArmLength + Constants.Arm.Miscellaneous.kFloatingArmLength * Constants.Arm.Miscellaneous.kFloatingArmLength - distanceToObj * distanceToObj) / (2 * Constants.Arm.Miscellaneous.kAnchorArmLength * Constants.Arm.Miscellaneous.kFloatingArmLength));
+    angles[1] = Math.PI - Math.acos((Constants.Arms.Miscellaneous.kAnchorArmLength * Constants.Arms.Miscellaneous.kAnchorArmLength + Constants.Arms.Miscellaneous.kFloatingArmLength * Constants.Arms.Miscellaneous.kFloatingArmLength - distanceToObj * distanceToObj) / (2 * Constants.Arms.Miscellaneous.kAnchorArmLength * Constants.Arms.Miscellaneous.kFloatingArmLength));
     return angles;
  }
 
  // TODO: We need a periodic for this
  public double getAnchorAngleFromEncoder() {
-    double angle = anchorJointMotor.getEncoder() * Constants.Arm.Miscellaneous.kDegreesPerTick;
+    double angle = anchorJointMotor.getEncoder() * Constants.Arms.Miscellaneous.kDegreesPerTick;
     this.anchorJointAngle = angle;
     return angle;
  }
 
  public double getFloatingAngleFromEncoder() {
-    double angle = floatingJointMotor.getEncoder() * Constants.Arm.Miscellaneous.kDegreesPerTick;
+    double angle = floatingJointMotor.getEncoder() * Constants.Arms.Miscellaneous.kDegreesPerTick;
     this.floatingJointAngle = angle;
     return angle;
  }
@@ -92,11 +92,11 @@ public void setAnchorAngle(double anchorJointAngle) {
 }
 
 public boolean isAnchorAtAngle(double anchorJointAngleTarget){
-   return Math.abs(getAnchorAngleFromEncoder() - anchorJointAngleTarget ) < Constants.Arm.AnchorJoint.kanchorJointErrorThreshold;
+   return Math.abs(getAnchorAngleFromEncoder() - anchorJointAngleTarget ) < Constants.Arms.AnchorJoint.kanchorJointErrorThreshold;
 }
 
 public boolean isFloatingAtAngle(double floatingJointAngleTarget){
-   return Math.abs(getFloatingAngleFromEncoder() - floatingJointAngleTarget ) < Constants.Arm.FloatingJoint.kFloatingJointErrorThreshold;
+   return Math.abs(getFloatingAngleFromEncoder() - floatingJointAngleTarget ) < Constants.Arms.FloatingJoint.kFloatingJointErrorThreshold;
 }
 
 }

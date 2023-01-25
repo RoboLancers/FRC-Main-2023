@@ -26,21 +26,21 @@ public class PickUp extends CommandBase{
 
     @Override
     public void execute(){
-        double desiredY = Constants.Arm.Positions.kLowY;
-        double desiredZ = Constants.Arm.Positions.kLowZ;
+        double desiredY = Constants.Arms.Positions.kLowY;
+        double desiredZ = Constants.Arms.Positions.kLowZ;
 
         switch(this.desiredHeight) {
             case FLOOR:
             break;
             case SHELF:
-            desiredY = Constants.Arm.Positions.kIntakeShelfY;
-            desiredZ= Constants.Arm.Positions.kIntakeShelfZ;
+            desiredY = Constants.Arms.Positions.kIntakeShelfY;
+            desiredZ= Constants.Arms.Positions.kIntakeShelfZ;
             break;
         }
         // set y and z of to target via presets 
 
         //Calcuate desired angles 
-        double[] desiredAngles = arm.calculateAngles(Constants.Arm.Positions.kLowY, Constants.Arm.Positions.kLowZ);
+        double[] desiredAngles = arm.calculateAngles(Constants.Arms.Positions.kLowY, Constants.Arms.Positions.kLowZ);
         //Set power to motors until encoders get to the right values
 
         //Move to desired angles

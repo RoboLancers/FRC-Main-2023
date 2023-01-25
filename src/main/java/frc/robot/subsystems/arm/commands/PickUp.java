@@ -2,7 +2,7 @@ package frc.robot.subsystems.arm.commands;
 
 import java.time.chrono.ThaiBuddhistChronology;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.arm.Arm;
 import frc.robot.Constants;
 public class PickUp extends CommandBase{
     private Arm arm;

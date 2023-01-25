@@ -3,7 +3,7 @@ import java.time.chrono.ThaiBuddhistDate;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.MotorType; 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.arm.Arm;
 
 public class MoveFloatingJoint extends CommandBase {
     public double desiredAngle;

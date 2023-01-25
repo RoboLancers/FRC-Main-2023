@@ -1,6 +1,6 @@
 package frc.robot.subsystems.arm.commands;
 
-import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.arm.Arm;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -18,7 +18,7 @@ public class Contract extends SequentialCommandGroup{
         );
     }
 
-    double[] angles = arm.calculateAngles(Constants.Arm.kContractedAnchorAngle, Constants.Arm.kContractedFloatingAngle);
+    double[] angles = arm.calculateAngles(Constants.Arms.kContractedAnchorAngle, Constants.Arms.kContractedFloatingAngle);
 
     @Override
     public void execute() {

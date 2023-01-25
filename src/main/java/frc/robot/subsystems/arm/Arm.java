@@ -7,9 +7,9 @@ import frc.robot.Constants;
 
 public class Arm extends SubsystemBase {
 
-    private CANSparkMax anchorJointMotor, floatingJointMotor;
-    private SparkMaxPIDController anchorJointPIDController, floatingJointPIDController;
-    private double floatingJointAngle, anchorJointAngle;
+    public CANSparkMax anchorJointMotor, floatingJointMotor;
+    public SparkMaxPIDController anchorJointPIDController, floatingJointPIDController;
+    public double floatingJointAngle, anchorJointAngle;
     
     
 

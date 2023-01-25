@@ -8,7 +8,7 @@ import java.time.chrono.IsoChronology;
 
 import javax.sound.midi.Sequence;
 
-import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.arm.Arm;
 
 public class MoveAnchorJoint extends CommandBase{
     public double desiredAngle;

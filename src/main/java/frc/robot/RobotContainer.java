@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.arm.commands.MoveAnchorJoint;
 import frc.robot.subsystems.arm.commands.MoveFloatingJoint;
-import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.commands.Contract;
 import frc.robot.subsystems.arm.commands.PickUp;
 import frc.robot.subsystems.drivetrain.Drivetrain;

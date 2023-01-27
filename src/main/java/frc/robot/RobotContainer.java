@@ -32,8 +32,8 @@ public class RobotContainer {
 
     configureButtonBindings();
 
-    Limelight limelight = new Limelight();
-    BooleanSupplier isAprilTagVisible = limelight::tV;
+    Limelight limelight = new Limelight(true);
+    BooleanSupplier isAprilTagVisible = limelight::validTargets;
 
     this.driverController.whileHeld(Button.Y, new ConditionalCommand(new RunCommand((() -> {
       SmartDashboard.putBoolean("visible", true);

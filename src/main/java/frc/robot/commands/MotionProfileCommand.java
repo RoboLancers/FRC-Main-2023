@@ -48,14 +48,14 @@ public class MotionProfileCommand extends CommandBase
     /**
      * Creates a new ExampleCommand.
      *
-     * @param drivetrain The subsystem used by this command.
+     * @param subsystem The subsystem used by this command.
      */
-    public MotionProfileCommand(Drivetrain drivetrain, TankMotionProfile motionProfile)
+    public MotionProfileCommand(Drivetrain subsystem, TankMotionProfile motionProfile)
     {
-        this.subsystem = drivetrain;
+        this.subsystem = subsystem;
         this.timer = new Timer();
         // Use addRequirements() here to declare subsystem dependencies.
-        addRequirements(drivetrain);
+        addRequirements(subsystem);
 
         this.motionProfile = motionProfile;
         this.maxTime = motionProfile.getTotalTime();

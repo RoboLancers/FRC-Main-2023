@@ -50,7 +50,7 @@ public class Drivetrain extends SubsystemBase {
     private final SlewRateLimiter throttleFilter = new SlewRateLimiter(Constants.kThrottleFilter);
     private final SlewRateLimiter turnFilter = new SlewRateLimiter(Constants.kTurnFilter);
 
-    public Drivetrain(XboxController driverController){
+    public Drivetrain(edu.wpi.first.wpilibj.XboxController driverController){
         rightMotor1.setInverted(true);
         rightMotor2.setInverted(true);
         rightMotor3.setInverted(true);

@@ -12,7 +12,7 @@ import frc.robot.subsystems.arm.commands.MoveAnchorJoint;
 import frc.robot.subsystems.arm.commands.MoveFloatingJoint;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.commands.Contract;
-import frc.robot.subsystems.arm.commands.PickUp;
+
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.XboxController;
 

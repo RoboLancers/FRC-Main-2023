@@ -53,6 +53,7 @@ public final class Constants {
             public static final double kContractedAnchorAngle = 0.0;
             public static final double kContractedFloatingAngle = 0.0;
             public static final double kMotorPower = 0.0;
+            public static final double kCorrectedAnchorAngle = 0.0;
         }
     }
 

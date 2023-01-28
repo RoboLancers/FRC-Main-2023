@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.arm;
 
 import com.revrobotics.CANSparkMax;
 
@@ -28,13 +28,13 @@ public class Arm extends SubsystemBase {
 
      
       // Set Limits for angles which arms can  go to 
-     this.anchorJointMotor.setSoftLimit(SoftLimitDirection.kReverse, Constants.Arm.AnchorJoint.kMinAngle);
-     this.anchorJointMotor.setSoftLimit(SoftLimitDirection.kForward, Constants.Arm.AnchorJoint.kMaxAngle);
+     this.anchorJointMotor.setSoftLimit(SoftLimitDirection.kReverse, Constants.Arms.AnchorJoint.kMinAngle);
+     this.anchorJointMotor.setSoftLimit(SoftLimitDirection.kForward, Constants.Arms.AnchorJoint.kMaxAngle);
      this.anchorJointMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
      this.anchorJointMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
      
-     this.floatingJointMotor.setSoftLimit(SoftLimitDirection.kReverse, Constants.Arm.FloatingJoint.kMinAngle);
-     this.floatingJointMotor.setSoftLimit(SoftLimitDirection.kForward, Constants.Arm.FloatingJoint.kMaxAngle);
+     this.floatingJointMotor.setSoftLimit(SoftLimitDirection.kReverse, Constants.Arms.FloatingJoint.kMinAngle);
+     this.floatingJointMotor.setSoftLimit(SoftLimitDirection.kForward, Constants.Arms.FloatingJoint.kMaxAngle);
      this.floatingJointMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
      this.floatingJointMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
      
@@ -69,14 +69,15 @@ public class Arm extends SubsystemBase {
  }
 
  // TODO: We need a periodic for this
+ // TODO: Is get position what we want
  public double getAnchorAngleFromEncoder() {
-    double angle = anchorJointMotor.getEncoder() * Constants.Arms.Miscellaneous.kDegreesPerTick;
+    double angle = anchorJointMotor.getEncoder().getPosition() * (Constants.Arms.Miscellaneous.kDegreesPerTick);
     this.anchorJointAngle = angle;
     return angle;
  }
 
  public double getFloatingAngleFromEncoder() {
-    double angle = floatingJointMotor.getEncoder() * Constants.Arms.Miscellaneous.kDegreesPerTick;
+    double angle = floatingJointMotor.getEncoder().getPosition() * Constants.Arms.Miscellaneous.kDegreesPerTick;
     this.floatingJointAngle = angle;
     return angle;
  }

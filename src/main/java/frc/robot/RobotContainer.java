@@ -24,11 +24,10 @@ public class RobotContainer {
   private final XboxController manipulatorController = new XboxController(1);
 
   // Subsystems
-    double[] armAngles;  
     private final Arm arm = new Arm();
     private final Drivetrain drivetrain = new Drivetrain(driverController);
 
-    private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+    // private final SendableChooser<Command> autoChooser = new SendableChooser<>();
     
   public RobotContainer() {
 
@@ -67,6 +66,4 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
   }
-
-  // TODO: we should check if we have a cone or cube before calling command
 }

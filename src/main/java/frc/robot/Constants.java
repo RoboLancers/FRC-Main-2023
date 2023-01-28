@@ -29,6 +29,8 @@ public final class Constants {
         public static final class Ports {
             public static final int kAnchorJointPort = 0;
             public static final int kFloatingArmPort = 0;
+            public static final int kAnchorLimitSwitchPort = 0;
+            public static final int kFloatingLimitSwitchPort = 0;
         }
 
         public static final class Positions{
@@ -52,8 +54,8 @@ public final class Constants {
             public static final double kDegreesPerTick = 360 / 42;
             public static final double kContractedAnchorAngle = 0.0;
             public static final double kContractedFloatingAngle = 0.0;
-            public static final double kMotorPower = 0.0;
-            public static final double kCorrectedAnchorAngle = 0.0;
+            public static final double kUndershotAngle = 0.0;
+            public static final double kLowPower = 0.0;
         }
     }
 

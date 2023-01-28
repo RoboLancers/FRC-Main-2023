@@ -3,6 +3,10 @@ package frc.robot.subsystems.arm;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
+import edu.wpi.first.wpilibj.DigitalInput;
+
 import frc.robot.Constants;
 
 public class Arm extends SubsystemBase {
@@ -10,6 +14,7 @@ public class Arm extends SubsystemBase {
     public CANSparkMax anchorJointMotor, floatingJointMotor;
     public SparkMaxPIDController anchorJointPIDController, floatingJointPIDController;
     public double floatingJointAngle, anchorJointAngle;
+    public DigitalInput anchorLimitSwitch, floatingLimitSwitch;
     
     
 
@@ -28,13 +33,13 @@ public class Arm extends SubsystemBase {
 
      
       // Set Limits for angles which arms can  go to 
-     this.anchorJointMotor.setSoftLimit(SoftLimitDirection.kReverse, Constants.Arms.AnchorJoint.kMinAngle);
-     this.anchorJointMotor.setSoftLimit(SoftLimitDirection.kForward, Constants.Arms.AnchorJoint.kMaxAngle);
+     this.anchorJointMotor.setSoftLimit(SoftLimitDirection.kReverse, (float) Constants.Arms.AnchorJoint.kMinAngle);
+     this.anchorJointMotor.setSoftLimit(SoftLimitDirection.kForward, (float) Constants.Arms.AnchorJoint.kMaxAngle);
      this.anchorJointMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
      this.anchorJointMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
      
-     this.floatingJointMotor.setSoftLimit(SoftLimitDirection.kReverse, Constants.Arms.FloatingJoint.kMinAngle);
-     this.floatingJointMotor.setSoftLimit(SoftLimitDirection.kForward, Constants.Arms.FloatingJoint.kMaxAngle);
+     this.floatingJointMotor.setSoftLimit(SoftLimitDirection.kReverse, (float) Constants.Arms.FloatingJoint.kMinAngle);
+     this.floatingJointMotor.setSoftLimit(SoftLimitDirection.kForward, (float) Constants.Arms.FloatingJoint.kMaxAngle);
      this.floatingJointMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
      this.floatingJointMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
      
@@ -98,6 +103,14 @@ public boolean isAnchorAtAngle(double anchorJointAngleTarget){
 
 public boolean isFloatingAtAngle(double floatingJointAngleTarget){
    return Math.abs(getFloatingAngleFromEncoder() - floatingJointAngleTarget ) < Constants.Arms.FloatingJoint.kFloatingJointErrorThreshold;
+}
+
+public boolean anchorLimitSwitchTriggered() {
+   return !this.anchorLimitSwitch.get();
+}
+
+public boolean floatingLimitSwitchTriggered() {
+   return !this.floatingLimitSwitch.get();
 }
 
 }

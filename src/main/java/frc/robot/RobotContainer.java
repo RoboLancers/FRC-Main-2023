@@ -6,16 +6,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.GridAlign;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.XboxController;
 import frc.robot.util.XboxController.Button;
-import frc.robot.util.limelight.Limelight;
+import frc.robot.util.limelight.LimelightAPI;
 
 public class RobotContainer {
 
@@ -31,15 +26,12 @@ public class RobotContainer {
   public RobotContainer() {
 
     configureButtonBindings();
-
-    Limelight limelight = new Limelight(true);
-    BooleanSupplier isAprilTagVisible = limelight::validTargets;
+    
+    BooleanSupplier isAprilTagVisible = LimelightAPI::validTargets;
 
     this.driverController.whileHeld(Button.Y, new ConditionalCommand(new RunCommand((() -> {
       SmartDashboard.putBoolean("visible", true);
-
-
-      SmartDashboard.putNumber("AprilTag ID", limelight.aprilTagID); 
+      SmartDashboard.putNumber("AprilTag ID", LimelightAPI.getAprilTagID()); 
 
     })), new RunCommand(() -> {
       SmartDashboard.putBoolean("visible", false);

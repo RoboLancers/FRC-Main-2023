@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
+import frc.robot.Constants.Drivetrain;
 import frc.robot.util.PoseUtil;
 import frc.robot.util.SizedStack;
 import frc.robot.util.limelight.LimelightAPI;
@@ -15,12 +16,14 @@ import frc.robot.util.limelight.LimelightAPI;
 public class PoseTracker extends SubsystemBase {
 
     // Getting last 3 camera pose values
-    private SizedStack<Pose3d> camPoseStack = new SizedStack<Pose3d>(3);
+    private SizedQueue<Pose3d> camPoseStack = new SizedQueue<Pose3d>(3);
 
     // Getting last 3 bot pose values
-    private SizedStack<Pose3d> botPoseStack = new SizedStack<Pose3d>(3);
+    private SizedQueue<Pose3d> botPoseStack = new SizedQueue<Pose3d>(3);
 
-    public PoseTracker() {}
+    public PoseTracker(Drivetrain drivetrain) {
+        
+    }
 
     @Override
     public void periodic() {
@@ -54,13 +57,13 @@ public class PoseTracker extends SubsystemBase {
         this.botPoseStack.clear();
 
         // could make this dynamic based on stack capacity, not necessary at the moment
-        this.camPoseStack.push(LimelightAPI.adjustedCamPose());
-        this.camPoseStack.push(LimelightAPI.adjustedCamPose());
-        this.camPoseStack.push(LimelightAPI.adjustedCamPose());
+        this.camPoseStack.add(LimelightAPI.adjustedCamPose());
+        this.camPoseStack.add(LimelightAPI.adjustedCamPose());
+        this.camPoseStack.add(LimelightAPI.adjustedCamPose());
 
-        this.botPoseStack.push(LimelightAPI.botPose());
-        this.botPoseStack.push(LimelightAPI.botPose());
-        this.botPoseStack.push(LimelightAPI.botPose());
+        this.botPoseStack.add(LimelightAPI.botPose());
+        this.botPoseStack.add(LimelightAPI.botPose());
+        this.botPoseStack.add(LimelightAPI.botPose());
     }
 
     private Pose3d getAveragePose(int pipelineIndex, ArrayList<Pose3d> poses) {
@@ -71,5 +74,5 @@ public class PoseTracker extends SubsystemBase {
         }
         
         return PoseUtil.averagePoses(poses);
-    }
+    }    
 }

@@ -2,7 +2,9 @@ package frc.robot.util.limelight;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 
 import edu.wpi.first.networktables.NetworkTable;
@@ -60,11 +62,16 @@ public class LimelightAPI {
     }
     
     /** Returns an adjusted Pose3D based on camera pose */
-    public static Pose3d adjustCamPose(Pose3d rawCamPose) {
-        double adjustedCamPoseX = (rawCamPose.getX() - Constants.GridAlign.kAdjustX) / rawCamPose.getZ();
-        double adjustedCamPoseZ = (rawCamPose.getZ() - Constants.GridAlign.kAdjustZ);
+    public static Pose2d adjustCamPose(Pose3d camPose) {
+        double adjustedTransX = camPose.getX() - Constants.GridAlign.kAdjustX;
+        double adjustedTransZ = camPose.getZ() - Constants.GridAlign.kAdjustZ;
+        double heading = camPose.getRotation().getY();
 
-        return new Pose3d(adjustedCamPoseX, rawCamPose.getY(), adjustedCamPoseZ, rawCamPose.getRotation());
+        double adjustedRotX = camPose.getX() - Constants.GridAlign.kAdjustZ * Math.sin(heading) + Constants.GridAlign.kAdjustX * Math.cos(heading);
+        double adjustedRotZ = camPose.getZ() - Constants.GridAlign.kAdjustZ * Math.cos(heading) + Constants.GridAlign.kAdjustX * Math.sin(heading);
+
+        return new Pose2d(adjustedTransX, adjustedTransZ, new Rotation2d(adjustedRotX, adjustedRotZ));
+        // return new Pose2d(adjustedCamPoseX, pose3d.getY(), adjustedCamPoseZ, pose3d.getRotation());
     }
 
     public static boolean validTargets() {

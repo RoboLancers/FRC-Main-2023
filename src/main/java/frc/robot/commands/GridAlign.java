@@ -8,30 +8,25 @@ import org.bananasamirite.robotmotionprofile.Waypoint;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.subsystems.gridalign.GridAlignSubsytem;
+import frc.robot.subsystems.gridalign.PoseTracker;
 
 import frc.robot.Constants;
 
+// ,TODO: refactor in line with subsystem changes
 public class GridAlign extends CommandBase {
-    private Pose3d camPose;
-
     private Waypoint[] waypoints;
 
     private MotionProfileCommand motionProfile;
 
-    private GridAlignSubsytem gridAlignSubsytem;
+    private PoseTracker poseTracker;
 
 
     public GridAlign(Drivetrain drivetrain) {
     
-        this.gridAlignSubsytem = new GridAlignSubsytem();
-        this.camPose = this.gridAlignSubsytem.getAverageAprilCamPose();
+        this.poseTracker = new PoseTracker();
+        // this.camPose = this.poseTracker.getAveragePose(0, null);
 
         this.waypoints = new Waypoint[2];
-
-       
-
-
 
         // Initial waypoint (switch x and y)
 

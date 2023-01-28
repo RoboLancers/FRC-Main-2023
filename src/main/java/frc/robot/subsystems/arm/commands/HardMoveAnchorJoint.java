@@ -33,6 +33,6 @@ public class HardMoveAnchorJoint extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return return this.arm.limitSwitchTriggered();
+        return this.arm.limitSwitchTriggered();
     }
 }

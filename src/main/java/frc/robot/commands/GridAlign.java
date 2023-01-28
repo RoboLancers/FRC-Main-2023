@@ -5,7 +5,7 @@ import org.bananasamirite.robotmotionprofile.TankMotionProfile;
 import org.bananasamirite.robotmotionprofile.TankMotionProfile.ProfileMethod;
 import org.bananasamirite.robotmotionprofile.Waypoint;
 
-import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.gridalign.PoseTracker;
@@ -20,20 +20,25 @@ public class GridAlign extends CommandBase {
 
     private PoseTracker poseTracker;
 
+    private Pose2d camPose;
+
 
     public GridAlign(Drivetrain drivetrain) {
     
-        this.poseTracker = new PoseTracker();
-        // this.camPose = this.poseTracker.getAveragePose(0, null);
+        this.poseTracker = new PoseTracker(drivetrain);
+
+        addRequirements(drivetrain, poseTracker);
+
+        this.camPose = this.poseTracker.getAveragePose(0, null);
 
         this.waypoints = new Waypoint[2];
 
         // Initial waypoint (switch x and y)
 
-        this.waypoints[0] = new Waypoint(0, 0, this.camPose.getRotation().getY(), Constants.GridAlign.kInitialWeight, 1);
+        this.waypoints[0] = new Waypoint(0, 0, this.camPose.getRotation().getRadians(), Constants.GridAlign.kInitialWeight, 1);
 
         // grid waypoint (flipped x and y)
-        this.waypoints[1] = new Waypoint(this.camPose.getZ(), this.camPose.getX(), 0, Constants.GridAlign.kGridWeight, 1);
+        this.waypoints[1] = new Waypoint(this.camPose.getY(), this.camPose.getX(), 0, Constants.GridAlign.kGridWeight, 1);
         
         ParametricSpline spline = ParametricSpline.fromWaypoints(this.waypoints);
 

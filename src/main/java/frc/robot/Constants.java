@@ -32,11 +32,22 @@ public final class Constants {
         public static final double kInitialWeight = 1;
         public static final double kGridWeight = 2;
 
-        public static final double kAdjustZ  = 1;
+        public static final double kAdjustZ = 1;
         public static final double kAdjustX = 1;
 
         public static final int kAprilTagPipelineIndex = 0;
         public static final int kPythonPipelineIndex = 1;
+        public static final int kManualAprilTagPipeline = 2;
+
+        public static final double[] kCamSanityX = {
+                1, // min
+                2 // max
+        };
+
+        public static final double[] kCamSanityY = {
+                1, // min
+                2 // max
+        };
     }
 
     public static class Drivetrain {

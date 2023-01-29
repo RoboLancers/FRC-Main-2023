@@ -32,52 +32,58 @@ public class PoseTracker extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+        // setting the last 3
+        this.camPoseQueue.add(LimelightAPI.adjustedCamPose(this.drivetrain));
+        
+
+        this.botPoseQueue.add(LimelightAPI.botPose());
+        
+
         // get apriltag data
-        Pose2d avgAprilTagBotPose = this.getAveragePose(Constants.GridAlign.kAprilTagPipelineIndex, new ArrayList<>(this.botPoseQueue));
-        Pose2d avgAprilTagCamPose = this.getAveragePose(Constants.GridAlign.kAprilTagPipelineIndex, new ArrayList<>(this.camPoseQueue));
+        Pose2d avgAprilTagBotPose = this.getAveragePose(Constants.GridAlign.kAprilTagPipelineIndex,
+                new ArrayList<>(this.botPoseQueue));
+        Pose2d avgAprilTagCamPose = this.getAveragePose(Constants.GridAlign.kAprilTagPipelineIndex,
+                new ArrayList<>(this.camPoseQueue));
 
         // get python data, might need to be via llpython instead
-        Pose2d avgPythonBotPose = this.getAveragePose(Constants.GridAlign.kPythonPipelineIndex, new ArrayList<Pose2d>(this.botPoseQueue));
-        Pose2d avgPythonCamPose = this.getAveragePose(Constants.GridAlign.kPythonPipelineIndex, new ArrayList<Pose2d>(this.camPoseQueue));
+        Pose2d avgPythonBotPose = this.getAveragePose(Constants.GridAlign.kPythonPipelineIndex,
+                new ArrayList<Pose2d>(this.botPoseQueue));
+        Pose2d avgPythonCamPose = this.getAveragePose(Constants.GridAlign.kPythonPipelineIndex,
+                new ArrayList<Pose2d>(this.camPoseQueue));
 
         // find average of apriltag & python data
         Pose2d avgBotPose = PoseUtil.averagePoses(new ArrayList<>(List.of(avgAprilTagBotPose, avgPythonBotPose)));
-        this.avgCamPose =  PoseUtil.averagePoses(new ArrayList<>(List.of(avgAprilTagCamPose, avgPythonCamPose)));
+        this.avgCamPose = PoseUtil.averagePoses(new ArrayList<>(List.of(avgAprilTagCamPose, avgPythonCamPose)));
 
+        SmartDashboard.putData("average of last three apriltag pipeline bot poses",
+                PoseUtil.getDefaultPoseSendable(avgAprilTagBotPose));
+        SmartDashboard.putData("average of last three apriltag pipeline cam poses",
+                PoseUtil.getDefaultPoseSendable(avgAprilTagCamPose));
 
-
-        SmartDashboard.putData("average of last three apriltag pipeline bot poses", PoseUtil.getDefaultPoseSendable(avgAprilTagBotPose));
-        SmartDashboard.putData("average of last three apriltag pipeline cam poses", PoseUtil.getDefaultPoseSendable(avgAprilTagCamPose));
-
-        SmartDashboard.putData("average of last three python pipeline bot poses", PoseUtil.getDefaultPoseSendable(avgPythonBotPose));
-        SmartDashboard.putData("average of last three python pipeline cam poses", PoseUtil.getDefaultPoseSendable(avgPythonCamPose));
+        SmartDashboard.putData("average of last three python pipeline bot poses",
+                PoseUtil.getDefaultPoseSendable(avgPythonBotPose));
+        SmartDashboard.putData("average of last three python pipeline cam poses",
+                PoseUtil.getDefaultPoseSendable(avgPythonCamPose));
 
         // smartdashboard the average of both
-        SmartDashboard.putData("average of apriltag & python pipeline bot poses", PoseUtil.getDefaultPoseSendable(avgBotPose));
-        SmartDashboard.putData("average of apriltag & python pipeline cam poses", PoseUtil.getDefaultPoseSendable(avgCamPose));
+        SmartDashboard.putData("average of apriltag & python pipeline bot poses",
+                PoseUtil.getDefaultPoseSendable(avgBotPose));
+        SmartDashboard.putData("average of apriltag & python pipeline cam poses",
+                PoseUtil.getDefaultPoseSendable(avgCamPose));
     }
 
     private void clearAndUpdatePoseStacks(int pipelineIndex) {
         LimelightAPI.setPipeline(pipelineIndex);
-        
+
         this.camPoseQueue.clear();
         this.botPoseQueue.clear();
 
-        // could make this dynamic based on stack capacity, not necessary at the moment
-        this.camPoseQueue.add(LimelightAPI.adjustedCamPose(this.drivetrain));
-        this.camPoseQueue.add(LimelightAPI.adjustedCamPose(this.drivetrain));
-        this.camPoseQueue.add(LimelightAPI.adjustedCamPose(this.drivetrain));
-
-        this.botPoseQueue.add(LimelightAPI.botPose());
-        this.botPoseQueue.add(LimelightAPI.botPose());
-        this.botPoseQueue.add(LimelightAPI.botPose());
     }
 
     public Pose2d getAverageAprilPose() {
-       return this.avgCamPose;
+        return this.avgCamPose;
     }
-
-
 
     public Pose2d getAveragePose(int pipelineIndex, ArrayList<Pose2d> poses) {
         this.clearAndUpdatePoseStacks(pipelineIndex);
@@ -85,7 +91,7 @@ public class PoseTracker extends SubsystemBase {
         if (LimelightAPI.getPipeline() != pipelineIndex) {
             return new Pose2d();
         }
-        
+
         return PoseUtil.averagePoses(poses);
-    }    
+    }
 }

@@ -40,13 +40,13 @@ public final class Constants {
         public static final int kManualAprilTagPipeline = 2;
 
         public static final double[] kCamSanityX = {
-                1, // min
+                -2, // min
                 2 // max
         };
 
-        public static final double[] kCamSanityY = {
-                1, // min
-                2 // max
+        public static final double[] kCamSanityZ = {
+                -1, // min
+                5 // max
         };
     }
 

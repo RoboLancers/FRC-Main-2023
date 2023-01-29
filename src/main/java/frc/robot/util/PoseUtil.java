@@ -34,8 +34,8 @@ public class PoseUtil {
         Stream<Pose2d> poseStream = poses.stream()
                 .filter(p -> (p.getX() > Constants.GridAlign.kCamSanityX[0]
                         && p.getX() < Constants.GridAlign.kCamSanityX[1]) &&
-                        (p.getY() > Constants.GridAlign.kCamSanityY[0]
-                                && p.getY() < Constants.GridAlign.kCamSanityY[1]));
+                        (p.getY() > Constants.GridAlign.kCamSanityZ[0]
+                                && p.getY() < Constants.GridAlign.kCamSanityZ[1]));
 
         return (ArrayList<Pose2d>) poseStream.toList();
 

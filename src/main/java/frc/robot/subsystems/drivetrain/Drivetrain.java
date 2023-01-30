@@ -50,7 +50,7 @@ public class Drivetrain extends SubsystemBase {
     private final SlewRateLimiter throttleFilter = new SlewRateLimiter(Constants.kThrottleFilter);
     private final SlewRateLimiter turnFilter = new SlewRateLimiter(Constants.kTurnFilter);
 
-    public Drivetrain(XboxController driverController){
+    public Drivetrain(){
         rightMotor1.setInverted(true);
         rightMotor2.setInverted(true);
         rightMotor3.setInverted(true);
@@ -76,10 +76,6 @@ public class Drivetrain extends SubsystemBase {
         odometry = new DifferentialDriveOdometry(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
 
         //initDefaultCommand(driverController);
-    }
-
-    private void initDefaultCommand(XboxController driverController){
-        // setDefaultCommand(new TeleopDrive(this, driverController));
     }
 
     // Constantly updates the odometry of the robot with the rotation and the distance traveled.

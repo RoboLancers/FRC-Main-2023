@@ -55,28 +55,31 @@ public class PoseTracker extends SubsystemBase {
                                 this.camPoseQueue);
 
                 // find average of apriltag & python data
-                // Pose2d avgBotPose = PoseUtil.averagePoses(new SizedQueue<>(List.of(avgAprilTagBotPose, avgPythonBotPose)));
-                this.avgCamPose = PoseUtil.averagePipelinePoses(new ArrayList<>(List.of(avgAprilTagCamPose, avgPythonCamPose)));
+                // Pose2d avgBotPose = PoseUtil.averagePoses(new
+                // SizedQueue<>(List.of(avgAprilTagBotPose, avgPythonBotPose)));
+                this.avgCamPose = PoseUtil
+                                .averagePipelinePoses(new ArrayList<>(List.of(avgAprilTagCamPose, avgPythonCamPose)));
 
-                
+                //   
 
-                SmartDashboard.putData("average of last three apriltag pipeline bot poses",
-                                PoseUtil.getDefaultPoseSendable(avgAprilTagBotPose));
+                // we need this thing
 
-// we need this thing
-                SmartDashboard.putData("average of last three apriltag pipeline cam poses",
-                                PoseUtil.getDefaultPoseSendable(avgAprilTagCamPose));
+                SmartDashboard.putNumber("avg campose x", avgAprilTagCamPose.getX());
+                SmartDashboard.putNumber("avg campose z", avgAprilTagCamPose.getY());
 
-                SmartDashboard.putData("average of last three python pipeline bot poses",
-                                PoseUtil.getDefaultPoseSendable(avgPythonBotPose));
-                SmartDashboard.putData("average of last three python pipeline cam poses",
-                                PoseUtil.getDefaultPoseSendable(avgPythonCamPose));
+                // SmartDashboard.putData("average of last three apriltag pipeline cam poses",
+                //                 PoseUtil.getDefaultPoseSendable(avgAprilTagCamPose));
 
-                // smartdashboard the average of both
-                // SmartDashboard.putData("average of apriltag & python pipeline bot poses",
-                //                 PoseUtil.getDefaultPoseSendable(avgBotPose));
-                SmartDashboard.putData("average of apriltag & python pipeline cam poses",
-                                PoseUtil.getDefaultPoseSendable(avgCamPose));
+                // SmartDashboard.putData("average of last three python pipeline bot poses",
+                //                 PoseUtil.getDefaultPoseSendable(avgPythonBotPose));
+                // SmartDashboard.putData("average of last three python pipeline cam poses",
+                //                 PoseUtil.getDefaultPoseSendable(avgPythonCamPose));
+
+                // // smartdashboard the average of both
+                // // SmartDashboard.putData("average of apriltag & python pipeline bot poses",
+                // // PoseUtil.getDefaultPoseSendable(avgBotPose));
+                // SmartDashboard.putData("average of apriltag & python pipeline cam poses",
+                //                 PoseUtil.getDefaultPoseSendable(avgCamPose));
         }
 
         private void clearAndSetPipeline(int pipelineIndex) {
@@ -85,8 +88,6 @@ public class PoseTracker extends SubsystemBase {
                 this.botPoseQueue.clear();
 
                 LimelightAPI.setPipeline(pipelineIndex);
-
-              
 
         }
 

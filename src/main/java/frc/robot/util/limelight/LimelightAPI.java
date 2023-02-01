@@ -179,7 +179,13 @@ public class LimelightAPI {
 
         double[] poseRaw = LimelightAPI.limelightNT.getEntry(target).getDoubleArray(smd);
 
+        if (poseRaw.length != 6) {
+            return new Pose3d();
+        }
+
         Rotation3d rotationPose = new Rotation3d(poseRaw[3], poseRaw[4], poseRaw[5]);
+
+        
 
         return new Pose3d(poseRaw[0], poseRaw[1], poseRaw[2], rotationPose);
     }

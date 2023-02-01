@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.gridalign.PoseTracker;
 import frc.robot.util.XboxController;
 import frc.robot.util.XboxController.Button;
 import frc.robot.util.limelight.LimelightAPI;
@@ -21,6 +22,7 @@ public class RobotContainer {
 
   /* Subsystems */
   private final Drivetrain drivetrain = new Drivetrain(driverController);
+  private final PoseTracker poseTracker = new PoseTracker(drivetrain);
 
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -29,6 +31,8 @@ public class RobotContainer {
     configureButtonBindings();
     
     BooleanSupplier isAprilTagVisible = LimelightAPI::validTargets;
+
+
 
     this.driverController.whileHeld(Button.Y, new ConditionalCommand(new RunCommand((() -> {
       SmartDashboard.putBoolean("visible", true);

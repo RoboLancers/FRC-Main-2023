@@ -1,6 +1,7 @@
 package frc.robot.util;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.opencv.core.Size;
@@ -33,7 +34,7 @@ public class PoseUtil {
 
     public static Pose2d averagePipelinePoses(ArrayList<Pose2d> posesRaw) {
 
-        ArrayList<Pose2d> poses = sanitizePosesList(posesRaw);
+        List<Pose2d> poses = sanitizePosesList(posesRaw);
 
         Translation2d avgTranslation = poses.stream()
                 .map(pose -> pose.getTranslation())
@@ -50,28 +51,36 @@ public class PoseUtil {
         return new Pose2d(avgTranslation.getX(), avgTranslation.getY(), avgRotation);
     }
 
-
-
     public static SizedQueue<Pose2d> sanitizePoses(SizedQueue<Pose2d> poses) {
 
-        Stream<Pose2d> poseStream = poses.stream()
+        List<Pose2d> filteredPoses =  poses.stream()
                 .filter(p -> (p.getX() > Constants.GridAlign.kCamSanityX[0]
                         && p.getX() < Constants.GridAlign.kCamSanityX[1]) &&
                         (p.getY() > Constants.GridAlign.kCamSanityZ[0]
-                                && p.getY() < Constants.GridAlign.kCamSanityZ[1]));
+                                && p.getY() < Constants.GridAlign.kCamSanityZ[1])).toList();
 
-        return (SizedQueue<Pose2d>) poseStream.toList();
+        SizedQueue<Pose2d> queue = new SizedQueue<>(3);
+
+        for (int i = 0; i < filteredPoses.size(); i++) {
+            queue.add(i, (Pose2d) filteredPoses.toArray()[i]);
+
+        }
+
+        return queue;
 
     }
-    public static ArrayList<Pose2d> sanitizePosesList(ArrayList<Pose2d> poses) {
 
-        Stream<Pose2d> poseStream = poses.stream()
+    public static List<Pose2d> sanitizePosesList(ArrayList<Pose2d> poses) {
+
+        List<Pose2d> poseStream = poses.stream()
                 .filter(p -> (p.getX() > Constants.GridAlign.kCamSanityX[0]
                         && p.getX() < Constants.GridAlign.kCamSanityX[1]) &&
                         (p.getY() > Constants.GridAlign.kCamSanityZ[0]
-                                && p.getY() < Constants.GridAlign.kCamSanityZ[1]));
+                                && p.getY() < Constants.GridAlign.kCamSanityZ[1])).toList();
 
-        return (ArrayList<Pose2d>) poseStream.toList();
+    
+
+        return poseStream;
 
     }
 

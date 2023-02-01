@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.XboxController;
@@ -36,6 +37,8 @@ public class RobotContainer {
     })), new RunCommand(() -> {
       SmartDashboard.putBoolean("visible", false);
     }), isAprilTagVisible));
+
+    this.driverController.whenPressed(Button.X, new InstantCommand(this.drivetrain::zeroHeading));
 
     // this.driverController.whenPressed(Button.Y,
     // new ConditionalCommand(new GridAlign(drivetrain), new

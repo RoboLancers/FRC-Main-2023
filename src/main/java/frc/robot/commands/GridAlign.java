@@ -22,37 +22,41 @@ public class GridAlign extends CommandBase {
 
     private Pose2d camPose;
 
-
     public GridAlign(Drivetrain drivetrain) {
-    
+
         this.poseTracker = new PoseTracker(drivetrain);
 
         addRequirements(drivetrain, poseTracker);
 
-        this.camPose = this.poseTracker.getAveragePose(0, null);
+        this.camPose = this.poseTracker.getAverageAprilPose();
 
         this.waypoints = new Waypoint[2];
 
         // Initial waypoint (switch x and y)
 
-        this.waypoints[0] = new Waypoint(0, 0, this.camPose.getRotation().getRadians(), Constants.GridAlign.kInitialWeight, 1);
+        var relativeDistance = Math
+                .sqrt((this.camPose.getX() * this.camPose.getX()) + (this.camPose.getY() * this.camPose.getY()));
+
+        this.waypoints[0] = new Waypoint(0, 0, drivetrain.getHeading() * 180 / Math.PI,
+                Constants.GridAlign.kInitialWeight * relativeDistance, 1);
 
         // grid waypoint (flipped x and y)
-        this.waypoints[1] = new Waypoint(this.camPose.getY(), this.camPose.getX(), 0, Constants.GridAlign.kGridWeight, 1);
-        
+        this.waypoints[1] = new Waypoint(this.camPose.getY(), this.camPose.getX(), 0, Constants.GridAlign.kGridWeight,
+                1);
+
         ParametricSpline spline = ParametricSpline.fromWaypoints(this.waypoints);
 
         this.motionProfile = new MotionProfileCommand(
-            drivetrain, 
-            new TankMotionProfile(
-                spline, 
-                ProfileMethod.TIME, 
-                new TankMotionProfile.TankMotionProfileConstraints(1, 0)
-            )
-        );
+                drivetrain,
+                new TankMotionProfile(
+                        spline,
+                        ProfileMethod.TIME,
+                        new TankMotionProfile.TankMotionProfileConstraints(1, 0)));
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see edu.wpi.first.wpilibj2.command.Command#execute()
      */
     @Override
@@ -60,13 +64,12 @@ public class GridAlign extends CommandBase {
         this.motionProfile.execute();
     }
 
-  
-
     @Override
     public boolean isFinished() {
         return false;
     }
 
     @Override
-    public void end(boolean interrupted) {}
+    public void end(boolean interrupted) {
+    }
 }

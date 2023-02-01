@@ -32,8 +32,8 @@ public final class Constants {
         public static final double kInitialWeight = 1;
         public static final double kGridWeight = 2;
 
-        public static final double kAdjustZ = 1;
-        public static final double kAdjustX = 1;
+        public static final double kAdjustZ = 0.32;
+        public static final double kAdjustX = 0;
 
         public static final int kAprilTagPipelineIndex = 0;
         public static final int kPythonPipelineIndex = 1;

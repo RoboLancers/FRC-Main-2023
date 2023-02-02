@@ -15,6 +15,7 @@ public class Arm extends SubsystemBase {
     public SparkMaxPIDController anchorJointPIDController, floatingJointPIDController;
     public double floatingJointAngle, anchorJointAngle;
     public DigitalInput anchorLimitSwitch, floatingLimitSwitch;
+    public boolean anchorLimitSwitchTriggered, floatingLimitSwitchTriggered;
     
     
 
@@ -105,12 +106,9 @@ public boolean isFloatingAtAngle(double floatingJointAngleTarget){
    return Math.abs(getFloatingAngleFromEncoder() - floatingJointAngleTarget ) < Constants.Arms.FloatingJoint.kFloatingJointErrorThreshold;
 }
 
-public boolean anchorLimitSwitchTriggered() {
-   return !this.anchorLimitSwitch.get();
-}
-
-public boolean floatingLimitSwitchTriggered() {
-   return !this.floatingLimitSwitch.get();
+public void periodic() {
+   this.anchorLimitSwitchTriggered = !this.anchorLimitSwitch.get();
+   this.floatingLimitSwitchTriggered = !this.floatingLimitSwitch.get();
 }
 
 }

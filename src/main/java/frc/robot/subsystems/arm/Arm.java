@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants;
 
@@ -57,7 +58,16 @@ public class Arm extends SubsystemBase {
      this.floatingJointPIDController.setI(Constants.Arms.FloatingJoint.kI);
      this.floatingJointPIDController.setD(Constants.Arms.FloatingJoint.kD);
      this.floatingJointPIDController.setFF(Constants.Arms.FloatingJoint.kFF);
+
+      SmartDashboard.putNumber("anchorKP", SmartDashboard.getNumber("anchorKP", Constants.Arms.AnchorJoint.kP));
+      SmartDashboard.putNumber("anchorKI", SmartDashboard.getNumber("anchorKI", Constants.Arms.AnchorJoint.kI));
+      SmartDashboard.putNumber("anchorKD", SmartDashboard.getNumber("anchorKD", Constants.Arms.AnchorJoint.kD));
+      SmartDashboard.putNumber("anchorKFF", SmartDashboard.getNumber("anchorKFF", Constants.Arms.AnchorJoint.kFF));
    
+      SmartDashboard.putNumber("floatingKP", SmartDashboard.getNumber("floatingKP", Constants.Arms.FloatingJoint.kP));
+      SmartDashboard.putNumber("floatingKI", SmartDashboard.getNumber("floatingKI", Constants.Arms.FloatingJoint.kI));
+      SmartDashboard.putNumber("floatingKD", SmartDashboard.getNumber("floatingKD", Constants.Arms.FloatingJoint.kD));
+      SmartDashboard.putNumber("floatingKFF", SmartDashboard.getNumber("floatingKFF", Constants.Arms.FloatingJoint.kFF));
    }  
    
 
@@ -109,6 +119,22 @@ public boolean isFloatingAtAngle(double floatingJointAngleTarget){
 public void periodic() {
    this.anchorLimitSwitchTriggered = !this.anchorLimitSwitch.get();
    this.floatingLimitSwitchTriggered = !this.floatingLimitSwitch.get();
+   double floatingKP = SmartDashboard.getEntry("floatingKP").getDouble(0);
+   double floatingKI = SmartDashboard.getEntry("floatingKI").getDouble(0);
+   double floatingKD = SmartDashboard.getEntry("floatingKD").getDouble(0);
+   double floatingKFF = SmartDashboard.getEntry("floatingKFF").getDouble(0);
+   double anchorKP = = SmartDashboard.getEntry("anchorKP").getDouble(0);
+   double anchorKI = = SmartDashboard.getEntry("anchorKI").getDouble(0);
+   double anchorKD = = SmartDashboard.getEntry("anchorKD").getDouble(0);
+   double anchorKFF = = SmartDashboard.getEntry("anchorKFF").getDouble(0);
+   this.floatingJointPIDController.setP(floatingKP);
+   this.floatingJointPIDController.setI(floatingKI);
+   this.floatingJointPIDController.setD(floatingKD);
+   this.floatingJointPIDController.setFF(floatingKFF);
+   this.anchorJointPIDController.setP(anchorKP);
+   this.anchorJointPIDController.setI(anchorKI);
+   this.anchorJointPIDController.setD(anchorKD);
+   this.anchorJointPIDController.setFF(anchorKFF);
 }
 
 }

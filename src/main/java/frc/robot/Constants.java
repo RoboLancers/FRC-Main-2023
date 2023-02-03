@@ -56,6 +56,8 @@ public final class Constants {
             public static final double kContractedFloatingAngle = 0.0;
             public static final double kUndershotAngle = 0.0;
             public static final double kLowPower = 0.0;
+            public static final boolean kAnchorMotorInverted = false;
+            public static final boolean kFloatingMotorInverted = false;
         }
     }
 

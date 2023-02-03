@@ -39,15 +39,14 @@ public final class Constants {
         public static final int kPythonPipelineIndex = 1;
         public static final int kManualAprilTagPipeline = 2;
 
-        public static final double[] kCamSanityX = {
-                -2, // min
-                2 // max
-        };
+        public static final double kCamSanityXMax = 2;
+        public static final double kCamSanityXMin = -2;
 
-        public static final double[] kCamSanityZ = {
-                -1, // min
-                5 // max
-        };
+
+       
+
+        public static final double kCamSanityZMax = 0;
+        public static final double kCamSanityZMin = -10;
     }
 
     public static class Drivetrain {

@@ -5,11 +5,16 @@ import java.util.function.BooleanSupplier;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.gridalign.PoseTracker;
+import frc.robot.subsystems.gridalign.commands.Align;
+// import frc.robot.subsystems.gridalign.commands.GridAlign;
 import frc.robot.util.XboxController;
 import frc.robot.util.XboxController.Button;
 import frc.robot.util.limelight.LimelightAPI;
@@ -29,29 +34,41 @@ public class RobotContainer {
   public RobotContainer() {
 
     configureButtonBindings();
-    
+
     BooleanSupplier isAprilTagVisible = LimelightAPI::validTargets;
 
+    // this.driverController.whileHeld(Button.Y, new ConditionalCommand(new
+    // RunCommand((() -> {
+    // SmartDashboard.putBoolean("visible", true);
+    // SmartDashboard.putNumber("AprilTag ID", LimelightAPI.getAprilTagID());
 
-
-    this.driverController.whileHeld(Button.Y, new ConditionalCommand(new RunCommand((() -> {
-      SmartDashboard.putBoolean("visible", true);
-      SmartDashboard.putNumber("AprilTag ID", LimelightAPI.getAprilTagID()); 
-
-    })), new RunCommand(() -> {
-      SmartDashboard.putBoolean("visible", false);
-    }), isAprilTagVisible));
+    // })), new RunCommand(() -> {
+    // SmartDashboard.putBoolean("visible", false);
+    // }), isAprilTagVisible));
 
     this.driverController.whenPressed(Button.X, new InstantCommand(this.drivetrain::zeroHeading));
 
-    // this.driverController.whenPressed(Button.Y,
-    // new ConditionalCommand(new GridAlign(drivetrain), new
-    // SequentialCommandGroup(new InstantCommand(() -> {
-    // driverController.setRumble(true);
-    // }), new WaitCommand(Constants.GridAlign.kRumbleTime), new InstantCommand(()
-    // -> {
-    // driverController.setRumble(false);
-    // })), isAprilTagVisible));
+    this.driverController.whenPressed(Button.Y,
+        new ConditionalCommand(
+          new InstantCommand(() -> {
+            CommandScheduler.getInstance().schedule(new Align(drivetrain, poseTracker));
+          }),
+            // new InstantCommand(() -> {
+            //   var waypoints = poseTracker.gridAlign();
+
+            //   SmartDashboard.putNumber("waypoint initial x", waypoints[0].getX());
+            //   SmartDashboard.putNumber("waypointinitial  z", waypoints[0].getY());
+
+            //   SmartDashboard.putNumber("waypoint final x", waypoints[1].getX());
+            //   SmartDashboard.putNumber("waypoint final y", waypoints[1].getY());
+
+            // })
+
+            new SequentialCommandGroup(new InstantCommand(() -> {
+              driverController.setRumble(true);
+            }), new WaitCommand(Constants.GridAlign.kRumbleTime), new InstantCommand(() -> {
+              driverController.setRumble(false);
+            })), isAprilTagVisible));
 
     this.drivetrain.setDefaultCommand(new RunCommand(
         () -> this.drivetrain.arcadeDrive(driverController.getAxisValue(XboxController.Axis.LEFT_Y),

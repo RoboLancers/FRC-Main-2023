@@ -70,6 +70,8 @@ public class MotionProfileCommand extends CommandBase
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
         this.velocity = inst.getEntry("velocity");
         this.robotVelocity = inst.getEntry("robotVelocity");
+
+
     }
 
 
@@ -88,8 +90,11 @@ public class MotionProfileCommand extends CommandBase
                                 0,
                                 initialState.curvatureRadPerMeter * initialState.velocityMetersPerSecond
                         ));
+                        // System.out.println(prevSpeeds);
 
         subsystem.resetOdometry(initialState.poseMeters);
+
+        System.out.println("starting motion profile");
     }
 
 
@@ -97,9 +102,12 @@ public class MotionProfileCommand extends CommandBase
     @Override
     public void execute() {
         double curTime = timer.get();
+        System.out.println(curTime + " " + maxTime);
 
         double dt = curTime - prevTime;
         Trajectory.State state = MotionProfileUtils.profileStateToTrajectoryState(this.motionProfile.getStateAtTime(curTime));
+
+        // System.out.println(state);
 
         this.velocity.setDouble(state.velocityMetersPerSecond);
         this.robotVelocity.setDouble(Constants.Trajectory.kDriveKinematics.toChassisSpeeds(subsystem.getWheelSpeeds()).vxMetersPerSecond);
@@ -109,10 +117,14 @@ public class MotionProfileCommand extends CommandBase
             prevTime = curTime;
             return;
         }
+        // System.out.println(prevSpeeds.toString());
 
         ChassisSpeeds speeds = ramseteController.calculate(
                 subsystem.getPose()
                 , state);
+
+                // System.out.println(subsystem.getPose());
+                // System.out.println(state);
         DifferentialDriveWheelSpeeds wheelSpeeds = Constants.Trajectory.kDriveKinematics.toWheelSpeeds(speeds);
 
 

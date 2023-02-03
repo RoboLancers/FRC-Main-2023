@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.util.sendable.Sendable;
+
 import frc.robot.Constants;
 
 public class PoseUtil {
@@ -32,9 +33,9 @@ public class PoseUtil {
         return new Pose2d(avgTranslation.getX(), avgTranslation.getY(), avgRotation);
     }
 
-    public static Pose2d averagePipelinePoses(ArrayList<Pose2d> posesRaw) {
+    public static Pose2d averagePipelinePoses(ArrayList<Pose2d> poses) {
 
-        List<Pose2d> poses = sanitizePosesList(posesRaw);
+        // List<Pose2d> poses = sanitizePosesList(posesRaw);
 
         Translation2d avgTranslation = poses.stream()
                 .map(pose -> pose.getTranslation())
@@ -53,36 +54,23 @@ public class PoseUtil {
 
     public static SizedQueue<Pose2d> sanitizePoses(SizedQueue<Pose2d> poses) {
 
-        List<Pose2d> filteredPoses =  poses.stream()
-                .filter(p -> (p.getX() > Constants.GridAlign.kCamSanityX[0]
-                        && p.getX() < Constants.GridAlign.kCamSanityX[1]) &&
-                        (p.getY() > Constants.GridAlign.kCamSanityZ[0]
-                                && p.getY() < Constants.GridAlign.kCamSanityZ[1])).toList();
+        List<Pose2d> filteredPoses = poses.stream()
+                .filter(p -> (p.getX() > Constants.GridAlign.kCamSanityXMin &&
+                        p.getX() < Constants.GridAlign.kCamSanityXMax &&
+                        p.getY() > Constants.GridAlign.kCamSanityZMin &&
+                        p.getY() < Constants.GridAlign.kCamSanityZMax))
+                .toList();
 
         SizedQueue<Pose2d> queue = new SizedQueue<>(3);
 
         for (int i = 0; i < filteredPoses.size(); i++) {
-            queue.add(i, (Pose2d) filteredPoses.toArray()[i]);
-
+            queue.add(filteredPoses.get(i));
         }
 
         return queue;
 
     }
 
-    public static List<Pose2d> sanitizePosesList(ArrayList<Pose2d> poses) {
-
-        List<Pose2d> poseStream = poses.stream()
-                .filter(p -> (p.getX() > Constants.GridAlign.kCamSanityX[0]
-                        && p.getX() < Constants.GridAlign.kCamSanityX[1]) &&
-                        (p.getY() > Constants.GridAlign.kCamSanityZ[0]
-                                && p.getY() < Constants.GridAlign.kCamSanityZ[1])).toList();
-
-    
-
-        return poseStream;
-
-    }
 
     public static Sendable getDefaultPoseSendable(Pose2d pose) {
         return builder -> {

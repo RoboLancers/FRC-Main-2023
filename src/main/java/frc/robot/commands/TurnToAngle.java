@@ -44,7 +44,7 @@ public class TurnToAngle extends PIDCommand {
     // TODO: built in set tolerance does not work? look into error velocity tolerance
     @Override
     public boolean isFinished(){
-        return Math.abs(this.m_measurement.getAsDouble() - this.m_setpoint.getAsDouble()) < 2;
+        return Math.abs(this.m_measurement.getAsDouble() - this.m_setpoint.getAsDouble()) < Constants.Drivetrain.TurnToAngle.kErrorTolerance;
     }
 
     @Override

@@ -65,9 +65,7 @@ public class PoseTracker extends SubsystemBase {
                 return PoseUtil.averagePoses(this.camPoseQueue);
         }
 
-        public ParametricSpline generateSpline(){
-                Pose2d pose = this.getAverageAprilPose();
-
+        public ParametricSpline generateSpline(Pose2d pose){
                 double relativeDistance = Math.hypot(pose.getX(), pose.getY());
 
                 double weight = Constants.GridAlign.kGridWeight * relativeDistance;
@@ -77,6 +75,6 @@ public class PoseTracker extends SubsystemBase {
                         new Waypoint(-pose.getY(), pose.getX(), 0, weight, 1)
                 };
 
-                return ParametricSpline.fromWaypoints(waypoints);
+                return ParametricSpline.fromWaypoints(waypoints);  
         }
 }

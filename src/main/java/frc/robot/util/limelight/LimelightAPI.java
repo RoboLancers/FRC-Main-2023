@@ -63,7 +63,6 @@ public class LimelightAPI {
 
     /** Returns an adjusted Pose3D based on camera pose */
     public static Pose2d adjustCamPose(Pose2d camPose, Drivetrain drivetrain) {
-
         if (camPose == null) {
             return new Pose2d();
         }
@@ -128,6 +127,12 @@ public class LimelightAPI {
 
     public static double getPipeline() {
         return LimelightAPI.limelightNT.getEntry("getpipe").getDouble(0);
+    }
+
+    public static double[] getCorners() {
+        double[] defaultCorners = new double[8];
+
+        return LimelightAPI.limelightNT.getEntry("tcornxy").getDoubleArray(defaultCorners);
     }
 
     public static Object rawJSONTargets() {

@@ -2,9 +2,7 @@ package frc.robot.util;
 
 import java.util.ArrayList;
 
-// Yeeted from stack overflow
 public class SizedQueue<K> extends ArrayList<K> {
-
     private int maxSize;
 
     public SizedQueue(int size){

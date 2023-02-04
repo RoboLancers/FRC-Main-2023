@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.GridAlign;
 import frc.robot.commands.Rumble;
+import frc.robot.commands.TurnToTarget;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.poseTracker.PoseTracker;
 import frc.robot.util.Controller;
@@ -19,17 +20,17 @@ public class RobotContainer {
 
   /*   Subsystems   */
   private final Drivetrain drivetrain = new Drivetrain(driverController);
-  private final PoseTracker poseTracker = new PoseTracker(drivetrain);
-
-  
+  private final PoseTracker poseTracker = new PoseTracker(drivetrain);  
 
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   public RobotContainer() {
     Controller.onPress(driverController.A, new InstantCommand(this.drivetrain::zeroHeading));
 
+    Controller.onHold(driverController.B, new TurnToTarget(drivetrain));
+
     Controller.onPress(driverController.Y, new ConditionalCommand(
-      // on true, instantiate and schedule align command
+      // on true, instantiate and schedule grid align command
       new InstantiatorCommand(() -> new GridAlign(drivetrain, poseTracker)),
       // on false rumble for 1 second
       new Rumble(driverController, Constants.GridAlign.kRumbleTime),

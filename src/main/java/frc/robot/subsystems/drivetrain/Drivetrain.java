@@ -15,7 +15,8 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.util.XboxController;
+import frc.robot.subsystems.drivetrain.commands.TeleopDrive;
+import frc.robot.util.Controller;
 import edu.wpi.first.wpilibj.SPI;
 
 public class Drivetrain extends SubsystemBase {
@@ -23,17 +24,13 @@ public class Drivetrain extends SubsystemBase {
     private final CANSparkMax leftMotor2 = new CANSparkMax(Constants.Drivetrain.LeftMotors.kLeftMotor2_Port, CANSparkMaxLowLevel.MotorType.kBrushless);
     private final CANSparkMax leftMotor3 = new CANSparkMax(Constants.Drivetrain.LeftMotors.kLeftMotor3_Port, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-    public final MotorControllerGroup leftMotors = new MotorControllerGroup(
-            leftMotor1, leftMotor2, leftMotor3
-    );
+    public final MotorControllerGroup leftMotors = new MotorControllerGroup(leftMotor1, leftMotor2, leftMotor3);
 
     private final CANSparkMax rightMotor1 = new CANSparkMax(Constants.Drivetrain.RightMotors.kRightMotor1_Port, CANSparkMaxLowLevel.MotorType.kBrushless);
     private final CANSparkMax rightMotor2 = new CANSparkMax(Constants.Drivetrain.RightMotors.kRightMotor2_Port, CANSparkMaxLowLevel.MotorType.kBrushless);
     private final CANSparkMax rightMotor3 = new CANSparkMax(Constants.Drivetrain.RightMotors.kRightMotor3_Port, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-    public final MotorControllerGroup rightMotors = new MotorControllerGroup(
-            rightMotor1, rightMotor2, rightMotor3
-    );
+    public final MotorControllerGroup rightMotors = new MotorControllerGroup(rightMotor1, rightMotor2, rightMotor3);
 
     private final DifferentialDrive difDrive = new DifferentialDrive(leftMotors, rightMotors);
 
@@ -50,7 +47,7 @@ public class Drivetrain extends SubsystemBase {
     private final SlewRateLimiter throttleFilter = new SlewRateLimiter(Constants.kThrottleFilter);
     private final SlewRateLimiter turnFilter = new SlewRateLimiter(Constants.kTurnFilter);
 
-    public Drivetrain(XboxController driverController){
+    public Drivetrain(Controller driverController){
         rightMotor1.setInverted(true);
         rightMotor2.setInverted(true);
         rightMotor3.setInverted(true);
@@ -75,11 +72,7 @@ public class Drivetrain extends SubsystemBase {
 
         odometry = new DifferentialDriveOdometry(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
 
-        //initDefaultCommand(driverController);
-    }
-
-    private void initDefaultCommand(XboxController driverController){
-        // setDefaultCommand(new TeleopDrive(this, driverController));
+        setDefaultCommand(new TeleopDrive(this, driverController));
     }
 
     // Constantly updates the odometry of the robot with the rotation and the distance traveled.

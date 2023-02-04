@@ -8,7 +8,6 @@ public final class Constants {
     public static final double kThrottleFilter = 1.25;
     public static final double kTurnFilter = 3;
     public static final int kGyroPort = 1;
-
     public static class Trajectory {
         public static final double ksVolts = 0.131;
         public static final double ksVoltSecondsPerMeter =  4.03;
@@ -25,6 +24,26 @@ public final class Constants {
 
         public static final double kPDriveVel = 0;
     }
+
+    public static class GridAlign {
+        public static final double kRumbleTime = 1;
+        public static final double kInitialWeight = 1;
+        public static final double kGridWeight = 2;
+
+        public static final double kAdjustZ = 0.32;
+        public static final double kAdjustX = 0;
+
+        public static final int kAprilTagPipelineIndex = 0;
+        public static final int kPythonPipelineIndex = 1;
+        public static final int kManualAprilTagPipeline = 2;
+
+        public static final double kCamSanityXMax = 2;
+        public static final double kCamSanityXMin = -2;
+
+        public static final double kCamSanityZMax = 0;
+        public static final double kCamSanityZMin = -10;
+    }
+
     public static class Drivetrain {
         public static final double kDistPerRot = (3.072/100);
         public static class LeftMotors {
@@ -36,6 +55,17 @@ public final class Constants {
             public static final int kRightMotor1_Port = 4;
             public static final int kRightMotor2_Port = 5;
             public static final int kRightMotor3_Port = 6;
+        }
+
+        public static class TurnToAngle {
+            public static final double kP = 0.04;
+            public static final double kI = 0.00;
+            public static final double kD = 0.00;
+
+            public static final double kErrorTolerance = 0.20; // degrees
+
+            public static final double kMinOutputMagnitude = 0.05;
+            public static final double kMaxOutputMagnitude = 0.20;
         }
     }
 }

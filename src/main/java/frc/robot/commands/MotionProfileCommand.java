@@ -20,7 +20,6 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.MotionProfileUtils;
 import org.bananasamirite.robotmotionprofile.TankMotionProfile;
 
-
 /** An example command that uses an example subsystem. */
 public class MotionProfileCommand extends CommandBase
 {
@@ -70,10 +69,7 @@ public class MotionProfileCommand extends CommandBase
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
         this.velocity = inst.getEntry("velocity");
         this.robotVelocity = inst.getEntry("robotVelocity");
-
-
     }
-
 
     // Called when the command is initially scheduled.
     @Override
@@ -83,31 +79,28 @@ public class MotionProfileCommand extends CommandBase
         timer.start();
 
         Trajectory.State initialState = MotionProfileUtils.profileStateToTrajectoryState(this.motionProfile.getStateAtTime(0));
-        prevSpeeds =
-                Constants.Trajectory.kDriveKinematics.toWheelSpeeds(
-                        new ChassisSpeeds(
-                                initialState.velocityMetersPerSecond,
-                                0,
-                                initialState.curvatureRadPerMeter * initialState.velocityMetersPerSecond
-                        ));
-                        // System.out.println(prevSpeeds);
+        
+        prevSpeeds = Constants.Trajectory.kDriveKinematics.toWheelSpeeds(
+                new ChassisSpeeds(
+                        initialState.velocityMetersPerSecond,
+                        0,
+                        initialState.curvatureRadPerMeter * initialState.velocityMetersPerSecond
+                )
+        );
 
         subsystem.resetOdometry(initialState.poseMeters);
 
         System.out.println("starting motion profile");
     }
 
-
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
         double curTime = timer.get();
-        System.out.println(curTime + " " + maxTime);
 
         double dt = curTime - prevTime;
-        Trajectory.State state = MotionProfileUtils.profileStateToTrajectoryState(this.motionProfile.getStateAtTime(curTime));
 
-        // System.out.println(state);
+        Trajectory.State state = MotionProfileUtils.profileStateToTrajectoryState(this.motionProfile.getStateAtTime(curTime));
 
         this.velocity.setDouble(state.velocityMetersPerSecond);
         this.robotVelocity.setDouble(Constants.Trajectory.kDriveKinematics.toChassisSpeeds(subsystem.getWheelSpeeds()).vxMetersPerSecond);
@@ -117,36 +110,20 @@ public class MotionProfileCommand extends CommandBase
             prevTime = curTime;
             return;
         }
-        // System.out.println(prevSpeeds.toString());
 
-        ChassisSpeeds speeds = ramseteController.calculate(
-                subsystem.getPose()
-                , state);
+        ChassisSpeeds speeds = ramseteController.calculate(subsystem.getPose(), state);
 
-                // System.out.println(subsystem.getPose());
-                // System.out.println(state);
         DifferentialDriveWheelSpeeds wheelSpeeds = Constants.Trajectory.kDriveKinematics.toWheelSpeeds(speeds);
 
 
-        var leftSpeedSetpoint = wheelSpeeds.leftMetersPerSecond;
-        var rightSpeedSetpoint = wheelSpeeds.rightMetersPerSecond;
+        double leftSpeedSetpoint = wheelSpeeds.leftMetersPerSecond;
+        double rightSpeedSetpoint = wheelSpeeds.rightMetersPerSecond;
 
-        double leftFeedforward =
-                feedforward.calculate(
-                        leftSpeedSetpoint, (leftSpeedSetpoint - prevSpeeds.leftMetersPerSecond) / dt);
+        double leftFeedforward = feedforward.calculate(leftSpeedSetpoint, (leftSpeedSetpoint - prevSpeeds.leftMetersPerSecond) / dt);
+        double rightFeedforward = feedforward.calculate(rightSpeedSetpoint, (rightSpeedSetpoint - prevSpeeds.rightMetersPerSecond) / dt);
 
-        double rightFeedforward =
-                feedforward.calculate(
-                        rightSpeedSetpoint, (rightSpeedSetpoint - prevSpeeds.rightMetersPerSecond) / dt);
-
-        double leftOutput =
-                leftFeedforward
-                        + ctrlLeft.calculate(subsystem.getWheelSpeeds().leftMetersPerSecond, leftSpeedSetpoint);
-
-        double rightOutput =
-                rightFeedforward
-                        + ctrlRight.calculate(
-                        subsystem.getWheelSpeeds().rightMetersPerSecond, rightSpeedSetpoint);
+        double leftOutput = leftFeedforward + ctrlLeft.calculate(subsystem.getWheelSpeeds().leftMetersPerSecond, leftSpeedSetpoint);
+        double rightOutput = rightFeedforward + ctrlRight.calculate(subsystem.getWheelSpeeds().rightMetersPerSecond, rightSpeedSetpoint);
 
         this.subsystem.tankDriveVolts(leftOutput, rightOutput);
 
@@ -154,11 +131,9 @@ public class MotionProfileCommand extends CommandBase
         prevTime = curTime;
     }
 
-
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {}
-
 
     // Returns true when the command should end.
     @Override

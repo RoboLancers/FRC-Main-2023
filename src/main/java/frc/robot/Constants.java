@@ -8,15 +8,13 @@ public final class Constants {
     public static final double kThrottleFilter = 1.25;
     public static final double kTurnFilter = 3;
     public static final int kGyroPort = 1;
-
     public static class Trajectory {
         public static final double ksVolts = 0.131;
         public static final double ksVoltSecondsPerMeter = 4.03;
         public static final double kaVoltSecondsSquaredPerMeter = 0.521;
 
         public static final double kTrackWidthMeters = 0.702;
-        public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(
-                kTrackWidthMeters);
+        public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidthMeters);
 
         public static final double kMaxSpeedMetersPerSecond = 2.5;
         public static final double kMaxAccelerationMetersPerSecondSquared = 2;
@@ -42,9 +40,6 @@ public final class Constants {
         public static final double kCamSanityXMax = 2;
         public static final double kCamSanityXMin = -2;
 
-
-       
-
         public static final double kCamSanityZMax = 0;
         public static final double kCamSanityZMin = -10;
     }
@@ -62,6 +57,17 @@ public final class Constants {
             public static final int kRightMotor1_Port = 4;
             public static final int kRightMotor2_Port = 5;
             public static final int kRightMotor3_Port = 6;
+        }
+
+        public static class TurnToAngle {
+            public static final double kP = 0.04;
+            public static final double kI = 0.00;
+            public static final double kD = 0.00;
+
+            public static final double kErrorTolerance = 0.20; // degrees
+
+            public static final double kMinOutputMagnitude = 0.05;
+            public static final double kMaxOutputMagnitude = 0.20;
         }
     }
 }

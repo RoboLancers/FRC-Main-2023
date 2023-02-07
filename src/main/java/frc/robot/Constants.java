@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.net.URI;
+
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 
 // TODO: update constants to fit new robot
@@ -8,6 +10,9 @@ public final class Constants {
     public static final double kThrottleFilter = 1.25;
     public static final double kTurnFilter = 3;
     public static final int kGyroPort = 1;
+    public static final class Limelight {
+        public static final String kLimelightURLString = "ws://limelight.local:5805/";
+    }
     public static class Trajectory {
         public static final double ksVolts = 0.131;
         public static final double ksVoltSecondsPerMeter = 4.03;

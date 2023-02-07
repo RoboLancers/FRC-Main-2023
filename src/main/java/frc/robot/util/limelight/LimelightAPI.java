@@ -1,5 +1,11 @@
 package frc.robot.util.limelight;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -16,14 +22,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.util.Websocket;
 
 public class LimelightAPI {
 
     private static NetworkTable limelightNT = NetworkTableInstance.getDefault().getTable("limelight");
 
+    public Websocket wsClient;
+
     public static boolean logging;
 
-    public LimelightAPI(boolean logging) {
+    public LimelightAPI(boolean logging) throws URISyntaxException {
+        this.wsClient = new Websocket(new URI(Constants.Limelight.kLimelightURLString));
         // this.logging = logging;
         // LimelightAPI.limelightNT =
         // NetworkTableInstance.getDefault().getTable("limelight");
@@ -33,6 +43,15 @@ public class LimelightAPI {
         // }
 
         // SmartDashboard.putString("Limelight table", "not null");
+    }
+
+    public double getActualYaw() throws JsonMappingException, JsonProcessingException {
+        var rawJson = this.wsClient.getMessage();
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode node = mapper.readTree(rawJson);
+
+        return node.get("something").get("something").asDouble();
     }
 
     public static void logPoses(Pose3d camPose, Pose3d botPose) {
@@ -69,7 +88,7 @@ public class LimelightAPI {
         if (camPose == null) {
             return new Pose2d();
         }
-        
+
         double adjustedTransX = camPose.getX() - Constants.GridAlign.kAdjustX;
         double adjustedTransZ = camPose.getY() - Constants.GridAlign.kAdjustZ;
         double rotY = drivetrain.getHeading() * Math.PI / 180;

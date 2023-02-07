@@ -75,6 +75,7 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 
     implementation 'com.github.BananasAmIRite:RobotMotionProfile:master-SNAPSHOT'
+    implementation 'org.java-websocket:Java-WebSocket:1.5.3'
 }
 
 test {

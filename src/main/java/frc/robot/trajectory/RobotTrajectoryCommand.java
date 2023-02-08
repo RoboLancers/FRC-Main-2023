@@ -17,7 +17,8 @@ public class RobotTrajectoryCommand extends SequentialCommandGroup {
     public RobotTrajectoryCommand(Drivetrain drivetrain, Trajectory trajectory) {
         Object[] commands = trajectory.getTasks().stream().map(e -> {
             System.out.println(e);
-            if (e instanceof WaypointTask && ((WaypointTask) e).getWaypoints().size() > 1) return new MotionProfileCommand(drivetrain, ((WaypointTask) e).createProfile());
+            if (e instanceof WaypointTask && ((WaypointTask) e).getWaypoints().size() > 1)
+                return new MotionProfileCommand(drivetrain, ((WaypointTask) e).createProfile());
             if (e instanceof CommandTask) {
                 try {
                     return TrajectoryCommandsManager.getInstance().getCommandConfig(((CommandTask) e).getWaypoint().getCommandName()).createCommand(((CommandTask) e).getWaypoint().getParameters().toArray());
@@ -31,6 +32,6 @@ public class RobotTrajectoryCommand extends SequentialCommandGroup {
     }
 
     public static RobotTrajectoryCommand fromFile(Drivetrain drivetrain, File f) throws IOException {
-        return new RobotTrajectoryCommand(drivetrain, Trajectory.fromFile(f));
+        return new RobotTrajectoryCommand(drivetrain, Trajectory.parseFromFile(f));
     }
 }

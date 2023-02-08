@@ -38,6 +38,8 @@ public class Websocket extends WebSocketClient {
   @Override
   public void onMessage(String message) {
 
+    System.out.println("Message: " + message);
+
     this.recievedMessage = message;
 
   }

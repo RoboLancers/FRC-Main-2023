@@ -46,6 +46,7 @@ public class PoseTracker extends SubsystemBase {
 
                 SmartDashboard.putNumber("avg campose x", avgAprilTagCamPose.getX());
                 SmartDashboard.putNumber("avg campose z", avgAprilTagCamPose.getY());
+                SmartDashboard.putNumber("ry yessir lets go fuck these hoes", avgAprilTagCamPose.getRotation().getDegrees());
                 SmartDashboard.putNumber("heading", this.drivetrain.getHeading());
         }
 

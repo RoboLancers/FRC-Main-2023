@@ -45,13 +45,37 @@ public class LimelightAPI {
         // SmartDashboard.putString("Limelight table", "not null");
     }
 
-    public double getActualYaw() throws JsonMappingException, JsonProcessingException {
+    public Pose2d getActualPose2d() {
         var rawJson = this.wsClient.getMessage();
 
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode node = mapper.readTree(rawJson);
+        if (rawJson == null) {
+            System.out.println("rawJson is null");
+            return new Pose2d();
+        }
 
-        return node.get("something").get("something").asDouble();
+        try {
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readTree(rawJson);
+            System.out.println("node" + node);
+
+            return new Pose2d();
+
+            // double tx = node.get("transform").get("tx").asDouble();
+            // double tz = node.get("transform").get("tz").asDouble();
+            // double ry = node.get("transform").get("ry").asDouble();
+
+            // return new Pose2d(tx, tz, new Rotation2d(ry * Math.PI / 180));
+
+        } catch (JsonMappingException e) {
+            System.out.println("fuck1");
+            System.out.println(e);
+        } catch (JsonProcessingException e) {
+            System.out.println("fuck2");
+            System.out.println(e);
+        }
+        return new Pose2d();
+
     }
 
     public static void logPoses(Pose3d camPose, Pose3d botPose) {
@@ -210,6 +234,9 @@ public class LimelightAPI {
             return new Pose3d();
         }
 
+        for (int i = 3; i < poseRaw.length; i++) {
+            poseRaw[i] *= (Math.PI / 180);
+        }
         Rotation3d rotationPose = new Rotation3d(poseRaw[3], poseRaw[4], poseRaw[5]);
 
         return new Pose3d(poseRaw[0], poseRaw[1], poseRaw[2], rotationPose);

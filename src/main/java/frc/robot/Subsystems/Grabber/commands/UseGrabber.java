@@ -14,9 +14,7 @@ public class UseGrabber extends CommandBase {
 
     @Override
     public void execute() {        
-        if (grabber.SensorTriggered()) {
-            grabber.toggleDeploy(); 
-        }
+        grabber.toggleDeploy();
     }
 
 

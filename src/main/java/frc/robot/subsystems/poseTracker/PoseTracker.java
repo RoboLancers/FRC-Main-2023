@@ -7,6 +7,7 @@ import org.bananasamirite.robotmotionprofile.ParametricSpline;
 import org.bananasamirite.robotmotionprofile.Waypoint;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -37,8 +38,8 @@ public class PoseTracker extends SubsystemBase {
         @Override
         public void periodic() {
                 // setting the last 3
-                this.camPoseQueue.add(LimelightAPI.adjustedCamPose(this.drivetrain));
-                SmartDashboard.putNumber("latest queue num x", LimelightAPI.adjustedCamPose(this.drivetrain).getX());
+                this.camPoseQueue.add(LimelightAPI.adjustCamPose());
+                SmartDashboard.putNumber("latest queue num x", LimelightAPI.adjustCamPose().getX());
 
                 this.botPoseQueue.add(LimelightAPI.botPose());
 
@@ -46,8 +47,8 @@ public class PoseTracker extends SubsystemBase {
 
                 SmartDashboard.putNumber("avg campose x", avgAprilTagCamPose.getX());
                 SmartDashboard.putNumber("avg campose z", avgAprilTagCamPose.getY());
-                SmartDashboard.putNumber("ry yessir lets go fuck these hoes", avgAprilTagCamPose.getRotation().getDegrees());
-                SmartDashboard.putNumber("heading", this.drivetrain.getHeading());
+                SmartDashboard.putNumber("avg rotation", avgAprilTagCamPose.getRotation().getDegrees());
+
         }
 
         // TODO: are we scrapping this? definitely something to discuss
@@ -66,7 +67,7 @@ public class PoseTracker extends SubsystemBase {
                 return PoseUtil.averagePoses(this.camPoseQueue);
         }
 
-        public ParametricSpline generateSpline(){
+        public ParametricSpline generateSpline() {
                 Pose2d pose = this.getAverageAprilPose();
 
                 double relativeDistance = Math.hypot(pose.getX(), pose.getY());
@@ -74,8 +75,8 @@ public class PoseTracker extends SubsystemBase {
                 double weight = Constants.GridAlign.kGridWeight * relativeDistance;
 
                 Waypoint[] waypoints = {
-                        new Waypoint(0, 0, pose.getRotation().getRadians(), weight, 1),
-                        new Waypoint(-pose.getY(), pose.getX(), 0, weight, 1)
+                                new Waypoint(0, 0, 0, weight, 1),
+                                new Waypoint(-pose.getY(), -pose.getX(), 0, weight, 1)
                 };
 
                 return ParametricSpline.fromWaypoints(waypoints);

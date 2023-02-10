@@ -107,22 +107,20 @@ public class LimelightAPI {
     }
 
     /** Returns an adjusted Pose3D based on camera pose */
-    public static Pose2d adjustCamPose(Pose2d camPose, Drivetrain drivetrain) {
+    public static Pose2d adjustCamPose() {
+
+        var camPose = LimelightAPI.camPose();
 
         if (camPose == null) {
             return new Pose2d();
         }
 
-        double adjustedTransX = camPose.getX() - Constants.GridAlign.kAdjustX;
-        double adjustedTransZ = camPose.getY() - Constants.GridAlign.kAdjustZ;
-        double rotY = drivetrain.getHeading() * Math.PI / 180;
+        var rotation = camPose.getRotation();
 
-        double adjustedRotX = camPose.getX() - Constants.GridAlign.kAdjustZ * Math.sin(rotY)
-                + Constants.GridAlign.kAdjustX * Math.cos(rotY);
-        double adjustedRotZ = camPose.getY() - Constants.GridAlign.kAdjustZ * Math.cos(rotY)
-                + Constants.GridAlign.kAdjustX * Math.sin(rotY);
+        double adjustedTransX = camPose.getX() - Constants.GridAlign.kAdjustZ * Math.sin(rotation.getRadians());
+        double adjustedTransZ = camPose.getY() - Constants.GridAlign.kAdjustZ * Math.cos(rotation.getRadians());
 
-        return new Pose2d(adjustedTransX, adjustedTransZ, new Rotation2d(adjustedRotX, adjustedRotZ));
+        return new Pose2d(adjustedTransX, adjustedTransZ, rotation);
         // return new Pose2d(adjustedCamPoseX, pose3d.getY(), adjustedCamPoseZ,
         // pose3d.getRotation());
     }
@@ -237,7 +235,7 @@ public class LimelightAPI {
         for (int i = 3; i < poseRaw.length; i++) {
             poseRaw[i] *= (Math.PI / 180);
         }
-        Rotation3d rotationPose = new Rotation3d(poseRaw[3], poseRaw[4], poseRaw[5]);
+        Rotation3d rotationPose = new Rotation3d(poseRaw[5], poseRaw[3], poseRaw[4]);
 
         return new Pose3d(poseRaw[0], poseRaw[1], poseRaw[2], rotationPose);
     }
@@ -247,14 +245,11 @@ public class LimelightAPI {
     }
 
     public static Pose2d botPose() {
-        return flattenPose(LimelightAPI.getPose("botpose"));
+        return flattenPose(LimelightAPI.getPose("botpose_targetspace"));
     }
 
     public static Pose2d camPose() {
-        return flattenPose(LimelightAPI.getPose("campose"));
+        return flattenPose(LimelightAPI.getPose("camerapose_targetspace"));
     }
 
-    public static Pose2d adjustedCamPose(Drivetrain drivetrain) {
-        return LimelightAPI.adjustCamPose(LimelightAPI.camPose(), drivetrain);
-    }
 }

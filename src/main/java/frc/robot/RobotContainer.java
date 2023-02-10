@@ -40,32 +40,7 @@ public class RobotContainer {
       LimelightAPI::validTargets
     ));
 
-    Controller.onHold(driverController.X, new InstantCommand(() -> {
-      LimelightAPI instance;
-      try {
-        instance = new LimelightAPI(true);
-
-        //Pose2d pose = instance.getActualPose2d();
-
-
-        // SmartDashboard.putNumber("ry botpose_targetspace", LimelightAPI.getPose("botpose_targetspace").getRotation().getAngle());
-        // SmartDashboard.putNumber("ry botpose", LimelightAPI.getPose("botpose").getRotation().getAngle() * 180 / Math.PI);
-        // SmartDashboard.putNumber("ry campose", LimelightAPI.getPose("campose").getRotation().getAngle());
-
-        
-        // SmartDashboard.putNumber("sreal tx", pose.getX());
-        // SmartDashboard.putNumber("real tz", pose.getY());
-        // SmartDashboard.putNumber("real ry", pose.getRotation().getDegrees());
-
-
-        SmartDashboard.putNumber("ry letsgo yessirt", LimelightAPI.getPose("campose_targetspace").getRotation().getAngle() * 180 / Math.PI);
-
-      } catch (URISyntaxException e) {
-        // TODO Auto-generated catch block
-        System.out.println("fuckkkkkk");
-        e.printStackTrace();
-      }
-    }));
+    
   }
 
   public Command getAutonomousCommand() {

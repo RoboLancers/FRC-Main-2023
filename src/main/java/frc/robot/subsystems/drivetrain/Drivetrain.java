@@ -2,20 +2,21 @@ package frc.robot.subsystems.drivetrain;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import edu.wpi.first.wpilibj.SPI;
 
 public class Drivetrain extends SubsystemBase {
     private final CANSparkMax leftMotor1 = new CANSparkMax(Constants.Drivetrain.LeftMotors.kLeftMotor1_Port, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -58,6 +59,13 @@ public class Drivetrain extends SubsystemBase {
         leftMotor2.setInverted(false);
         leftMotor3.setInverted(false);
 
+        // leftMotor1.setIdleMode(IdleMode.kCoast);
+        // leftMotor2.setIdleMode(IdleMode.kCoast);
+        // leftMotor3.setIdleMode(IdleMode.kCoast);
+
+        // rightMotor1.setIdleMode(IdleMode.kCoast);
+        // rightMotor2.setIdleMode(IdleMode.kCoast);
+        // rightMotor3.setIdleMode(IdleMode.kCoast);
         leftMotor1.setIdleMode(IdleMode.kBrake);
         leftMotor2.setIdleMode(IdleMode.kBrake);
         leftMotor3.setIdleMode(IdleMode.kBrake);
@@ -66,9 +74,28 @@ public class Drivetrain extends SubsystemBase {
         rightMotor2.setIdleMode(IdleMode.kBrake);
         rightMotor3.setIdleMode(IdleMode.kBrake);
 
+
+
+        leftMotor1.setSmartCurrentLimit(25);
+        leftMotor2.setSmartCurrentLimit(25);
+        leftMotor3.setSmartCurrentLimit(25);
+        rightMotor1.setSmartCurrentLimit(25);
+        rightMotor2.setSmartCurrentLimit(25);
+        rightMotor3.setSmartCurrentLimit(25);
+
+        // leftMotor1.setClosedLoopRampRate(2.0);
+        // leftMotor2.setClosedLoopRampRate(2.0);
+        // leftMotor3.setClosedLoopRampRate(2.0);
+        // rightMotor1.setClosedLoopRampRate(2.0);
+        // rightMotor2.setClosedLoopRampRate(2.0);
+        // rightMotor3.setClosedLoopRampRate(2.0);
+
         // Sets the distance per pulse to the pre-defined constant we calculated for both encoders.
-        rightEncoder.setPositionConversionFactor(Constants.Drivetrain.kDistPerRot);
-        leftEncoder.setPositionConversionFactor(Constants.Drivetrain.kDistPerRot);
+        rightEncoder.setPositionConversionFactor(Constants.Trajectory.kMetersPerRot);
+        leftEncoder.setPositionConversionFactor(Constants.Trajectory.kMetersPerRot);
+
+        leftEncoder.setVelocityConversionFactor(Constants.Trajectory.kMetersPerSecondPerRPM); 
+        rightEncoder.setVelocityConversionFactor(Constants.Trajectory.kMetersPerSecondPerRPM); 
 
         resetEncoders();
 
@@ -82,6 +109,12 @@ public class Drivetrain extends SubsystemBase {
     public void periodic() {
         odometry.update(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
         m_field.setRobotPose(odometry.getPoseMeters());
+        SmartDashboard.putData("field", m_field);
+        SmartDashboard.putNumber("x", odometry.getPoseMeters().getX()); 
+        SmartDashboard.putNumber("y", odometry.getPoseMeters().getY()); 
+        SmartDashboard.putNumber("rotation", odometry.getPoseMeters().getRotation().getDegrees()); 
+        SmartDashboard.putNumber("encoderLeft", leftEncoder.getPosition()); 
+        SmartDashboard.putNumber("encoderRight", rightEncoder.getPosition()); 
     }
 
     // Returns the pose of the robot.
@@ -96,7 +129,7 @@ public class Drivetrain extends SubsystemBase {
 
     // Resets the odometry, both rotation and distance traveled.
     public void resetOdometry(Pose2d pose) {
-        gyro.reset();
+        // gyro.reset(       resetEncoders();
         resetEncoders();
         odometry.resetPosition(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition(), pose);
     }
@@ -108,7 +141,10 @@ public class Drivetrain extends SubsystemBase {
 
     // Drives the robot with arcade controls.
     public void arcadeDrive(double throttle, double turn) {
-        difDrive.curvatureDrive(throttleFilter.calculate(throttle), turnFilter.calculate(turn*0.6), throttle < 0.05);
+        // throttle *= 0.9; 
+        difDrive.curvatureDrive(throttleFilter.calculate(throttle * 0.9), turnFilter.calculate(turn), throttle < 0.05);
+        // difDrive.curvatureDrive(throttleFilter.calculate(throttle), turn, Math.abs(throttleFilter.calculate(throttle)) < 0.05);
+        // Math.abs(throttle) < 0.05
         // if (throttle == 0 && turn == 0) {
         //     tankDriveVolts(0, 0);
         // }

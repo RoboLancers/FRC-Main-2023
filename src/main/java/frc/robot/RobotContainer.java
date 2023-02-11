@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -23,10 +25,14 @@ public class RobotContainer {
 
     this.drivetrain.setDefaultCommand(new RunCommand(() -> {
       this.drivetrain.arcadeDrive(
-              driverController.getLeftStickY(),
-              driverController.getRightStickX()
+              -driverController.getLeftStickY(),
+              -driverController.getRightStickX()
       );
     }, drivetrain));
+
+    // Controller.onPress(driverController.B, new InstantCommand(() -> {
+    //   this.drivetrain.resetOdometry(new Pose2d(5, 5, new Rotation2d()));
+    // }));
 
     /* Add autos here */
     // autoChooser.addOption("name", auto);

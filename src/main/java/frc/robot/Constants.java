@@ -38,7 +38,6 @@ public final class Constants {
 
     }
     public static class Drivetrain {
-        // public static final double kDistPerRot = (3.072/100);
         public static class LeftMotors {
             public static final int kLeftMotor1_Port = 10;
             public static final int kLeftMotor2_Port = 15;
@@ -49,6 +48,10 @@ public final class Constants {
             public static final int kRightMotor2_Port = 18; 
             public static final int kRightMotor3_Port = 17;
         }
+
+        public static final int kMaxAmps = 30; 
+        public static final double kThrottleMultiplier = 0.75;
+        public static final double kTurnMultiplier = 1.0; 
     }
 
     /*TODO: provide the constants */

@@ -75,13 +75,13 @@ public class Drivetrain extends SubsystemBase {
         rightMotor3.setIdleMode(IdleMode.kBrake);
 
 
-
-        leftMotor1.setSmartCurrentLimit(25);
-        leftMotor2.setSmartCurrentLimit(25);
-        leftMotor3.setSmartCurrentLimit(25);
-        rightMotor1.setSmartCurrentLimit(25);
-        rightMotor2.setSmartCurrentLimit(25);
-        rightMotor3.setSmartCurrentLimit(25);
+        // TODO: increase & decrease max throttle this so turning doesnt get stuck
+        leftMotor1.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
+        leftMotor2.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
+        leftMotor3.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
+        rightMotor1.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
+        rightMotor2.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
+        rightMotor3.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
 
         // leftMotor1.setClosedLoopRampRate(2.0);
         // leftMotor2.setClosedLoopRampRate(2.0);
@@ -141,13 +141,11 @@ public class Drivetrain extends SubsystemBase {
 
     // Drives the robot with arcade controls.
     public void arcadeDrive(double throttle, double turn) {
-        // throttle *= 0.9; 
-        difDrive.curvatureDrive(throttleFilter.calculate(throttle * 0.9), turnFilter.calculate(turn), throttle < 0.05);
-        // difDrive.curvatureDrive(throttleFilter.calculate(throttle), turn, Math.abs(throttleFilter.calculate(throttle)) < 0.05);
-        // Math.abs(throttle) < 0.05
-        // if (throttle == 0 && turn == 0) {
-        //     tankDriveVolts(0, 0);
-        // }
+        difDrive.curvatureDrive(
+            throttleFilter.calculate(throttle * Constants.Drivetrain.kThrottleMultiplier), 
+            turnFilter.calculate(turn * Constants.Drivetrain.kTurnMultiplier), 
+            Math.abs(throttle) < 0.05
+        );
     }
 
     // Controls the left and right side motors directly with voltage.

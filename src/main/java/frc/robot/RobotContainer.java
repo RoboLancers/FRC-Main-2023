@@ -13,7 +13,7 @@ import frc.robot.subsystems.arm.commands.MoveToPos;
 import frc.robot.subsystems.arm.commands.Contract;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.util.XboxController;
+import frc.robot.util.Controller;
 
 public class RobotContainer {
   this.configureButtonBindings();

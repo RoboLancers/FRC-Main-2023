@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.util.XboxController;
 import edu.wpi.first.wpilibj.SPI;
 
 public class Drivetrain extends SubsystemBase {
@@ -76,10 +75,6 @@ public class Drivetrain extends SubsystemBase {
         odometry = new DifferentialDriveOdometry(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
 
         //initDefaultCommand(driverController);
-    }
-
-    private void initDefaultCommand(XboxController driverController){
-        // setDefaultCommand(new TeleopDrive(this, driverController));
     }
 
     // Constantly updates the odometry of the robot with the rotation and the distance traveled.

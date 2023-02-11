@@ -84,8 +84,6 @@ public class Arm extends SubsystemBase {
     return angles;
  }
 
- // TODO: We need a periodic for this
- // TODO: Is get position what we want
  public double getAnchorAngleFromEncoder() {
     double angle = anchorJointMotor.getEncoder().getPosition() * (Constants.Arms.Miscellaneous.kDegreesPerTick);
     this.anchorJointAngle = angle;
@@ -123,10 +121,10 @@ public void periodic() {
    double floatingKI = SmartDashboard.getEntry("floatingKI").getDouble(0);
    double floatingKD = SmartDashboard.getEntry("floatingKD").getDouble(0);
    double floatingKFF = SmartDashboard.getEntry("floatingKFF").getDouble(0);
-   double anchorKP = = SmartDashboard.getEntry("anchorKP").getDouble(0);
-   double anchorKI = = SmartDashboard.getEntry("anchorKI").getDouble(0);
-   double anchorKD = = SmartDashboard.getEntry("anchorKD").getDouble(0);
-   double anchorKFF = = SmartDashboard.getEntry("anchorKFF").getDouble(0);
+   double anchorKP = SmartDashboard.getEntry("anchorKP").getDouble(0);
+   double anchorKI = SmartDashboard.getEntry("anchorKI").getDouble(0);
+   double anchorKD = SmartDashboard.getEntry("anchorKD").getDouble(0);
+   double anchorKFF = SmartDashboard.getEntry("anchorKFF").getDouble(0);
    this.floatingJointPIDController.setP(floatingKP);
    this.floatingJointPIDController.setI(floatingKI);
    this.floatingJointPIDController.setD(floatingKD);

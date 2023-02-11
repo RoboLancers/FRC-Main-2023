@@ -16,7 +16,6 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.Controller;
 
 public class RobotContainer {
-  this.configureButtonBindings();
   private RobotContainer robotContainer;
   
   // Contollers

@@ -56,6 +56,7 @@ public final class Constants {
             public static final double kContractedFloatingAngle = 0.0;
             public static final double kUndershotAngle = 0.0;
             public static final double kLowPower = 0.0;
+            public static final double distanceBetweenPivotLimelight = 0.0;
             public static final boolean kAnchorMotorInverted = false;
             public static final boolean kFloatingMotorInverted = false;
         }
@@ -95,5 +96,10 @@ public final class Constants {
             public static final int kRightMotor2_Port = 5;
             public static final int kRightMotor3_Port = 6;
         }
+    }
+
+    public static class SubsystemsTest {
+        public static final double kWaitTime = 3.0;
+        public static final double kPowerToSet = 0.0;
     }
 }

@@ -5,30 +5,28 @@ public final class Constants {
     public static final class Arms {
 
         public static final class FloatingJoint{
-            public static final double kP = 0.0;
+            public static final double kP = 0.1;
             public static final double kI = 0.0;
             public static final double kD = 0.0;
             public static final double kFF = 0.0;
             public static final double kMinAngle = 0.0;
             public static final double kMaxAngle = 0.0;
             public static double kFloatingJointErrorThreshold = 0.0;
-            
         }
 
         public static final class AnchorJoint{
-            public static final double kP = 0.0;
+            public static final double kP = 0.1;
             public static final double kI = 0.0;
             public static final double kD = 0.0;
             public static final double kFF = 0.0;
             public static final double kMinAngle = 0.0;
             public static final double kMaxAngle = 0.0;
             public static double kanchorJointErrorThreshold = 0.0;
-            
         }
 
         public static final class Ports {
             public static final int kAnchorJointPort = 0;
-            public static final int kFloatingArmPort = 0;
+            public static final int kFloatingArmPort = 9;
             public static final int kAnchorLimitSwitchPort = 0;
             public static final int kFloatingLimitSwitchPort = 0;
         }
@@ -49,14 +47,14 @@ public final class Constants {
         }
         
         public static final class Miscellaneous {
-            public static final double kAnchorArmLength = 0.0;
-            public static final double kFloatingArmLength = 0.0;
+            public static final double kAnchorArmLength = 101.6;
+            public static final double kFloatingArmLength = 40.64;
             public static final double kDegreesPerTick = 360 / 42;
             public static final double kContractedAnchorAngle = 0.0;
             public static final double kContractedFloatingAngle = 0.0;
             public static final double kUndershotAngle = 0.0;
-            public static final double kLowPower = 0.0;
-            public static final double distanceBetweenPivotLimelight = 0.0;
+            public static final double kLowPower = 0.05;
+            public static final double distanceBetweenPivotLimelight = 48.26;
             public static final boolean kAnchorMotorInverted = false;
             public static final boolean kFloatingMotorInverted = false;
         }
@@ -100,7 +98,7 @@ public final class Constants {
 
     public static class SubsystemsTest {
         public static final double kWaitTime = 3.0;
-        public static final double kPowerToSet = 0.0;
+        public static final double kPowerToSet = 0.1;
     }
 
     public static class BalanceConstants {

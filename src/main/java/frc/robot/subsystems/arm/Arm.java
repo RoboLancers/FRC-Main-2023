@@ -74,10 +74,11 @@ public class Arm extends SubsystemBase {
 //finds the two angles for the arm - will be above the line from joint to obj
 //angle calculated from joint so maybe change to arm 2 horizontal
  public double[] calculateAngles(double dy, double dz) {
+    double adjustedY = dy - Constants.Arms.Miscellaneous.distanceBetweenPivotLimelight;
     double[] angles = new double[2];
-    double distanceToObj = Math.sqrt(dy*dy + dz*dz);
+    double distanceToObj = Math.sqrt(adjustedY*adjustedY + dz*dz);
     double alpha = Math.acos((Constants.Arms.Miscellaneous.kFloatingArmLength*Constants.Arms.Miscellaneous.kFloatingArmLength + distanceToObj*distanceToObj- Constants.Arms.Miscellaneous.kAnchorArmLength*Constants.Arms.Miscellaneous.kAnchorArmLength)/(2*Constants.Arms.Miscellaneous.kAnchorArmLength*distanceToObj));
-    double gamma = Math.atan2(dy, dz);
+    double gamma = Math.atan2(adjustedY, dz);
     //finds theta1, the angle between the horizontal and anchorJoint
     angles[0] = alpha+gamma;
     angles[1] = Math.PI - Math.acos((Constants.Arms.Miscellaneous.kAnchorArmLength * Constants.Arms.Miscellaneous.kAnchorArmLength + Constants.Arms.Miscellaneous.kFloatingArmLength * Constants.Arms.Miscellaneous.kFloatingArmLength - distanceToObj * distanceToObj) / (2 * Constants.Arms.Miscellaneous.kAnchorArmLength * Constants.Arms.Miscellaneous.kFloatingArmLength));

@@ -33,7 +33,7 @@ public class RobotContainer {
     this.configureButtonBindings();
 
     this.drivetrain.setDefaultCommand(new RunCommand(
-            () -> this.drivetrain.arcadeDrive(driverController.getAxisValue(Controller.Axis.LEFT_Y), driverController.getAxisValue(Controller.Axis.RIGHT_X)),
+            () -> this.drivetrain.arcadeDrive(driverController.getLeftTrigger(), driverController.getRightTrigger()),
             drivetrain));
       
       /* Add autos here */
@@ -47,19 +47,19 @@ public class RobotContainer {
   private void configureButtonBindings() {
     
     // Move the arm to the ground
-    manipulatorController.whenPressed(Controller.Button.X, new MoveToPos(arm, Constants.Arms.Positions.kLowAnchor, Constants.Arms.Positions.kLowFloating));
+    manipulatorController.onPress(manipulatorController.X, new MoveToPos(arm, Constants.Arms.Positions.kLowAnchor, Constants.Arms.Positions.kLowFloating));
     // Move the arm to the intake shelf
-    manipulatorController.whenPressed(Controller.Button.A, new MoveToPos(arm, Constants.Arms.Positions.kIntakeShelfAnchor, Constants.Arms.Positions.kIntakeShelfFloating));
+    manipulatorController.onPress(manipulatorController.A, new MoveToPos(arm, Constants.Arms.Positions.kIntakeShelfAnchor, Constants.Arms.Positions.kIntakeShelfFloating));
     // Move to the mid node
-    manipulatorController.whenPressed(Controller.Button.B, new MoveToPos(arm, Constants.Arms.Positions.kMidNodeAnchor, Constants.Arms.Positions.kMidNodeFloating));
+    manipulatorController.onPress(manipulatorController.B, new MoveToPos(arm, Constants.Arms.Positions.kMidNodeAnchor, Constants.Arms.Positions.kMidNodeFloating));
     // Mode to mid shelf
-    manipulatorController.whenPressed(Controller.Button.Y, new MoveToPos(arm, Constants.Arms.Positions.kMidShelfAnchor, Constants.Arms.Positions.kMidShelfFloating));
+    manipulatorController.onPress(manipulatorController.Y, new MoveToPos(arm, Constants.Arms.Positions.kMidShelfAnchor, Constants.Arms.Positions.kMidShelfFloating));
     // Move to high node
-    manipulatorController.whenPressed(Controller.Button.RIGHT_BUMPER, new MoveToPos(arm, Constants.Arms.Positions.kHighNodeAnchor, Constants.Arms.Positions.kHighNodeFloating));
+    manipulatorController.onPress(manipulatorController.LeftBumper, new MoveToPos(arm, Constants.Arms.Positions.kHighNodeAnchor, Constants.Arms.Positions.kHighNodeFloating));
     // Move to high shelf
-    manipulatorController.whenPressed(Controller.Button.LEFT_BUMPER, new MoveToPos(arm, Constants.Arms.Positions.kHighShelfAnchor, Constants.Arms.Positions.kHighShelfFloating));
+    manipulatorController.onPress(manipulatorController.RightBumper, new MoveToPos(arm, Constants.Arms.Positions.kHighShelfAnchor, Constants.Arms.Positions.kHighShelfFloating));
     // Contract
-    manipulatorController.whenPressed(Controller.Button.RIGHT_JOYSTICK_BUTTON, new Contract(arm));
+    // manipulatorController.onPress(Controller.Button.RIGHT_JOYSTICK_BUTTON, new Contract(arm));
   }
 
   public Command getAutonomousCommand() {

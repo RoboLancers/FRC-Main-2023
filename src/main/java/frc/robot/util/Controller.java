@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class Controller {
-    private XboxController _controller;
+    private Controller _controller;
 
     public Trigger A;
     public Trigger B;

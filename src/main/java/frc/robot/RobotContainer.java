@@ -19,21 +19,21 @@ public class RobotContainer {
   private RobotContainer robotContainer;
   
   // Contollers
-  private final XboxController driverController = new XboxController(0);
-  private final XboxController manipulatorController = new XboxController(1);
+  private final Controller driverController = new Controller(0);
+  private final Controller manipulatorController = new Controller(1);
 
   // Subsystems
     private final Arm arm = new Arm();
-    private final Drivetrain drivetrain = new Drivetrain(driverController);
+    private final Drivetrain drivetrain = new Drivetrain();
 
-    // private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+    private final SendableChooser<Command> autoChooser = new SendableChooser<>();
     
   public RobotContainer() {
 
     this.configureButtonBindings();
 
     this.drivetrain.setDefaultCommand(new RunCommand(
-            () -> this.drivetrain.arcadeDrive(driverController.getAxisValue(XboxController.Axis.LEFT_Y), driverController.getAxisValue(XboxController.Axis.RIGHT_X)),
+            () -> this.drivetrain.arcadeDrive(driverController.getAxisValue(Controller.Axis.LEFT_Y), driverController.getAxisValue(Controller.Axis.RIGHT_X)),
             drivetrain));
       
       /* Add autos here */
@@ -47,19 +47,19 @@ public class RobotContainer {
   private void configureButtonBindings() {
     
     // Move the arm to the ground
-    manipulatorController.whenPressed(XboxController.Button.X, new MoveToPos(arm, Constants.Arms.Positions.kLowAnchor, Constants.Arms.Positions.kLowFloating));
+    manipulatorController.whenPressed(Controller.Button.X, new MoveToPos(arm, Constants.Arms.Positions.kLowAnchor, Constants.Arms.Positions.kLowFloating));
     // Move the arm to the intake shelf
-    manipulatorController.whenPressed(XboxController.Button.A, new MoveToPos(arm, Constants.Arms.Positions.kIntakeShelfAnchor, Constants.Arms.Positions.kIntakeShelfFloating));
+    manipulatorController.whenPressed(Controller.Button.A, new MoveToPos(arm, Constants.Arms.Positions.kIntakeShelfAnchor, Constants.Arms.Positions.kIntakeShelfFloating));
     // Move to the mid node
-    manipulatorController.whenPressed(XboxController.Button.B, new MoveToPos(arm, Constants.Arms.Positions.kMidNodeAnchor, Constants.Arms.Positions.kMidNodeFloating));
+    manipulatorController.whenPressed(Controller.Button.B, new MoveToPos(arm, Constants.Arms.Positions.kMidNodeAnchor, Constants.Arms.Positions.kMidNodeFloating));
     // Mode to mid shelf
-    manipulatorController.whenPressed(XboxController.Button.Y, new MoveToPos(arm, Constants.Arms.Positions.kMidShelfAnchor, Constants.Arms.Positions.kMidShelfFloating));
+    manipulatorController.whenPressed(Controller.Button.Y, new MoveToPos(arm, Constants.Arms.Positions.kMidShelfAnchor, Constants.Arms.Positions.kMidShelfFloating));
     // Move to high node
-    manipulatorController.whenPressed(XboxController.Button.RIGHT_BUMPER, new MoveToPos(arm, Constants.Arms.Positions.kHighNodeAnchor, Constants.Arms.Positions.kHighNodeFloating));
+    manipulatorController.whenPressed(Controller.Button.RIGHT_BUMPER, new MoveToPos(arm, Constants.Arms.Positions.kHighNodeAnchor, Constants.Arms.Positions.kHighNodeFloating));
     // Move to high shelf
-    manipulatorController.whenPressed(XboxController.Button.LEFT_BUMPER, new MoveToPos(arm, Constants.Arms.Positions.kHighShelfAnchor, Constants.Arms.Positions.kHighShelfFloating));
+    manipulatorController.whenPressed(Controller.Button.LEFT_BUMPER, new MoveToPos(arm, Constants.Arms.Positions.kHighShelfAnchor, Constants.Arms.Positions.kHighShelfFloating));
     // Contract
-    manipulatorController.whenPressed(XboxController.Button.RIGHT_JOYSTICK_BUTTON, new Contract(arm));
+    manipulatorController.whenPressed(Controller.Button.RIGHT_JOYSTICK_BUTTON, new Contract(arm));
   }
 
   public Command getAutonomousCommand() {

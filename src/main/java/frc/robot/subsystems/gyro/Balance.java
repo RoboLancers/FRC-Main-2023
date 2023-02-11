@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj2.command.SubsystemBase;
 //import frc.robot.Constants;
 import frc.robot.Constants.BalanceConstants;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.drivetrain.Drivetrain;
 //import frc.robot.util.XboxController;
 
 public class Balance extends PIDCommand{
@@ -17,18 +17,16 @@ public class Balance extends PIDCommand{
     private AHRS gyro;
     private Drivetrain drivetrain;//replace with actual drivetrain
 
-    public double gyroPitch()
-    {
-        //gets the angle of the robot throughout auto
-        return gyro.getPitch();
-    }
+    // public double gyroPitch()
+    // {
+    //     //gets the angle of the robot throughout auto
+    //     return gyro.getPitch();
+    // }
 
     public Balance(AHRS gyro, double setpoint, Drivetrain drivetrain) {
         super(
             new PIDController(BalanceConstants.kP, BalanceConstants.kI, BalanceConstants.kD),
-            () -> {
-                return this.gyroPitch();
-            },
+            gyro::getPitch, 
             // Set reference to target
             () -> setpoint,
             // Pipe output to turn robot

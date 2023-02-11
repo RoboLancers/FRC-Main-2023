@@ -29,7 +29,7 @@ public class RollUntilSwitch extends CommandBase{
 
     @Override
     public boolean isFinished() {
-        return this.arm.anchorLimitSwitchTriggered();
+        return this.arm.anchorLimitSwitchTriggered;
     }
 
 

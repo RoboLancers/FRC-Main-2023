@@ -102,4 +102,11 @@ public final class Constants {
         public static final double kWaitTime = 3.0;
         public static final double kPowerToSet = 0.0;
     }
+
+    public static class BalanceConstants {
+        public static final double kP = 0; 
+        public static final double kI = 0; 
+        public static final double kD = 0; 
+        public static final double kErrorThreshold = 0; 
+    }
 }

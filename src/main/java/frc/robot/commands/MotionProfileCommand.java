@@ -20,9 +20,7 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.MotionProfileUtils;
 import org.bananasamirite.robotmotionprofile.TankMotionProfile;
 
-/** An example command that uses an example subsystem. */
-public class MotionProfileCommand extends CommandBase
-{
+public class MotionProfileCommand extends CommandBase {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
     private final Drivetrain subsystem;
     private final RamseteController ramseteController;
@@ -44,16 +42,10 @@ public class MotionProfileCommand extends CommandBase
     private final NetworkTableEntry velocity;
     private final NetworkTableEntry robotVelocity;
 
-    /**
-     * Creates a new ExampleCommand.
-     *
-     * @param drivetrain The subsystem used by this command.
-     */
-    public MotionProfileCommand(Drivetrain drivetrain, TankMotionProfile motionProfile)
-    {
+    public MotionProfileCommand(Drivetrain drivetrain, TankMotionProfile motionProfile) {
         this.subsystem = drivetrain;
         this.timer = new Timer();
-        // Use addRequirements() here to declare subsystem dependencies.
+
         addRequirements(drivetrain);
 
         this.motionProfile = motionProfile;
@@ -71,7 +63,6 @@ public class MotionProfileCommand extends CommandBase
         this.robotVelocity = inst.getEntry("robotVelocity");
     }
 
-    // Called when the command is initially scheduled.
     @Override
     public void initialize() {
         prevTime = -1;
@@ -79,7 +70,7 @@ public class MotionProfileCommand extends CommandBase
         timer.start();
 
         Trajectory.State initialState = MotionProfileUtils.profileStateToTrajectoryState(this.motionProfile.getStateAtTime(0));
-        
+
         prevSpeeds = Constants.Trajectory.kDriveKinematics.toWheelSpeeds(
                 new ChassisSpeeds(
                         initialState.velocityMetersPerSecond,
@@ -93,7 +84,6 @@ public class MotionProfileCommand extends CommandBase
         System.out.println("starting motion profile");
     }
 
-    // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
         double curTime = timer.get();
@@ -131,14 +121,12 @@ public class MotionProfileCommand extends CommandBase
         prevTime = curTime;
     }
 
-    // Called once the command ends or is interrupted.
     @Override
-    public void end(boolean interrupted) {}
+    public void end(boolean interrupted) {
+    }
 
-    // Returns true when the command should end.
     @Override
-    public boolean isFinished()
-    {
+    public boolean isFinished() {
         return timer.hasElapsed(maxTime);
     }
 }

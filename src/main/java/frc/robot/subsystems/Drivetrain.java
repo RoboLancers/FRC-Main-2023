@@ -40,7 +40,7 @@ public class Drivetrain extends SubsystemBase{
 
 
     public void arcadeDrive(double turn, double throttle) {
-        drive.arcadeDrive(throttleLimit.calculate(throttle), turnLimit.calculate(turn));
+        drive.arcadeDrive(throttleLimit.calculate(throttle), -turnLimit.calculate(turn));
     }
 
     }

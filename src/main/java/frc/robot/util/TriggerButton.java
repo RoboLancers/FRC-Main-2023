@@ -1,3 +1,4 @@
+
 package frc.robot.util;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -16,7 +17,7 @@ public class TriggerButton extends Trigger {
         this.negative = negative;
     }
 
-    @Override
+    // @Override
     public boolean get() {
         return negative ? (Utilities.applyDeadband(joystick.getRawAxis(port), kDeadzone) < 0) : (Utilities.applyDeadband(joystick.getRawAxis(port), kDeadzone) > 0);
     }

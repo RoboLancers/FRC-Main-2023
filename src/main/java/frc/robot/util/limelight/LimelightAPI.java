@@ -114,7 +114,7 @@ public class LimelightAPI {
         if (camPose == null) {
             return new Pose2d();
         }
-
+        
         double dZ = camPose.getY();
         double dX = camPose.getX();
 
@@ -126,8 +126,8 @@ public class LimelightAPI {
 
         double distance = Math.hypot(dX, dZ);
 
-        double adjustedX = (distance * Math.cos(theta)) - Constants.GridAlign.kAdjustX;
-        double adjustedZ = (distance * Math.sin(theta)) - Constants.GridAlign.kAdjustZ;
+        double adjustedX = (distance * Math.cos(theta)) - Constants.GridAlign.kAdjustZ * Math.sin(actualRot);
+        double adjustedZ = (distance * Math.sin(theta)) - Constants.GridAlign.kAdjustZ * Math.cos(actualRot);
 
         return new Pose2d(adjustedX, adjustedZ, new Rotation2d(actualRot));
         // return new Pose2d(adjustedCamPoseX, pose3d.getY(), adjustedCamPoseZ,

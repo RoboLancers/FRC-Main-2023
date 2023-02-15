@@ -37,7 +37,9 @@ public class Drivetrain extends SubsystemBase{
         rightMotor3.setInverted(true);
     }
 
-    public void arcadeDrive(double throttle, double turn) {
-        drive.arcadeDrive(throttleLimit.calculate(throttle), turnLimit.calculate(turn));
+    public void arcadeDrive(double turn, double throttle) {
+        drive.arcadeDrive(throttleLimit.calculate(throttle), -turnLimit.calculate(turn));
     }
-}
+
+    }
+    

@@ -1,6 +1,6 @@
 package frc.robot.subsystems.gyro;
 
-import com.kauailabs.navx.frc.AHRS;
+//import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.math.controller.PIDController;
 //import edu.wpi.first.wpilibj.SPI;
@@ -16,28 +16,34 @@ public class Balance extends PIDCommand{
     
     private AHRS gyro;
     private Drivetrain drivetrain;//replace with actual drivetrain
+    
+    Gyro gyro;
+  
 
     public double gyroPitch()
     {
         //gets the angle of the robot throughout auto
-        return gyro.getPitch();
+        double pitch = gyro.getRoll();
+        return pitch;
     }
 
-    public Balance(AHRS gyro, double setpoint, Drivetrain drivetrain) {
+
+    public Balance(Gyro gyro, double setpoint, Drivetrain drivetrain) {
         super(
             new PIDController(BalanceConstants.kP, BalanceConstants.kI, BalanceConstants.kD),
-            () -> {
-                return this.gyroPitch();
-            },
+            gyro::getRoll,
             // Set reference to target
             () -> setpoint,
             // Pipe output to turn robot
             (outputPower) -> {
-                SmartDashboard.putNumber("Balance Output", outputPower);
-                drivetrain.arcadeDrive(outputPower, 0);
+                SmartDashboard.putNumber("Angular Output", outputPower);
+                drivetrain.arcadeDrive(0, -outputPower);
             },
             drivetrain
         );
+
+        SmartDashboard.putNumber("kP", SmartDashboard.getNumber("kP", 0));
+
     
         this.getController().setTolerance(BalanceConstants.kErrorThreshold);
 
@@ -45,9 +51,16 @@ public class Balance extends PIDCommand{
     
         this.gyro = gyro;
         this.drivetrain = drivetrain;
-
+    
         addRequirements(drivetrain);
     }
+
+    @Override
+    public void execute(){
+        this.m_controller.setP(SmartDashboard.getNumber("kP", 0));
+    }
+
+
 
     @Override
     public void end(boolean interrupted){

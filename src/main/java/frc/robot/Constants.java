@@ -9,8 +9,8 @@ public final class Constants {
             public static final double kI = 0.0;
             public static final double kD = 0.0;
             public static final double kFF = 0.0;
-            public static final double kMinAngle = 0.0;
-            public static final double kMaxAngle = 0.0;
+            public static final double kMinAngle = 22.0;
+            public static final double kMaxAngle = 180.0;
             public static double kFloatingJointErrorThreshold = 0.0;
         }
 
@@ -19,8 +19,8 @@ public final class Constants {
             public static final double kI = 0.0;
             public static final double kD = 0.0;
             public static final double kFF = 0.0;
-            public static final double kMinAngle = 0.0;
-            public static final double kMaxAngle = 0.0;
+            public static final double kMinAngle = 13.0;
+            public static final double kMaxAngle = 85.0;
             public static double kanchorJointErrorThreshold = 0.0;
         }
 

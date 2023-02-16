@@ -2,21 +2,22 @@ package frc.robot.subsystems.drivetrain;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import edu.wpi.first.wpilibj.SPI;
+import frc.robot.Encoder;
 
 public class Drivetrain extends SubsystemBase {
     private final CANSparkMax leftMotor1 = new CANSparkMax(Constants.Drivetrain.LeftMotors.kLeftMotor1_Port, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -40,8 +41,8 @@ public class Drivetrain extends SubsystemBase {
     private final DifferentialDriveOdometry odometry;
 
     // reverse the encoders to match the reversed motors of the right side.
-    private final RelativeEncoder rightEncoder = rightMotor1.getEncoder();
-    private final RelativeEncoder leftEncoder = leftMotor1.getEncoder();
+    private final Encoder rightEncoder = new Encoder(rightMotor1.getEncoder());
+    private final Encoder leftEncoder = new Encoder(leftMotor1.getEncoder());
 
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
@@ -91,11 +92,11 @@ public class Drivetrain extends SubsystemBase {
         // rightMotor3.setClosedLoopRampRate(2.0);
 
         // Sets the distance per pulse to the pre-defined constant we calculated for both encoders.
-        rightEncoder.setPositionConversionFactor(Constants.Trajectory.kMetersPerRot);
-        leftEncoder.setPositionConversionFactor(Constants.Trajectory.kMetersPerRot);
+        rightEncoder.getEncoder().setPositionConversionFactor(Constants.Trajectory.kMetersPerRot);
+        leftEncoder.getEncoder().setPositionConversionFactor(Constants.Trajectory.kMetersPerRot);
 
-        leftEncoder.setVelocityConversionFactor(Constants.Trajectory.kMetersPerSecondPerRPM); 
-        rightEncoder.setVelocityConversionFactor(Constants.Trajectory.kMetersPerSecondPerRPM); 
+        leftEncoder.getEncoder().setVelocityConversionFactor(Constants.Trajectory.kMetersPerSecondPerRPM);
+        rightEncoder.getEncoder().setVelocityConversionFactor(Constants.Trajectory.kMetersPerSecondPerRPM);
 
         resetEncoders();
 
@@ -110,11 +111,11 @@ public class Drivetrain extends SubsystemBase {
         odometry.update(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
         m_field.setRobotPose(odometry.getPoseMeters());
         SmartDashboard.putData("field", m_field);
-        SmartDashboard.putNumber("x", odometry.getPoseMeters().getX()); 
-        SmartDashboard.putNumber("y", odometry.getPoseMeters().getY()); 
-        SmartDashboard.putNumber("rotation", odometry.getPoseMeters().getRotation().getDegrees()); 
-        SmartDashboard.putNumber("encoderLeft", leftEncoder.getPosition()); 
-        SmartDashboard.putNumber("encoderRight", rightEncoder.getPosition()); 
+        SmartDashboard.putNumber("x", odometry.getPoseMeters().getX());
+        SmartDashboard.putNumber("y", odometry.getPoseMeters().getY());
+        SmartDashboard.putNumber("rotation", odometry.getPoseMeters().getRotation().getDegrees());
+        SmartDashboard.putNumber("encoderLeft", leftEncoder.getPosition());
+        SmartDashboard.putNumber("encoderRight", rightEncoder.getPosition());
     }
 
     // Returns the pose of the robot.
@@ -124,12 +125,12 @@ public class Drivetrain extends SubsystemBase {
 
     // Returns the current speed of the wheels of the robot.
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-        return new DifferentialDriveWheelSpeeds(leftEncoder.getVelocity(), -rightEncoder.getVelocity());
+        return new DifferentialDriveWheelSpeeds(leftEncoder.getEncoder().getVelocity(), -rightEncoder.getEncoder().getVelocity());
     }
 
     // Resets the odometry, both rotation and distance traveled.
     public void resetOdometry(Pose2d pose) {
-        // gyro.reset(       resetEncoders();
+        gyro.reset();
         resetEncoders();
         odometry.resetPosition(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition(), pose);
     }
@@ -141,11 +142,10 @@ public class Drivetrain extends SubsystemBase {
 
     // Drives the robot with arcade controls.
     public void arcadeDrive(double throttle, double turn) {
-        difDrive.curvatureDrive(
-            throttleFilter.calculate(throttle * Constants.Drivetrain.kThrottleMultiplier), 
-            turnFilter.calculate(turn * Constants.Drivetrain.kTurnMultiplier), 
-            Math.abs(throttle) < 0.05
-        );
+        difDrive.curvatureDrive(throttleFilter.calculate(throttle*Constants.Drivetrain.kThrottleMultiplier), turnFilter.calculate(turn*Constants.Drivetrain.kTurnMultiplier), throttle < 0.05);
+        // if (throttle == 0 && turn == 0) {
+        //     tankDriveVolts(0, 0);
+        // }
     }
 
     // Controls the left and right side motors directly with voltage.
@@ -169,12 +169,12 @@ public class Drivetrain extends SubsystemBase {
 
     // Returns the left encoders.
     public RelativeEncoder getLeftEncoder() {
-        return leftEncoder;
+        return leftEncoder.getEncoder();
     }
 
     // Returns the right encoders.
     public RelativeEncoder getRightEncoder() {
-        return rightEncoder;
+        return rightEncoder.getEncoder();
     }
 
     // Sets the max output of the drive. Used for scaling the drive to drive more slowly.

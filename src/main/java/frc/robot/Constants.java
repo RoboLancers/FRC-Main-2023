@@ -51,14 +51,16 @@ public final class Constants {
 
         public static final int kMaxAmps = 30; 
         public static final double kThrottleMultiplier = 0.75;
-        public static final double kTurnMultiplier = 1.0; 
+        public static final double kTurnMultiplier = 0.6;
     }
 
     /*TODO: provide the constants */
+
+    // referenced in frc.robot.subsystems.gyro.Balance but never defined; TODO: edit these values
     public static class BalanceConstants {
-        public static final double kP = 0; 
-        public static final double kI = 0; 
-        public static final double kD = 0; 
-        public static final double kErrorThreshold = 0; 
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double kErrorThreshold = 1;
     }
 }

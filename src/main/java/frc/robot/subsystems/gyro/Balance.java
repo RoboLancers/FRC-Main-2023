@@ -21,7 +21,7 @@ public class Balance extends PIDCommand{
     public Balance(AHRS gyro, double setpoint, Drivetrain drivetrain) {
         super(
             new PIDController(BalanceConstants.kP, BalanceConstants.kI, BalanceConstants.kD),
-            gyro::getPitch, 
+            gyro::getPitch,
             // () -> {
             //     return this.gyroPitch();
             // },

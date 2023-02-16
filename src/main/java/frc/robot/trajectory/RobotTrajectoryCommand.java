@@ -16,7 +16,6 @@ import java.util.Objects;
 public class RobotTrajectoryCommand extends SequentialCommandGroup {
     public RobotTrajectoryCommand(Drivetrain drivetrain, Trajectory trajectory) {
         Object[] commands = trajectory.getTasks().stream().map(e -> {
-            System.out.println(e);
             if (e instanceof WaypointTask && ((WaypointTask) e).getWaypoints().size() > 1)
                 return new MotionProfileCommand(drivetrain, ((WaypointTask) e).createProfile());
             if (e instanceof CommandTask) {

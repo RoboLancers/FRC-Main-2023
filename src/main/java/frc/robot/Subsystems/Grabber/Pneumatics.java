@@ -1,5 +1,6 @@
 package frc.robot.Subsystems.Grabber;
 
+import edu.wpi.first.hal.REVPHJNI;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;

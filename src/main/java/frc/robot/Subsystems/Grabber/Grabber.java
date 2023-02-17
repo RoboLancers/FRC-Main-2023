@@ -1,23 +1,26 @@
 package frc.robot.Subsystems.Grabber;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Subsystems.Grabber.commands.UseGrabber;
 
 
 public class Grabber extends SubsystemBase {
     public DoubleSolenoid grabberPiston;
     public boolean grabberClosed;
+    private DigitalInput grabberSensor;
+    public boolean objectDetected;
 
     public Grabber() {
         this.grabberPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.Grabber.kPistonDeploy, Constants.Grabber.kPistonRetract);
-        //grabberPiston.set(Value.kReverse);
         grabberClosed = false;
-        //initDefaultCommand();
+
+        this.grabberSensor = new DigitalInput(Constants.Grabber.kGrabberSensor);
+        objectDetected = false;
     } 
 
     @Override
@@ -28,21 +31,12 @@ public class Grabber extends SubsystemBase {
         grabberPiston.toggle();
     }
 
-    public void setDeploy() {
-        grabberPiston.set(Value.kForward);
-
-    }
-
-    public void setRetract() {
-        grabberPiston.set(Value.kReverse);
-    }
-
-    public void initDefaultCommand(){
-        setDefaultCommand(new UseGrabber(this));
-    }
-
     public Value getPosition() {
         return grabberPiston.get();
+    }
+
+    public boolean getGrabberSensor() {
+        return !grabberSensor.get();
     }
 
 }

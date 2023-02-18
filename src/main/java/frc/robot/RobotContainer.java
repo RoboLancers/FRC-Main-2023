@@ -1,5 +1,19 @@
 package frc.robot;
 
+import java.util.ArrayList;
+
+import org.bananasamirite.robotmotionprofile.ParametricSpline;
+import org.bananasamirite.robotmotionprofile.TankMotionProfile;
+import org.bananasamirite.robotmotionprofile.TankMotionProfile.ProfileMethod;
+import org.bananasamirite.robotmotionprofile.Waypoint;
+
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -7,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.GridAlign;
 import frc.robot.commands.MotionProfileCommand;
 import frc.robot.commands.Rumble;
-import frc.robot.commands.TrajectoryCommand;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.poseTracker.PoseTracker;
 import frc.robot.util.Controller;

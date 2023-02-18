@@ -115,19 +115,24 @@ public class LimelightAPI {
             return new Pose2d();
         }
         
-        double dZ = camPose.getY();
+        // TODO: offset or do so from pipeline
+        double dZ = camPose.getY() + 0.69 * 0.420;
         double dX = camPose.getX();
 
-        double actualRot = camPose.getRotation().getRadians();
+        double actualRot = (Math.signum(-dX)) * camPose.getRotation().getRadians();
 
-        double adjustedRot = Math.atan2(dX, dZ);
+        SmartDashboard.putNumber("frfr rot", actualRot * 180 / Math.PI);
+        SmartDashboard.putNumber("frfr x", dX);
+        SmartDashboard.putNumber("frfr z", dZ);
+
+        double adjustedRot = Math.atan2(-dX, -dZ);
 
         double theta = adjustedRot - actualRot;
 
         double distance = Math.hypot(dX, dZ);
 
-        double adjustedX = (distance * Math.cos(theta)) - Constants.GridAlign.kAdjustZ * Math.sin(actualRot);
-        double adjustedZ = (distance * Math.sin(theta)) - Constants.GridAlign.kAdjustZ * Math.cos(actualRot);
+        double adjustedX = (distance * Math.cos(theta)) - Constants.GridAlign.kAdjustZ * Math.cos(actualRot);
+        double adjustedZ = (-(distance * Math.sin(theta)) - Constants.GridAlign.kAdjustZ * Math.sin(actualRot));
 
         return new Pose2d(adjustedX, adjustedZ, new Rotation2d(actualRot));
         // return new Pose2d(adjustedCamPoseX, pose3d.getY(), adjustedCamPoseZ,

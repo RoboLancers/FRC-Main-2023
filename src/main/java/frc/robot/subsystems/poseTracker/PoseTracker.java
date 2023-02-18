@@ -41,13 +41,15 @@ public class PoseTracker extends SubsystemBase {
                 this.camPoseQueue.add(LimelightAPI.adjustCamPose());
                 SmartDashboard.putNumber("latest queue num x", LimelightAPI.adjustCamPose().getX());
 
-                this.botPoseQueue.add(LimelightAPI.botPose());
+                this.botPoseQueue.add(LimelightAPI.adjustCamPose());
 
-                this.avgAprilTagCamPose = getAverageAprilPose();
+                this.avgAprilTagCamPose =  getAverageAprilPose();
 
                 SmartDashboard.putNumber("avg campose x", avgAprilTagCamPose.getX());
                 SmartDashboard.putNumber("avg campose z", avgAprilTagCamPose.getY());
                 SmartDashboard.putNumber("avg rotation", avgAprilTagCamPose.getRotation().getDegrees());
+
+               //  System.out.println(LimelightAPI.adjustCamPose());
 
         }
 
@@ -64,6 +66,7 @@ public class PoseTracker extends SubsystemBase {
         }
 
         public Pose2d getAverageAprilPose() {
+                // return LimelightAPI.adjustCamPose();
                 return PoseUtil.averagePoses(this.camPoseQueue);
         }
 
@@ -76,8 +79,12 @@ public class PoseTracker extends SubsystemBase {
 
                 Waypoint[] waypoints = {
                                 new Waypoint(0, 0, 0, weight, 1),
-                                new Waypoint(-pose.getY(), -pose.getX(), 0, weight, 1)
+                                new Waypoint(pose.getX(), pose.getY(), pose.getRotation().getRadians(), weight, 1)
                 };
+
+                System.out.println(waypoints[1].getX());
+                System.out.println(waypoints[1].getY());
+                System.out.println(waypoints[1].getWeight());
 
                 return ParametricSpline.fromWaypoints(waypoints);
         }

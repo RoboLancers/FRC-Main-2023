@@ -33,7 +33,7 @@ public final class Constants {
     public static class GridAlign {
         public static final double kRumbleTime = 1;
         public static final double kInitialWeight = 1;
-        public static final double kGridWeight = 2;
+        public static final double kGridWeight = 1.0; 
 
         public static final double kAdjustZ = 0.32;
         public static final double kAdjustX = 0;
@@ -42,8 +42,8 @@ public final class Constants {
         public static final int kPythonPipelineIndex = 1;
         public static final int kManualAprilTagPipeline = 2;
 
-        public static final double kCamSanityXMax = 2;
-        public static final double kCamSanityXMin = -2;
+        public static final double kCamSanityXMax = 4;
+        public static final double kCamSanityXMin = -4;
 
         public static final double kCamSanityZMax = 0;
         public static final double kCamSanityZMin = -10;

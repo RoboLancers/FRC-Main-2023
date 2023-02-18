@@ -24,7 +24,7 @@ import frc.robot.util.MotionProfileUtils;
 import org.bananasamirite.robotmotionprofile.TankMotionProfile;
 
 /** An example command that uses an example subsystem. */
-public class MotionProfileCommand extends CommandBase
+public class TrajectoryCommand extends CommandBase
 {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
     private final Drivetrain subsystem;
@@ -32,7 +32,7 @@ public class MotionProfileCommand extends CommandBase
 
     private final Timer timer;
 
-    private final TankMotionProfile motionProfile;
+    private final Trajectory trajectory;
     private final double maxTime;
 
     private double startTime;
@@ -52,15 +52,15 @@ public class MotionProfileCommand extends CommandBase
      *
      * @param drivetrain The subsystem used by this command.
      */
-    public MotionProfileCommand(Drivetrain drivetrain, TankMotionProfile motionProfile)
+    public TrajectoryCommand(Drivetrain drivetrain, Trajectory trajectory)
     {
         this.subsystem = drivetrain;
         this.timer = new Timer();
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(drivetrain);
 
-        this.motionProfile = motionProfile;
-        this.maxTime = motionProfile.getTotalTime();
+        this.trajectory = trajectory;
+        this.maxTime = trajectory.getTotalTimeSeconds();
 
         this.ramseteController = new RamseteController();
 
@@ -73,7 +73,7 @@ public class MotionProfileCommand extends CommandBase
         this.velocity = inst.getEntry("velocity");
         this.robotVelocity = inst.getEntry("robotVelocity");
 
-        subsystem.getField().getObject("robot").setTrajectory(MotionProfileUtils.profileToTrajectory(motionProfile));
+        subsystem.getField().getObject("robot").setTrajectory(trajectory);
     }
 
     // Called when the command is initially scheduled.
@@ -83,7 +83,7 @@ public class MotionProfileCommand extends CommandBase
         timer.reset();
         timer.start();
 
-        Trajectory.State initialState = MotionProfileUtils.profileStateToTrajectoryState(this.motionProfile.getStateAtTime(0));
+        Trajectory.State initialState = this.trajectory.sample(0);
         
         prevSpeeds = Constants.Trajectory.kDriveKinematics.toWheelSpeeds(
                 new ChassisSpeeds(
@@ -105,13 +105,13 @@ public class MotionProfileCommand extends CommandBase
 
         double dt = curTime - prevTime;
 
-        Trajectory.State state = MotionProfileUtils.profileStateToTrajectoryState(this.motionProfile.getStateAtTime(curTime));
+        Trajectory.State state = this.trajectory.sample(curTime);
 
         this.velocity.setDouble(state.velocityMetersPerSecond);
         this.robotVelocity.setDouble(Constants.Trajectory.kDriveKinematics.toChassisSpeeds(subsystem.getWheelSpeeds()).vxMetersPerSecond);
         Pose2d robotPose = subsystem.getPose(); 
 
-        SmartDashboard.putNumber("expectedAngular", state.curvatureRadPerMeter); 
+        SmartDashboard.putNumber("expectedX", state.poseMeters.getX()); 
         SmartDashboard.putNumber("robotX", robotPose.getX()); 
         SmartDashboard.putNumber("expectedY", state.poseMeters.getY()); 
         SmartDashboard.putNumber("robotY", robotPose.getY()); 

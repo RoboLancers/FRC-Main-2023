@@ -6,6 +6,17 @@ import edu.wpi.first.math.util.Units;
 // TODO: update constants to fit new robot
 public final class Constants {
 
+  public static  class Grabber {
+        public static int kPistonDeploy = 0;
+        public static int kPistonRetract = 1;
+        public static int kGrabberSensor;
+        public static int kBits;
+        public static int kChannel;
+        public static double kMax;
+        public static double kStart;
+        public static double kMin;
+    }
+
     public static final double kThrottleFilter = 1.25;
     public static final double kTurnFilter = 3;
     public static final int kGyroPort = 1;

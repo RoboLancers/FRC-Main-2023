@@ -1,12 +1,13 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
-import frc.robot.Subsystems.Grabber.Grabber;
-import frc.robot.Subsystems.Grabber.Pneumatics;
-import frc.robot.util.XboxController;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.util.Controller;
 
 public class RobotContainer {
   private final XboxController manipulatorController = new XboxController(0);
@@ -14,21 +15,30 @@ public class RobotContainer {
   //private final UseGrabber uGrabber = new UseGrabber(grabber);
   private final Pneumatics pneumatics = new Pneumatics();
 
-  
   public RobotContainer() {
     configureButtonBindings();
-  }
-  
-  private void configureButtonBindings() {
+
+    this.drivetrain.setDefaultCommand(new RunCommand(() -> {
+      this.drivetrain.arcadeDrive(
+              -driverController.getLeftStickY(),
+              -driverController.getRightStickX()
+      );
+    }, drivetrain));
+
+    // Controller.onPress(driverController.B, new InstantCommand(() -> {
+    //   this.drivetrain.resetOdometry(new Pose2d(5, 5, new Rotation2d()));
+    // }));
     
     manipulatorController.whenPressed(XboxController.Button.A, new InstantCommand(() -> {
       grabber.toggleDeploy();
     }));
 
+    /* Add autos here */
+    // autoChooser.addOption("name", auto);
   }
 
   public Command getAutonomousCommand() {
-    return new PrintCommand("No Auto Written Yet");
+    return autoChooser.getSelected();
   }
 
   public void doSendables(){

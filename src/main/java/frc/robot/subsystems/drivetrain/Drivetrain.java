@@ -48,8 +48,8 @@ public class Drivetrain extends SubsystemBase {
 
     private final Field2d m_field = new Field2d();
 
-    private final SlewRateLimiter throttleFilter = new SlewRateLimiter(Constants.kThrottleFilter);
-    private final SlewRateLimiter turnFilter = new SlewRateLimiter(Constants.kTurnFilter);
+    private final SlewRateLimiter throttleFilter = new SlewRateLimiter(Constants.kThrottleAccelFilter, Constants.kThrottleDecelFilter, 0);
+    private final SlewRateLimiter turnFilter = new SlewRateLimiter(Constants.kTurnAccelFilter, Constants.kThrottleDecelFilter, 0);
 
     public Drivetrain(){
         rightMotor1.setInverted(true);

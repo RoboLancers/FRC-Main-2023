@@ -1,24 +1,21 @@
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.grabber.Grabber;
+import frc.robot.subsystems.grabber.Pneumatics;
 import frc.robot.util.Controller;
 
 public class RobotContainer {
-
-  /*   Controllers   */
-  private final Controller driverController = new Controller(0);
+private final Controller driverController = new Controller(0); 
   private final Controller manipulatorController = new Controller(1);
+  private final Drivetrain drivetrain = new Drivetrain(); 
+  private final Grabber grabber = new Grabber();
+  private final Pneumatics pneumatics = new Pneumatics();
 
-  /*   Subsystems   */
-  private final Drivetrain drivetrain = new Drivetrain();
-
-  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+  private final SendableChooser<Command> autoChooser = new SendableChooser<>(); 
 
   public RobotContainer() {
     configureButtonBindings();
@@ -30,23 +27,21 @@ public class RobotContainer {
       );
     }, drivetrain));
 
-    // Controller.onPress(driverController.B, new InstantCommand(() -> {
-    //   this.drivetrain.resetOdometry(new Pose2d(5, 5, new Rotation2d()));
-    // }));
+
 
     /* Add autos here */
     // autoChooser.addOption("name", auto);
   }
 
-  private void configureButtonBindings() {
-    /* Controller usage example for on press and on hold */
+  public void configureButtonBindings() {
 
-    Controller.onPress(driverController.A, new InstantCommand(() -> {}));
-
-    Controller.onHold(driverController.B, new RunCommand(() -> {}));
   }
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
   }
+
+  public void doSendables() {
+  } 
+
 }

@@ -13,9 +13,11 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.SPI;
+import frc.robot.Encoder;
 
 public class Drivetrain extends SubsystemBase {
     private final CANSparkMax leftMotor1 = new CANSparkMax(Constants.Drivetrain.LeftMotors.kLeftMotor1_Port, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -39,8 +41,8 @@ public class Drivetrain extends SubsystemBase {
     private final DifferentialDriveOdometry odometry;
 
     // reverse the encoders to match the reversed motors of the right side.
-    private final RelativeEncoder rightEncoder = rightMotor1.getEncoder();
-    private final RelativeEncoder leftEncoder = leftMotor1.getEncoder();
+    private final Encoder rightEncoder = new Encoder(rightMotor1.getEncoder());
+    private final Encoder leftEncoder = new Encoder(leftMotor1.getEncoder());
 
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
@@ -58,6 +60,13 @@ public class Drivetrain extends SubsystemBase {
         leftMotor2.setInverted(false);
         leftMotor3.setInverted(false);
 
+        // leftMotor1.setIdleMode(IdleMode.kCoast);
+        // leftMotor2.setIdleMode(IdleMode.kCoast);
+        // leftMotor3.setIdleMode(IdleMode.kCoast);
+
+        // rightMotor1.setIdleMode(IdleMode.kCoast);
+        // rightMotor2.setIdleMode(IdleMode.kCoast);
+        // rightMotor3.setIdleMode(IdleMode.kCoast);
         leftMotor1.setIdleMode(IdleMode.kBrake);
         leftMotor2.setIdleMode(IdleMode.kBrake);
         leftMotor3.setIdleMode(IdleMode.kBrake);
@@ -66,9 +75,28 @@ public class Drivetrain extends SubsystemBase {
         rightMotor2.setIdleMode(IdleMode.kBrake);
         rightMotor3.setIdleMode(IdleMode.kBrake);
 
+
+        // TODO: increase & decrease max throttle this so turning doesnt get stuck
+        leftMotor1.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
+        leftMotor2.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
+        leftMotor3.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
+        rightMotor1.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
+        rightMotor2.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
+        rightMotor3.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
+
+        // leftMotor1.setClosedLoopRampRate(2.0);
+        // leftMotor2.setClosedLoopRampRate(2.0);
+        // leftMotor3.setClosedLoopRampRate(2.0);
+        // rightMotor1.setClosedLoopRampRate(2.0);
+        // rightMotor2.setClosedLoopRampRate(2.0);
+        // rightMotor3.setClosedLoopRampRate(2.0);
+
         // Sets the distance per pulse to the pre-defined constant we calculated for both encoders.
-        rightEncoder.setPositionConversionFactor(Constants.Drivetrain.kDistPerRot);
-        leftEncoder.setPositionConversionFactor(Constants.Drivetrain.kDistPerRot);
+        rightEncoder.getEncoder().setPositionConversionFactor(Constants.Trajectory.kMetersPerRot);
+        leftEncoder.getEncoder().setPositionConversionFactor(Constants.Trajectory.kMetersPerRot);
+
+        leftEncoder.getEncoder().setVelocityConversionFactor(Constants.Trajectory.kMetersPerSecondPerRPM);
+        rightEncoder.getEncoder().setVelocityConversionFactor(Constants.Trajectory.kMetersPerSecondPerRPM);
 
         resetEncoders();
 
@@ -82,6 +110,12 @@ public class Drivetrain extends SubsystemBase {
     public void periodic() {
         odometry.update(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
         m_field.setRobotPose(odometry.getPoseMeters());
+        SmartDashboard.putData("field", m_field);
+        SmartDashboard.putNumber("x", odometry.getPoseMeters().getX());
+        SmartDashboard.putNumber("y", odometry.getPoseMeters().getY());
+        SmartDashboard.putNumber("rotation", odometry.getPoseMeters().getRotation().getDegrees());
+        SmartDashboard.putNumber("encoderLeft", leftEncoder.getPosition());
+        SmartDashboard.putNumber("encoderRight", rightEncoder.getPosition());
     }
 
     // Returns the pose of the robot.
@@ -91,7 +125,7 @@ public class Drivetrain extends SubsystemBase {
 
     // Returns the current speed of the wheels of the robot.
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-        return new DifferentialDriveWheelSpeeds(leftEncoder.getVelocity(), -rightEncoder.getVelocity());
+        return new DifferentialDriveWheelSpeeds(leftEncoder.getEncoder().getVelocity(), -rightEncoder.getEncoder().getVelocity());
     }
 
     // Resets the odometry, both rotation and distance traveled.
@@ -108,7 +142,7 @@ public class Drivetrain extends SubsystemBase {
 
     // Drives the robot with arcade controls.
     public void arcadeDrive(double throttle, double turn) {
-        difDrive.curvatureDrive(throttleFilter.calculate(throttle), turnFilter.calculate(turn*0.6), throttle < 0.05);
+        difDrive.curvatureDrive(throttleFilter.calculate(throttle*Constants.Drivetrain.kThrottleMultiplier), turnFilter.calculate(turn*Constants.Drivetrain.kTurnMultiplier), throttle < 0.05);
         // if (throttle == 0 && turn == 0) {
         //     tankDriveVolts(0, 0);
         // }
@@ -135,12 +169,12 @@ public class Drivetrain extends SubsystemBase {
 
     // Returns the left encoders.
     public RelativeEncoder getLeftEncoder() {
-        return leftEncoder;
+        return leftEncoder.getEncoder();
     }
 
     // Returns the right encoders.
     public RelativeEncoder getRightEncoder() {
-        return rightEncoder;
+        return rightEncoder.getEncoder();
     }
 
     // Sets the max output of the drive. Used for scaling the drive to drive more slowly.

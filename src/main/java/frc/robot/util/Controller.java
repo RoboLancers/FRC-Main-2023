@@ -16,7 +16,13 @@ public class Controller {
     public Trigger LeftBumper;
     public Trigger RightBumper;
 
-    public Controller(int port){
+    private double deadzone; 
+
+    public Controller(int port) {
+        this(port, 0.15); 
+    }
+
+    public Controller(int port, double deadzone){
         this._controller = new XboxController(port);
 
         this.A = new Trigger(this._controller::getAButton);
@@ -25,8 +31,9 @@ public class Controller {
         this.Y = new Trigger(this._controller::getYButton);
         this.LeftBumper = new Trigger(this._controller::getLeftBumper);
         this.RightBumper = new Trigger(this._controller::getRightBumper);
+        this.deadzone = deadzone; 
     }
-
+ 
     private static void bindEvent(Consumer<Command> responder, Command response){
         responder.accept(response);
     }
@@ -51,20 +58,21 @@ public class Controller {
         Controller.bindEvent(capturer::cancelWhenActive, response);
     }
 
+    // TODO: may be bad to do it this way
     public double getLeftStickX(){
-        return this._controller.getLeftX();
+        return ControllerUtils.applyDeadband(this._controller.getLeftX(), deadzone);
     }
 
     public double getLeftStickY(){
-        return this._controller.getLeftY();
+        return ControllerUtils.applyDeadband(this._controller.getLeftY(), deadzone);
     }
 
     public double getRightStickX(){
-        return this._controller.getRightX();
+        return ControllerUtils.applyDeadband(this._controller.getRightX(), deadzone); 
     }
 
     public double getRightStickY(){
-        return this._controller.getRightY();
+        return ControllerUtils.applyDeadband(this._controller.getRightY(), deadzone);
     }
 
     public double getLeftTrigger(){

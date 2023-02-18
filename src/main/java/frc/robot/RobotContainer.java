@@ -65,4 +65,9 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
   }
+  
+  public void doSendables() {
+    SmartDashboard.putNumber("Anchor Encoder - Degrees", arm.anchorJointMotor.getAnchorAngleFromEncoder());
+    SmartDashboard.putNumber("Floating Encoder - Degrees", arm.floatingJointMotor.getFloatingAngleFromEncoder());
+  }
 }

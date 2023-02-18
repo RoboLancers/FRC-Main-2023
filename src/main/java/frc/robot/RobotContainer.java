@@ -8,15 +8,10 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.Controller;
 
 public class RobotContainer {
-
-  /*   Controllers   */
-  private final Controller driverController = new Controller(0);
-  private final Controller manipulatorController = new Controller(1);
-
-  /*   Subsystems   */
-  private final Drivetrain drivetrain = new Drivetrain();
-
-  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+  private final XboxController manipulatorController = new XboxController(0);
+  private final Grabber grabber = new Grabber();
+  //private final UseGrabber uGrabber = new UseGrabber(grabber);
+  private final Pneumatics pneumatics = new Pneumatics();
 
   public RobotContainer() {
     configureButtonBindings();
@@ -31,20 +26,21 @@ public class RobotContainer {
     // Controller.onPress(driverController.B, new InstantCommand(() -> {
     //   this.drivetrain.resetOdometry(new Pose2d(5, 5, new Rotation2d()));
     // }));
+    
+    manipulatorController.whenPressed(XboxController.Button.A, new InstantCommand(() -> {
+      grabber.toggleDeploy();
+    }));
 
     /* Add autos here */
     // autoChooser.addOption("name", auto);
   }
 
-  private void configureButtonBindings() {
-    /* Controller usage example for on press and on hold */
-
-    Controller.onPress(driverController.A, new InstantCommand(() -> {}));
-
-    Controller.onHold(driverController.B, new RunCommand(() -> {}));
-  }
-
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
   }
+
+  public void doSendables(){
+    SmartDashboard.putString("Solenoid value", grabber.getPosition().name());
+  } 
+
 }

@@ -11,6 +11,16 @@ public final class Constants {
     public static final double kThrottleDecelFilter = -1;
     public static final double kTurnDecelFilter = -3;
     public static final int kGyroPort = 1;
+  public static  class Grabber {
+        public static int kPistonDeploy = 0;
+        public static int kPistonRetract = 1;
+        public static int kGrabberSensor;
+        public static int kBits;
+        public static int kChannel;
+        public static double kMax;
+        public static double kStart;
+        public static double kMin;
+    }
 
     public static class Trajectory {
         public static final double ksVolts = 0.23636;
@@ -32,11 +42,8 @@ public final class Constants {
         public static final double kGearRatio = 6.8027597438; 
         public static final double kWheelRadiusInches = 3; 
         public static final double kMetersPerRot = Units.inchesToMeters(2 * Math.PI * kWheelRadiusInches / kGearRatio); 
-        // (3.072/100);
-        // Units.inchesToMeters(kGearRatio * 2 * kWheelRadiusInches * Math.PI / 42); 
 
         public static final double kMetersPerSecondPerRPM = kMetersPerRot / 60; 
-        
 
     }
     public static class Drivetrain {
@@ -60,7 +67,7 @@ public final class Constants {
 
     // referenced in frc.robot.subsystems.gyro.Balance but never defined; TODO: edit these values
     public static class BalanceConstants {
-        public static final double kP = 0;
+        public static final double kP = 0.008;
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kErrorThreshold = 1;

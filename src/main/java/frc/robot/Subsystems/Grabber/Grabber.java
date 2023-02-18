@@ -1,4 +1,4 @@
-package frc.robot.Subsystems.Grabber;
+package frc.robot.subsystems.Grabber;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Subsystems.Grabber.commands.UseGrabber;
+import frc.robot.subsystems.Grabber.commands.UseGrabber;
 
 
 public class Grabber extends SubsystemBase {

@@ -22,9 +22,6 @@ public class Balance extends PIDCommand{
         super(
             new PIDController(BalanceConstants.kP, BalanceConstants.kI, BalanceConstants.kD),
             gyro::getPitch,
-            // () -> {
-            //     return this.gyroPitch();
-            // },
             // Set reference to target
             () -> setpoint,
             // Pipe output to turn robot

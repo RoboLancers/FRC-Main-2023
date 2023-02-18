@@ -1,13 +1,13 @@
-package frc.robot.Subsystems.Grabber.commands;
+package frc.robot.subsystems.grabber.commands;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.Subsystems.Grabber.Grabber;
+import frc.robot.subsystems.grabber.Grabber;
 
-public class ObjectDectection extends CommandBase {
+public class ObjectDetection extends CommandBase {
 
     public Grabber grabber;
     public boolean getGrabberSensor;
@@ -16,7 +16,7 @@ public class ObjectDectection extends CommandBase {
     public boolean objectGrabbed;
 
     
-    public ObjectDectection(DigitalInput grabberSensor, boolean getGrabberSensor) {
+    public ObjectDetection(DigitalInput grabberSensor, boolean getGrabberSensor) {
         this. input = new AnalogInput(Constants.Grabber.kChannel);
         input.setAverageBits(Constants.Grabber.kBits);
         this.potentiometer = new AnalogPotentiometer(input, Constants.Grabber.kMax, Constants.Grabber.kStart);

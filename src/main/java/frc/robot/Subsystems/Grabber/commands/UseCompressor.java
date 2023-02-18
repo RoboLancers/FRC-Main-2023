@@ -1,7 +1,7 @@
-package frc.robot.Subsystems.Grabber.commands;
+package frc.robot.subsystems.grabber.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Subsystems.Grabber.Pneumatics;
+import frc.robot.subsystems.grabber.Pneumatics;
 
 public class UseCompressor extends CommandBase {
     private Pneumatics pneumatics;

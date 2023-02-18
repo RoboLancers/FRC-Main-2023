@@ -123,7 +123,7 @@ public class XboxController extends BaseController {
     }
 
     public boolean getState(Trigger trigger){
-        return triggerButtons[trigger.port].get();
+        return triggerButtons[trigger.port].getAsBoolean(); 
     }
 
     public boolean getState(POV pov){

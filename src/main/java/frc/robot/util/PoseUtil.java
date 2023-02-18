@@ -1,7 +1,7 @@
 package frc.robot.util;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -12,7 +12,11 @@ import edu.wpi.first.util.sendable.Sendable;
 import frc.robot.Constants;
 
 public class PoseUtil {
-    public static <T extends Collection<Pose2d>> Pose2d averagePoses(T poses, boolean sanitize) {
+    public static Pose2d averagePoses(boolean sanitize, Pose2d... poses) {
+        return averagePoses(sanitize, List.of(poses));
+    }
+
+    public static <T extends Collection<Pose2d>> Pose2d averagePoses(boolean sanitize, T poses) {
         if (sanitize) {
             sanitizePoses(poses);
         }
@@ -31,14 +35,14 @@ public class PoseUtil {
     }
 
     // TODO: decide if direct modification is fine here (probably not)
-    public static <T extends Collection<Pose2d>> void sanitizePoses(T poses) {
+    private static <T extends Collection<Pose2d>> void sanitizePoses(T poses) {
         /* T copy = poses; */
 
         poses.removeIf(p -> !(
                 p.getX() > Constants.GridAlign.kCamSanityXMin &&
-                        p.getX() < Constants.GridAlign.kCamSanityXMax &&
-                        p.getY() > Constants.GridAlign.kCamSanityZMin &&
-                        p.getY() < Constants.GridAlign.kCamSanityZMax
+                p.getX() < Constants.GridAlign.kCamSanityXMax &&
+                p.getY() > Constants.GridAlign.kCamSanityZMin &&
+                p.getY() < Constants.GridAlign.kCamSanityZMax
         ));
 
         // return copy;

@@ -12,14 +12,12 @@ import frc.robot.util.limelight.LimelightAPI;
 import org.bananasamirite.robotmotionprofile.ParametricSpline;
 import org.bananasamirite.robotmotionprofile.Waypoint;
 
-import java.util.List;
-
 public class PoseTracker extends SubsystemBase {
     // Getting last 3 camera pose values
-    private SizedQueue<Pose2d> camPoseQueue = new SizedQueue<Pose2d>(3);
+    private SizedQueue<Pose2d> camPoseQueue = new SizedQueue<>(3);
 
     // Getting last 3 bot pose values
-    private SizedQueue<Pose2d> botPoseQueue = new SizedQueue<Pose2d>(3);
+    private SizedQueue<Pose2d> botPoseQueue = new SizedQueue<>(3);
 
     private Drivetrain drivetrain;
 
@@ -48,7 +46,7 @@ public class PoseTracker extends SubsystemBase {
 
     // TODO: are we scrapping this? definitely something to discuss
     public Pose2d getSensorFusionAverage() {
-        return PoseUtil.averagePoses(List.of(avgAprilTagCamPose, avgPythonCamPose), false);
+        return PoseUtil.averagePoses(false, avgAprilTagCamPose, avgPythonCamPose);
     }
 
     public void clearAndSetPipeline(PipelineIndex index) {
@@ -59,7 +57,7 @@ public class PoseTracker extends SubsystemBase {
     }
 
     public Pose2d getAverageAprilPose() {
-        return PoseUtil.averagePoses(this.camPoseQueue, true);
+        return PoseUtil.averagePoses(true, this.camPoseQueue);
     }
 
     public ParametricSpline generateSpline() {

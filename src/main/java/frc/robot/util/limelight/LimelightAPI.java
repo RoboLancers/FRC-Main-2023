@@ -16,14 +16,17 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
+// import edu.wpi.first.networktables.NetworkTableInstance;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants;
-import frc.robot.util.PoseUtil;
+import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.Websocket;
 
 public class LimelightAPI {
-    private static final NetworkTable limelightNT = NetworkTableInstance.getDefault().getTable("limelight");
+
+    private static NetworkTable limelightNT = NetworkTableInstance.getDefault().getTable("limelight");
 
     public Websocket wsClient;
 
@@ -31,11 +34,6 @@ public class LimelightAPI {
 
     public LimelightAPI(boolean logging) throws URISyntaxException {
         this.wsClient = new Websocket(new URI(Constants.Limelight.kLimelightURLString));
-
-        // TODO: refactor (or remove?) Limelight logging
-//        if (logging) {
-//            SmartDashboard.putData("campose", PoseUtil.getDefaultPose3dSendable(LimelightAPI.));
-//        }
         // this.logging = logging;
         // LimelightAPI.limelightNT =
         // NetworkTableInstance.getDefault().getTable("limelight");
@@ -48,14 +46,15 @@ public class LimelightAPI {
     }
 
     public Pose2d getActualPose2d() {
-        String rawJson = this.wsClient.getMessage();
+        var rawJson = this.wsClient.getMessage();
 
-        if (rawJson.isBlank()) {
-            System.out.println("rawJson is blank");
+        if (rawJson == null) {
+            System.out.println("rawJson is null");
             return new Pose2d();
         }
 
         try {
+
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readTree(rawJson);
             System.out.println("node" + node);
@@ -76,6 +75,7 @@ public class LimelightAPI {
             System.out.println(e);
         }
         return new Pose2d();
+
     }
 
     public static void logPoses(Pose3d camPose, Pose3d botPose) {
@@ -106,29 +106,36 @@ public class LimelightAPI {
         SmartDashboard.putNumber("botpose rZ", botPose.getRotation().getZ());
     }
 
-    /**
-     * Returns an adjusted Pose3D based on camera pose
-     */
+    /** Returns an adjusted Pose3D based on camera pose */
     public static Pose2d adjustCamPose() {
 
-        Pose2d camPose = LimelightAPI.camPose();
+        var camPose = LimelightAPI.camPose();
 
         if (camPose == null) {
             return new Pose2d();
         }
+        
+        double dZ = camPose.getY();
+        double dX = camPose.getX();
 
-        Rotation2d rotation = camPose.getRotation();
+        double actualRot = camPose.getRotation().getRadians();
 
-        double adjustedTransX = camPose.getX() - Constants.GridAlign.kAdjustX * Math.sin(rotation.getRadians()); // originally used kAdjustZ, likely a mistake?
-        double adjustedTransZ = camPose.getY() - Constants.GridAlign.kAdjustZ * Math.cos(rotation.getRadians());
+        double adjustedRot = Math.atan2(dX, dZ);
 
-        return new Pose2d(adjustedTransX, adjustedTransZ, rotation);
+        double theta = adjustedRot - actualRot;
+
+        double distance = Math.hypot(dX, dZ);
+
+        double adjustedX = (distance * Math.cos(theta)) - Constants.GridAlign.kAdjustZ * Math.sin(actualRot);
+        double adjustedZ = (distance * Math.sin(theta)) - Constants.GridAlign.kAdjustZ * Math.cos(actualRot);
+
+        return new Pose2d(adjustedX, adjustedZ, new Rotation2d(actualRot));
         // return new Pose2d(adjustedCamPoseX, pose3d.getY(), adjustedCamPoseZ,
         // pose3d.getRotation());
     }
 
     public static boolean validTargets() {
-        return LimelightAPI.limelightNT.getEntry("tv").getInteger(0) == 1;
+        return LimelightAPI.limelightNT.getEntry("tv").getDouble(0) == 1;
     }
 
     public static double horizontalOffset() {
@@ -226,7 +233,9 @@ public class LimelightAPI {
     }
 
     public static Pose3d getPose(String target) {
-        double[] poseRaw = LimelightAPI.limelightNT.getEntry(target).getDoubleArray(new double[6]);
+        double[] smd = new double[6];
+
+        double[] poseRaw = LimelightAPI.limelightNT.getEntry(target).getDoubleArray(smd);
 
         if (poseRaw.length != 6) {
             return new Pose3d();
@@ -240,11 +249,16 @@ public class LimelightAPI {
         return new Pose3d(poseRaw[0], poseRaw[1], poseRaw[2], rotationPose);
     }
 
+    public static Pose2d flattenPose(Pose3d raw) {
+        return new Pose2d(raw.getX(), raw.getZ(), new Rotation2d(raw.getRotation().getAngle()));
+    }
+
     public static Pose2d botPose() {
-        return PoseUtil.flattenPose(LimelightAPI.getPose("botpose_targetspace"));
+        return flattenPose(LimelightAPI.getPose("botpose_targetspace"));
     }
 
     public static Pose2d camPose() {
-        return PoseUtil.flattenPose(LimelightAPI.getPose("camerapose_targetspace"));
+        return flattenPose(LimelightAPI.getPose("camerapose_targetspace"));
     }
+
 }

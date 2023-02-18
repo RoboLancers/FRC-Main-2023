@@ -3,7 +3,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
-    public static final class Arms {
+    public static final class Arm {
 
         public static final class FloatingJoint{
             public static final double kP = 0.1;
@@ -22,12 +22,12 @@ public final class Constants {
             public static final double kFF = 0.0;
             public static final double kMinAngle = 13.0;
             public static final double kMaxAngle = 85.0;
-            public static double kanchorJointErrorThreshold = 0.0;
+            public static double kanchorJointErrorThreshold = 2.0;
         }
 
         public static final class Ports {
-            public static final int kAnchorJointPort = 0;
-            public static final int kFloatingArmPort = 9;
+            public static final int kAnchorJointPort = 22;
+            public static final int kFloatingJointPort = 23; 
             public static final int kAnchorLimitSwitchPort = 0;
             public static final int kFloatingLimitSwitchPort = 0;
         }
@@ -50,8 +50,8 @@ public final class Constants {
         public static final class Miscellaneous {
             public static final double kAnchorArmLength = 101.6;
             public static final double kFloatingArmLength = 40.64;
-            public static final double kDegreesPerTick = 360 / 42;
-            public static final double kContractedAnchorAngle = 0.0;
+            public static final double kDegreesPerTick = 360 / 42.0;
+            public static final double kContractedAnchorAngle = 13.0;
             public static final double kContractedFloatingAngle = 0.0;
             public static final double kUndershotAngle = 0.0;
             public static final double kLowPower = 0.05;
@@ -61,26 +61,6 @@ public final class Constants {
         }
     }
 
-// TODO: update constants to fit new robot
-
-  public static final class Arm {
-        public static final double kAnchorArmLength;
-        public static final double kFloatingArmLength;
-        public static final double kLowY;
-        public static final double kLowZ;
-        public static final double kMidNodeY;
-        public static final double kMidNodeZ;
-        public static final double kMidShelfY;
-        public static final double kMidShelfZ;
-        public static final double kHighNodeY;
-        public static final double kHighNodeZ;
-        public static final double kHighShelfY;
-        public static final double kHighShelfZ;
-        public static final double kTicksPerRevolution = 360 / 42;
-        public static final double kContractedAnchorAngle;
-        public static final double kContractedFloatingAngle;
-        public static final double kMotorPower;
-    }
 
   public static  class Grabber {
         public static int kPistonDeploy = 0;

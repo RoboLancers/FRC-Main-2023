@@ -16,7 +16,7 @@ public class RollUntilSwitch extends CommandBase{
 
     @Override
     public void execute() {
-        arm.anchorJointMotor.set(Constants.Arms.Miscellaneous.kLowPower);
+        arm.anchorJointMotor.set(Constants.Arm.Miscellaneous.kLowPower);
     }
 
     @Override

@@ -21,7 +21,8 @@ public class Balance extends PIDCommand{
     public Balance(AHRS gyro, double setpoint, Drivetrain drivetrain) {
         super(
             new PIDController(BalanceConstants.kP, BalanceConstants.kI, BalanceConstants.kD),
-            // Set reference to target
+            // Set reference to target, 
+            gyro::getPitch,
             () -> setpoint,
             // Pipe output to turn robot
             (outputPower) -> {

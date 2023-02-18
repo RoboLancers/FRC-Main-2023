@@ -16,17 +16,15 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-// import edu.wpi.first.networktables.NetworkTableInstance;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants;
-import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.util.PoseUtil;
 import frc.robot.util.Websocket;
 
 public class LimelightAPI {
 
-    private static NetworkTable limelightNT = NetworkTableInstance.getDefault().getTable("limelight");
+    private static final NetworkTable limelightNT = NetworkTableInstance.getDefault().getTable("limelight");
 
     public Websocket wsClient;
 
@@ -109,7 +107,7 @@ public class LimelightAPI {
     /** Returns an adjusted Pose3D based on camera pose */
     public static Pose2d adjustCamPose() {
 
-        var camPose = LimelightAPI.camPose();
+        Pose2d camPose = LimelightAPI.camPose();
 
         if (camPose == null) {
             return new Pose2d();
@@ -188,8 +186,7 @@ public class LimelightAPI {
     }
 
     public static Object rawJSONTargets() {
-        var raw = LimelightAPI.limelightNT.getEntry("json").getValue().getValue();
-        return raw;
+        return LimelightAPI.limelightNT.getEntry("json").getValue().getValue();
     }
 
     // ! TODO find some way to type the raw json data
@@ -254,16 +251,12 @@ public class LimelightAPI {
         return new Pose3d(poseRaw[0], poseRaw[1], poseRaw[2], rotationPose);
     }
 
-    public static Pose2d flattenPose(Pose3d raw) {
-        return new Pose2d(raw.getX(), raw.getZ(), new Rotation2d(raw.getRotation().getAngle()));
-    }
-
     public static Pose2d botPose() {
-        return flattenPose(LimelightAPI.getPose("botpose_targetspace"));
+        return PoseUtil.flattenPose(LimelightAPI.getPose("botpose_targetspace"));
     }
 
     public static Pose2d camPose() {
-        return flattenPose(LimelightAPI.getPose("camerapose_targetspace"));
+        return PoseUtil.flattenPose(LimelightAPI.getPose("camerapose_targetspace"));
     }
 
 }

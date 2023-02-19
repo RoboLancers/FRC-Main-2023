@@ -27,8 +27,6 @@ private final Controller driverController = new Controller(0);
       );
     }, drivetrain));
 
-
-
     /* Add autos here */
     // autoChooser.addOption("name", auto);
   }

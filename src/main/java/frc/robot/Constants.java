@@ -27,6 +27,7 @@ public final class Constants {
         public static final double ksVoltSecondsPerMeter = 1.7953;
         public static final double kaVoltSecondsSquaredPerMeter = 0.35086;
 
+        // TODO: redo drivetrain angular characterization
         public static final double kTrackWidthMeters = 0.702;
         public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidthMeters);
 
@@ -63,13 +64,10 @@ public final class Constants {
         public static final double kTurnMultiplier = 0.6;
     }
 
-    /*TODO: provide the constants */
-
-    // referenced in frc.robot.subsystems.gyro.Balance but never defined; TODO: edit these values
     public static class BalanceConstants {
         public static final double kP = 0.008;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final double kErrorThreshold = 1;
+        public static final double kErrorThreshold = 2.5;
     }
 }

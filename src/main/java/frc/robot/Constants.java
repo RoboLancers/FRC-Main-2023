@@ -1,12 +1,78 @@
 package frc.robot;
-
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
-// TODO: update constants to fit new robot
 public final class Constants {
+    public static final class Arm {
+        // L1
+        public static final class Anchor {
+            public static final boolean kInverted = true;
+            public static final double kRatio = 360.0 / 42.0; // TODO: this probably isn't correct because of gearing
 
-  public static  class Grabber {
+            public static final double kP = 0.001;
+            public static final double kI = 0.0;
+            public static final double kD = 0.0;
+            public static final double kFF = 0.0;
+            public static double kErrorThreshold = 2.0;
+
+            // TODO: this doesn't sound right?
+            public static final double kContracted = 13.0;
+            public static final double kMinAngle = 13.0;
+            public static final double kMaxAngle = 85.0;
+
+            public static final double kLength = 101.6;
+        }
+
+        // L2
+        public static final class Floating {
+            public static final boolean kInverted = true;
+            public static final double kRatio = 360.0 / 42.0; // TODO: this probably isn't correct because of gearing
+
+            public static final double kP = 0.001;
+            public static final double kI = 0.0;
+            public static final double kD = 0.0;
+            public static final double kFF = 0.0;
+            public static double kErrorThreshold = 0.0;
+
+            public static final double kContracted = 0.0;
+            public static final double kMinAngle = 22.0;
+            public static final double kMaxAngle = 180.0;
+
+            public static final double kLength = 40.64;
+        }
+
+        public static final class Ports {
+            public static final int kAnchorPort = 22;
+            public static final int kFloatingPort = 23; // TODO: this isn't right either?
+            public static final int kAnchorLimitSwitchPort = 0;
+            public static final int kFloatingLimitSwitchPort = 0;
+        }
+
+        // TODO: calculate these or do it dynamically, but something needs to happen with them
+        // TODO: if we do these statically, create a "ArmState" wrapper
+        public static final class Positions {
+            public static final double kLowFloating = 0.0;
+            public static final double kLowAnchor = 0.0;
+            public static final double kMidNodeFloating = 0.0;
+            public static final double kMidNodeAnchor = 0.0;
+            public static final double kMidShelfFloating = 0.0;
+            public static final double kMidShelfAnchor = 0.0;
+            public static final double kHighNodeFloating = 0.0;
+            public static final double kHighNodeAnchor = 0.0;
+            public static final double kHighShelfFloating = 0.0;
+            public static final double kHighShelfAnchor = 0.0;
+            public static final double kIntakeShelfFloating = 0.0;
+            public static final double kIntakeShelfAnchor = 0.0; 
+        }
+        
+        public static final class Misc {
+            public static final double kUndershotAngle = 0.0;
+            public static final double kLowPower = 0.001;
+            public static final double distanceBetweenPivotLimelight = 48.26;
+        }
+    }
+
+    public static  class Grabber {
         public static int kPistonDeploy = 0;
         public static int kPistonRetract = 1;
         public static int kGrabberSensor;
@@ -16,10 +82,6 @@ public final class Constants {
         public static double kStart;
         public static double kMin;
     }
-
-    public static final double kThrottleFilter = 1.25;
-    public static final double kTurnFilter = 3;
-    public static final int kGyroPort = 1;
 
     public static class Trajectory {
         public static final double ksVolts = 0.131;
@@ -48,6 +110,7 @@ public final class Constants {
         
 
     }
+
     public static class Drivetrain {
         public static class LeftMotors {
             public static final int kLeftMotor1_Port = 10;
@@ -63,15 +126,15 @@ public final class Constants {
         public static final int kMaxAmps = 30; 
         public static final double kThrottleMultiplier = 0.75;
         public static final double kTurnMultiplier = 0.6;
+
+        public static final double kThrottleFilter = 1.25;
+        public static final double kTurnFilter = 3;
     }
 
-    /*TODO: provide the constants */
-
-    // referenced in frc.robot.subsystems.gyro.Balance but never defined; TODO: edit these values
-    public static class BalanceConstants {
-        public static final double kP = 0;
+    public static class Balance {
+        public static final double kP = 0.008;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final double kErrorThreshold = 1;
+        public static final double kErrorThreshold = 2.0;
     }
 }

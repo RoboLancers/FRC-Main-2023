@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Pneumatics extends SubsystemBase {
     private PneumaticHub compressor;
 
-    public Pneumatics(){
+    public Pneumatics() {
         compressor = new PneumaticHub(1);
         compressor.clearStickyFaults();
         compressor.enableCompressorDigital();

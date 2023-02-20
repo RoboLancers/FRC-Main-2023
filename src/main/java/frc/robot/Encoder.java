@@ -12,6 +12,7 @@ public class Encoder {
     public Encoder(RelativeEncoder encoder) {
         this.encoder = encoder;
         this.offset = 0;
+
     }
 
     public void setPosition(double position) {

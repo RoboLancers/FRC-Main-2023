@@ -84,10 +84,11 @@ public final class Constants {
     }
 
     public static class Trajectory {
-        public static final double ksVolts = 0.131;
-        public static final double ksVoltSecondsPerMeter =  4.03;
-        public static final double kaVoltSecondsSquaredPerMeter = 0.521;
+        public static final double ksVolts = 0.23636;
+        public static final double ksVoltSecondsPerMeter = 1.7953;
+        public static final double kaVoltSecondsSquaredPerMeter = 0.35086;
 
+        // TODO: redo drivetrain angular characterization
         public static final double kTrackWidthMeters = 0.702;
         public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidthMeters);
 
@@ -103,11 +104,8 @@ public final class Constants {
         public static final double kGearRatio = 6.8027597438; 
         public static final double kWheelRadiusInches = 3; 
         public static final double kMetersPerRot = Units.inchesToMeters(2 * Math.PI * kWheelRadiusInches / kGearRatio); 
-        // (3.072/100);
-        // Units.inchesToMeters(kGearRatio * 2 * kWheelRadiusInches * Math.PI / 42); 
 
         public static final double kMetersPerSecondPerRPM = kMetersPerRot / 60; 
-        
 
     }
 

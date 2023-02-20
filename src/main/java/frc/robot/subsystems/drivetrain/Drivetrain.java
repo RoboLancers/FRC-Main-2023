@@ -60,13 +60,6 @@ public class Drivetrain extends SubsystemBase {
         leftMotor2.setInverted(false);
         leftMotor3.setInverted(false);
 
-        // leftMotor1.setIdleMode(IdleMode.kCoast);
-        // leftMotor2.setIdleMode(IdleMode.kCoast);
-        // leftMotor3.setIdleMode(IdleMode.kCoast);
-
-        // rightMotor1.setIdleMode(IdleMode.kCoast);
-        // rightMotor2.setIdleMode(IdleMode.kCoast);
-        // rightMotor3.setIdleMode(IdleMode.kCoast);
         leftMotor1.setIdleMode(IdleMode.kBrake);
         leftMotor2.setIdleMode(IdleMode.kBrake);
         leftMotor3.setIdleMode(IdleMode.kBrake);
@@ -83,13 +76,6 @@ public class Drivetrain extends SubsystemBase {
         rightMotor1.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
         rightMotor2.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
         rightMotor3.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
-
-        // leftMotor1.setClosedLoopRampRate(2.0);
-        // leftMotor2.setClosedLoopRampRate(2.0);
-        // leftMotor3.setClosedLoopRampRate(2.0);
-        // rightMotor1.setClosedLoopRampRate(2.0);
-        // rightMotor2.setClosedLoopRampRate(2.0);
-        // rightMotor3.setClosedLoopRampRate(2.0);
 
         // Sets the distance per pulse to the pre-defined constant we calculated for both encoders.
         rightEncoder.getEncoder().setPositionConversionFactor(Constants.Trajectory.kMetersPerRot);

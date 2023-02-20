@@ -4,7 +4,7 @@ import org.bananasamirite.robotmotionprofile.TankMotionProfile;
 import org.bananasamirite.robotmotionprofile.TankMotionProfile.ProfileMethod;
 import org.bananasamirite.robotmotionprofile.TankMotionProfile.TankMotionProfileConstraints;
 
-import edu.wpi.first.math.trajectory.constraint.MaxVelocityConstraint;
+import frc.robot.commands.trajectory.MotionProfileCommand;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.poseTracker.PoseTracker;
 

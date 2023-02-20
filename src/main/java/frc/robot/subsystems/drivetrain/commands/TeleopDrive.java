@@ -5,10 +5,12 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.Controller;
 
 public class TeleopDrive extends RunCommand {
-    public TeleopDrive(Drivetrain drivetrain, Controller controller){
-        super(() -> drivetrain.arcadeDrive(
-            controller.getLeftStickY(),
-            controller.getRightStickX()
-        ), drivetrain);
+    public TeleopDrive(Drivetrain drivetrain, Controller driverController){
+        super(() -> {
+            drivetrain.arcadeDrive(
+                -driverController.getLeftStickY(),
+                -driverController.getRightStickX()
+            );
+        }, drivetrain);
     }
 }

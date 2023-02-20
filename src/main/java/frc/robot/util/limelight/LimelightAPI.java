@@ -20,61 +20,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants;
 import frc.robot.util.PoseUtil;
-import frc.robot.util.Websocket;
 
 public class LimelightAPI {
 
     private static final NetworkTable limelightNT = NetworkTableInstance.getDefault().getTable("limelight");
 
-    public Websocket wsClient;
-
     public static boolean logging;
-
-    public LimelightAPI(boolean logging) throws URISyntaxException {
-        this.wsClient = new Websocket(new URI(Constants.Limelight.kLimelightURLString));
-        // this.logging = logging;
-        // LimelightAPI.limelightNT =
-        // NetworkTableInstance.getDefault().getTable("limelight");
-
-        // if (LimelightAPI.limelightNT == null) {
-        // SmartDashboard.putString("Limelight table", "null");
-        // }
-
-        // SmartDashboard.putString("Limelight table", "not null");
-    }
-
-    public Pose2d getActualPose2d() {
-        var rawJson = this.wsClient.getMessage();
-
-        if (rawJson == null) {
-            System.out.println("rawJson is null");
-            return new Pose2d();
-        }
-
-        try {
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readTree(rawJson);
-            System.out.println("node" + node);
-
-            return new Pose2d();
-
-            // double tx = node.get("transform").get("tx").asDouble();
-            // double tz = node.get("transform").get("tz").asDouble();
-            // double ry = node.get("transform").get("ry").asDouble();
-
-            // return new Pose2d(tx, tz, new Rotation2d(ry * Math.PI / 180));
-
-        } catch (JsonMappingException e) {
-            System.out.println("fuck1");
-            System.out.println(e);
-        } catch (JsonProcessingException e) {
-            System.out.println("fuck2");
-            System.out.println(e);
-        }
-        return new Pose2d();
-
-    }
 
     public static void logPoses(Pose3d camPose, Pose3d botPose) {
 
@@ -112,8 +63,7 @@ public class LimelightAPI {
         if (camPose == null) {
             return new Pose2d();
         }
-        
-        // TODO: offset or do so from pipeline
+
         double dZ = camPose.getY() + 0.69 * 0.420;
         double dX = camPose.getX();
 

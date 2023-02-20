@@ -1,9 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
-
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
-package frc.robot.commands;
+package frc.robot.commands.trajectory;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
@@ -21,7 +16,6 @@ import frc.robot.util.MotionProfileUtils;
 import org.bananasamirite.robotmotionprofile.TankMotionProfile;
 
 
-/** An example command that uses an example subsystem. */
 public class MotionProfileCommand extends CommandBase
 {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
@@ -42,19 +36,10 @@ public class MotionProfileCommand extends CommandBase
 
     private final SimpleMotorFeedforward feedforward;
 
-    private final NetworkTableEntry velocity;
-    private final NetworkTableEntry robotVelocity;
-
-    /**
-     * Creates a new ExampleCommand.
-     *
-     * @param subsystem The subsystem used by this command.
-     */
     public MotionProfileCommand(Drivetrain subsystem, TankMotionProfile motionProfile)
     {
         this.subsystem = subsystem;
         this.timer = new Timer();
-        // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(subsystem);
 
         this.motionProfile = motionProfile;
@@ -66,14 +51,8 @@ public class MotionProfileCommand extends CommandBase
 
         this.ctrlLeft = new PIDController(Constants.Trajectory.kPDriveVel, 0, 0);
         this.ctrlRight = new PIDController(Constants.Trajectory.kPDriveVel, 0, 0);
-
-        NetworkTableInstance inst = NetworkTableInstance.getDefault();
-        this.velocity = inst.getEntry("velocity");
-        this.robotVelocity = inst.getEntry("robotVelocity");
     }
 
-
-    // Called when the command is initially scheduled.
     @Override
     public void initialize() {
         prevTime = -1;
@@ -92,17 +71,12 @@ public class MotionProfileCommand extends CommandBase
         subsystem.resetOdometry(initialState.poseMeters);
     }
 
-
-    // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
         double curTime = timer.get();
 
         double dt = curTime - prevTime;
         Trajectory.State state = MotionProfileUtils.profileStateToTrajectoryState(this.motionProfile.getStateAtTime(curTime));
-
-        this.velocity.setDouble(state.velocityMetersPerSecond);
-        this.robotVelocity.setDouble(Constants.Trajectory.kDriveKinematics.toChassisSpeeds(subsystem.getWheelSpeeds()).vxMetersPerSecond);
 
         if (prevTime < 0) {
             subsystem.tankDriveVolts(0, 0);
@@ -142,13 +116,9 @@ public class MotionProfileCommand extends CommandBase
         prevTime = curTime;
     }
 
-
-    // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {}
 
-
-    // Returns true when the command should end.
     @Override
     public boolean isFinished()
     {

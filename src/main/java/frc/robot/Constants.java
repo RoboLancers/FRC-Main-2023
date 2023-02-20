@@ -1,10 +1,67 @@
 package frc.robot;
-
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
-// TODO: update constants to fit new robot
 public final class Constants {
+    public static final class Arms {
+
+        public static final class FloatingJoint{
+            public static final double kP = 0.1;
+            public static final double kI = 0.0;
+            public static final double kD = 0.0;
+            public static final double kFF = 0.0;
+            public static final double kMinAngle = 22.0;
+            public static final double kMaxAngle = 180.0;
+            public static double kFloatingJointErrorThreshold = 0.0;
+        }
+
+        public static final class AnchorJoint{
+            public static final double kP = 0.1;
+            public static final double kI = 0.0;
+            public static final double kD = 0.0;
+            public static final double kFF = 0.0;
+            public static final double kMinAngle = 13.0;
+            public static final double kMaxAngle = 85.0;
+            public static double kanchorJointErrorThreshold = 0.0;
+        }
+
+        public static final class Ports {
+            public static final int kAnchorJointPort = 0;
+            public static final int kFloatingArmPort = 9;
+            public static final int kAnchorLimitSwitchPort = 0;
+            public static final int kFloatingLimitSwitchPort = 0;
+        }
+
+        public static final class Positions{
+            public static final double kLowFloating = 0.0;
+            public static final double kLowAnchor = 0.0;
+            public static final double kMidNodeFloating = 0.0;
+            public static final double kMidNodeAnchor = 0.0;
+            public static final double kMidShelfFloating = 0.0;
+            public static final double kMidShelfAnchor = 0.0;
+            public static final double kHighNodeFloating = 0.0;
+            public static final double kHighNodeAnchor = 0.0;
+            public static final double kHighShelfFloating = 0.0;
+            public static final double kHighShelfAnchor = 0.0;
+            public static final double kIntakeShelfFloating = 0.0;
+            public static final double kIntakeShelfAnchor = 0.0; 
+        }
+        
+        public static final class Miscellaneous {
+            public static final double kAnchorArmLength = 101.6;
+            public static final double kFloatingArmLength = 40.64;
+            public static final double kDegreesPerTick = 360 / 42;
+            public static final double kContractedAnchorAngle = 0.0;
+            public static final double kContractedFloatingAngle = 0.0;
+            public static final double kUndershotAngle = 0.0;
+            public static final double kLowPower = 0.05;
+            public static final double distanceBetweenPivotLimelight = 48.26;
+            public static final boolean kAnchorMotorInverted = false;
+            public static final boolean kFloatingMotorInverted = false;
+        }
+    }
+
+// TODO: update constants to fit new robot
 
   public static final class Arm {
         public static final double kAnchorArmLength;

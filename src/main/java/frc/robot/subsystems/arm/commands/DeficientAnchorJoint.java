@@ -13,8 +13,8 @@ public class DeficientAnchorJoint extends SequentialCommandGroup {
         this.arm = arm;
         this.encoder = encoder;
         addCommands(
-            new MoveFloatingJoint(Constants.Arms.Miscellaneous.kContractedFloatingAngle, arm),
-            new MoveAnchorJoint(Constants.Arms.Miscellaneous.kUndershotAngle, arm),
+            new MoveFloatingJoint(Constants.Arm.Miscellaneous.kContractedFloatingAngle, arm),
+            new MoveAnchorJoint(Constants.Arm.Miscellaneous.kUndershotAngle, arm),
             new RollUntilSwitch(arm, encoder));
         addRequirements(this.arm);
     }

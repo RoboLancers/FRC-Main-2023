@@ -1,4 +1,4 @@
-package frc.robot.Subsystems.Grabber;
+package frc.robot.subsystems.Grabber;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;

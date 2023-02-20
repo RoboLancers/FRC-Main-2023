@@ -10,9 +10,10 @@ public class MoveToPos extends SequentialCommandGroup {
         this.arm = arm;
         addCommands(
             new SequentialCommandGroup(
-                new MoveAnchorJoint(Math.PI / 2, this.arm), 
-                new MoveFloatingJoint(desiredFloating, this.arm),
-                new MoveAnchorJoint(desiredAnchor, this.arm)
+                new MoveAnchorJoint(0, arm)
+                // new MoveAnchorJoint(Math.PI / 2, this.arm), 
+                // new MoveFloatingJoint(desiredFloating, this.arm),
+                // new MoveAnchorJoint(desiredAnchor, this.arm)
             )       
         );
         addRequirements(this.arm);

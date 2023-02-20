@@ -1,10 +1,10 @@
-package frc.robot.Subsystems.Grabber;
+package frc.robot.subsystems.Grabber;
 
 import edu.wpi.first.hal.REVPHJNI;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Subsystems.Grabber.commands.UseCompressor;
+import frc.robot.subsystems.Grabber.commands.UseCompressor;
 
 public class Pneumatics extends SubsystemBase {
     private PneumaticHub compressor;
@@ -14,12 +14,12 @@ public class Pneumatics extends SubsystemBase {
         compressor.clearStickyFaults();
         compressor.enableCompressorDigital();
 
-        initDefaultCommand();
+        // initDefaultCommand();
     }
 
-    private void initDefaultCommand(){
-        setDefaultCommand(new UseCompressor(this));
-    }
+    // private void initDefaultCommand(){
+    //     setDefaultCommand(new UseCompressor(this));
+    // }
 
     public DoubleSolenoid getDoubleSolenoid(int port1, int port2) {
         return compressor.makeDoubleSolenoid(port1, port2);

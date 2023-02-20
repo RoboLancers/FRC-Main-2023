@@ -24,6 +24,8 @@ public class RobotContainer {
   /* Subsystems */
   private final Drivetrain drivetrain = new Drivetrain(driverController);
   private final PoseTracker poseTracker = new PoseTracker(drivetrain);
+  private final Arm arm = new Arm();
+  private final Grabber grabber = new Grabber();
 
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -38,7 +40,7 @@ public class RobotContainer {
 
     Controller.onPress(driverController.X, new ConditionalCommand(
         // on true, instantiate and schedule align command
-        new TeleopGRR(() -> {
+        new TeleopGRR(drivetrain, poseTracker, arm, grabber, () -> {
           if (driverController.dPadAngle() == 90) {
             return Displacement.RIGHT;
           } else if (driverController.dPadAngle() == 270) {

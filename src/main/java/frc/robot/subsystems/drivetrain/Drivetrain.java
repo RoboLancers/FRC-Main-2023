@@ -80,7 +80,6 @@ public class Drivetrain extends SubsystemBase {
         rightMotor3.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
 
         // Sets the distance per pulse to the pre-defined constant we calculated for both encoders.
-        // TODO: what are these constants / where did they go
         rightEncoder.getEncoder().setPositionConversionFactor(Constants.Trajectory.kMetersPerRot);
         leftEncoder.getEncoder().setPositionConversionFactor(Constants.Trajectory.kMetersPerRot);
 

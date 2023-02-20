@@ -3,6 +3,7 @@ package frc.robot.util;
 import java.util.function.Consumer;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -85,5 +86,9 @@ public class Controller {
 
     public int dPadAngle(){
         return this._controller.getPOV();
+    }
+
+    public void setRumble(boolean rumble){
+        this._controller.setRumble(RumbleType.kBothRumble, rumble ? 1 : 0);
     }
 }

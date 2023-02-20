@@ -7,17 +7,17 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.grabber.Grabber;
 
-public class ObjectDetection extends CommandBase {
+// TODO: what is this trying to do? -Matt
 
+public class ObjectDetection extends CommandBase {
     public Grabber grabber;
     public boolean getGrabberSensor;
     public AnalogPotentiometer potentiometer;
     public AnalogInput input;
     public boolean objectGrabbed;
-
     
     public ObjectDetection(DigitalInput grabberSensor, boolean getGrabberSensor) {
-        this. input = new AnalogInput(Constants.Grabber.kChannel);
+        this.input = new AnalogInput(Constants.Grabber.kChannel);
         input.setAverageBits(Constants.Grabber.kBits);
         this.potentiometer = new AnalogPotentiometer(input, Constants.Grabber.kMax, Constants.Grabber.kStart);
     }
@@ -34,5 +34,4 @@ public class ObjectDetection extends CommandBase {
             objectGrabbed = true;
         }
     }
-
 }

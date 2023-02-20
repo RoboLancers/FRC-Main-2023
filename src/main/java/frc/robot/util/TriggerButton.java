@@ -1,6 +1,5 @@
 package frc.robot.util;
 
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -9,6 +8,7 @@ public class TriggerButton extends Trigger {
     private int port;
     private boolean negative;
 
+    private static final double kDeadzone = 0.5;
 
     TriggerButton(Joystick joystick, int port, boolean negative){
         this.joystick = joystick;
@@ -16,4 +16,7 @@ public class TriggerButton extends Trigger {
         this.negative = negative;
     }
 
+    public boolean get() {
+        return negative ? (ControllerUtils.applyDeadband(joystick.getRawAxis(port), kDeadzone) < 0) : (ControllerUtils.applyDeadband(joystick.getRawAxis(port), kDeadzone) > 0);
+    }
 }

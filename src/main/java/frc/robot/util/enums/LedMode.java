@@ -1,4 +1,4 @@
-package frc.robot.util.limelight;
+package frc.robot.util.enums;
 
 public enum LedMode {
     /**

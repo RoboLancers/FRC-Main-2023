@@ -1,12 +1,11 @@
-package frc.robot.util.limelight;
+package frc.robot.util.enums;
 
-public enum Snapshot {
-    RESET(0), TAKE(1);
+public enum CamMode {
+    VISION(0), DRIVER(1);
 
     private int value;
 
-
-    private Snapshot(int value) {
+    private CamMode(int value) {
         this.value = value;
     }
 

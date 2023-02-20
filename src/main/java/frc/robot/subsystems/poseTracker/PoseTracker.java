@@ -5,9 +5,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.util.PipelineIndex;
 import frc.robot.util.PoseUtil;
 import frc.robot.util.SizedQueue;
+import frc.robot.util.enums.Displacement;
+import frc.robot.util.enums.PipelineIndex;
 import frc.robot.util.limelight.LimelightAPI;
 import org.bananasamirite.robotmotionprofile.ParametricSpline;
 import org.bananasamirite.robotmotionprofile.Waypoint;
@@ -63,7 +64,7 @@ public class PoseTracker extends SubsystemBase {
         return PoseUtil.averagePoses(true, this.camPoseQueue);
     }
 
-    public ParametricSpline generateSpline() {
+    public ParametricSpline generateSpline(Displacement disp) {
         Pose2d pose = this.getAverageAprilPose();
 
         double relativeDistance = Math.hypot(pose.getX(), pose.getY());
@@ -72,7 +73,7 @@ public class PoseTracker extends SubsystemBase {
 
                 Waypoint[] waypoints = {
                                 new Waypoint(0, 0, 0, weight, 1),
-                                new Waypoint(pose.getX(), pose.getY(), pose.getRotation().getRadians(), weight, 1)
+                                new Waypoint(pose.getX() + disp.getValue(), pose.getY(), pose.getRotation().getRadians(), weight, 1)
                 };
 
                 System.out.println(waypoints[1].getX());

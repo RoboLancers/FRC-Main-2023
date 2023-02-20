@@ -1,4 +1,4 @@
-package frc.robot.util.limelight;
+package frc.robot.util.enums;
 
 public enum StreamMode {
     STANDARD(0), PIP_MAIN(1), PIP_SECONDARY(2);

@@ -21,10 +21,12 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.GridAlign;
 import frc.robot.commands.MotionProfileCommand;
 import frc.robot.commands.Rumble;
+import frc.robot.commands.GRR.TeleopGRR;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.poseTracker.PoseTracker;
 import frc.robot.util.Controller;
 import frc.robot.util.InstantiatorCommand;
+import frc.robot.util.enums.Displacement;
 import frc.robot.util.limelight.LimelightAPI;
 
 public class RobotContainer {
@@ -47,9 +49,22 @@ public class RobotContainer {
       drivetrain.resetOdometry(new Pose2d());
     }));
 
+  
+
+    Controller.onPress(driverController.X, new ConditionalCommand(
+      // on true, instantiate and schedule align command
+      new TeleopGRR()
+      // on false rumble for 1 second
+      new Rumble(driverController, Constants.GridAlign.kRumbleTime),
+      // conditional upon a valid april tag
+      LimelightAPI::validTargets
+    ));
+
+  
+
     Controller.onPress(driverController.Y, new ConditionalCommand(
       // on true, instantiate and schedule align command
-      new InstantiatorCommand(() -> new GridAlign(drivetrain, poseTracker)),
+      new InstantiatorCommand(() -> new GridAlign(drivetrain, poseTracker, Displacement.CENTER)),
       // on false rumble for 1 second
       new Rumble(driverController, Constants.GridAlign.kRumbleTime),
       // conditional upon a valid april tag

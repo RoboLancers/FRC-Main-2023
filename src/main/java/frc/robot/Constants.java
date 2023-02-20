@@ -100,13 +100,22 @@ public final class Constants {
 
         public static final double kPDriveVel = 0;
 
+    public static class GridAlign {
+        public static final double kRumbleTime = 1;
+        public static final double kInitialWeight = 1;
+        public static final double kGridWeight = 1.0; 
+
+        public static final double kAdjustZ = 0.32;
 
         public static final double kGearRatio = 6.8027597438; 
         public static final double kWheelRadiusInches = 3; 
         public static final double kMetersPerRot = Units.inchesToMeters(2 * Math.PI * kWheelRadiusInches / kGearRatio); 
 
-        public static final double kMetersPerSecondPerRPM = kMetersPerRot / 60; 
+        public static final double kCamSanityXMax = 4;
+        public static final double kCamSanityXMin = -4;
 
+        public static final double kCamSanityZMax = 0;
+        public static final double kCamSanityZMin = -10;
     }
 
     public static class Drivetrain {

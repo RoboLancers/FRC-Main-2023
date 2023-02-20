@@ -3,21 +3,22 @@ package frc.robot.commands.trajectory;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.MotionProfileUtils;
 import org.bananasamirite.robotmotionprofile.TankMotionProfile;
 
-
-public class MotionProfileCommand extends CommandBase
-{
+public class MotionProfileCommand extends CommandBase {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
     private final Drivetrain subsystem;
     private final RamseteController ramseteController;
@@ -60,13 +61,14 @@ public class MotionProfileCommand extends CommandBase
         timer.start();
 
         Trajectory.State initialState = MotionProfileUtils.profileStateToTrajectoryState(this.motionProfile.getStateAtTime(0));
-        prevSpeeds =
-                Constants.Trajectory.kDriveKinematics.toWheelSpeeds(
-                        new ChassisSpeeds(
-                                initialState.velocityMetersPerSecond,
-                                0,
-                                initialState.curvatureRadPerMeter * initialState.velocityMetersPerSecond
-                        ));
+
+        prevSpeeds = Constants.Trajectory.kDriveKinematics.toWheelSpeeds(
+                new ChassisSpeeds(
+                        initialState.velocityMetersPerSecond,
+                        0,
+                        initialState.curvatureRadPerMeter * initialState.velocityMetersPerSecond
+                )
+        );
 
         subsystem.resetOdometry(initialState.poseMeters);
     }
@@ -117,11 +119,11 @@ public class MotionProfileCommand extends CommandBase
     }
 
     @Override
-    public void end(boolean interrupted) {}
+    public void end(boolean interrupted) {
+    }
 
     @Override
-    public boolean isFinished()
-    {
+    public boolean isFinished() {
         return timer.hasElapsed(maxTime);
     }
 }

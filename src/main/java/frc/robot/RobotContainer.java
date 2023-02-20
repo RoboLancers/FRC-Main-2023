@@ -1,16 +1,20 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.gyro.Balance;
 import frc.robot.subsystems.gyro.Gyro;
+import frc.robot.subsystems.poseTracker.PoseTracker;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.commands.MoveAnchorJoint;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.commands.TeleopDrive;
 import frc.robot.util.Controller;
+import frc.robot.util.limelight.LimelightAPI;
 
 public class RobotContainer {
   private Controller driverController = new Controller(0); 
@@ -20,13 +24,12 @@ public class RobotContainer {
   private Arm arm = new Arm();
   private Grabber grabber = new Grabber();
   private Gyro gyro = new Gyro();
-
-  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+  private PoseTracker poseTracker = new PoseTracker(drivetrain);
     
+  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+
   public RobotContainer() {
     this.drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, driverController));
-
-    this.configureButtonBindings();
   }
 
   private void configureButtonBindings(){
@@ -35,6 +38,16 @@ public class RobotContainer {
 
     // Balance
     Controller.onPress(driverController.B, new Balance(drivetrain, gyro, 0));
+
+    // Grid Align
+    Controller.onPress(driverController.Y, new ConditionalCommand(
+      // on true, instantiate and schedule align command
+      new InstantiatorCommand(() -> new GridAlign(drivetrain, poseTracker)),
+      // on false rumble for 1 second
+      new Rumble(driverController, Constants.GridAlign.kRumbleTime),
+      // conditional upon a valid april tag
+      LimelightAPI::validTargets
+    ));
 
     // Arm
     // TODO: choose our desired angle more carefully when we actually test so we don't break anything

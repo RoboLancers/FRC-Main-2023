@@ -16,7 +16,9 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.util.Encoder;
+import frc.robot.Encoder;
+import frc.robot.subsystems.drivetrain.commands.TeleopDrive;
+import frc.robot.util.Controller;
 import edu.wpi.first.wpilibj.SPI;
 
 public class Drivetrain extends SubsystemBase {
@@ -78,6 +80,7 @@ public class Drivetrain extends SubsystemBase {
         rightMotor3.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
 
         // Sets the distance per pulse to the pre-defined constant we calculated for both encoders.
+        // TODO: what are these constants / where did they go
         rightEncoder.getEncoder().setPositionConversionFactor(Constants.Trajectory.kMetersPerRot);
         leftEncoder.getEncoder().setPositionConversionFactor(Constants.Trajectory.kMetersPerRot);
 
@@ -189,5 +192,9 @@ public class Drivetrain extends SubsystemBase {
     // Returns the rate at which the robot is turning in degrees per second.
     public double getTurnRate() {
         return -gyro.getRate();
+    }
+
+    public Field2d getField() {
+        return this.m_field; 
     }
 }

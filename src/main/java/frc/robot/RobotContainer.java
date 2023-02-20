@@ -33,6 +33,8 @@ public class RobotContainer {
 
   public RobotContainer() {
     this.drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, driverController));
+
+    configureButtonBindings();
   }
 
   private void configureButtonBindings(){

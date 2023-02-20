@@ -99,6 +99,7 @@ public final class Constants {
         public static final double kRamseteZeta = 0.7;
 
         public static final double kPDriveVel = 0;
+    }
 
     public static class GridAlign {
         public static final double kRumbleTime = 1;

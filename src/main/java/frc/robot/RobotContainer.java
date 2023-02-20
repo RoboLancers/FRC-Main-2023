@@ -70,47 +70,6 @@ public class RobotContainer {
       // conditional upon a valid april tag
       LimelightAPI::validTargets
     ));
-
-    command = new MotionProfileCommand(drivetrain, new TankMotionProfile(ParametricSpline.fromWaypoints(new Waypoint[] {
-      new Waypoint(0, 0, 0, 1, 1), 
-      new Waypoint(1, 1, Math.toRadians(90), 1, 1)
-    }), ProfileMethod.TIME, new TankMotionProfile.TankMotionProfileConstraints(2, 0.2))); 
-
-    var autoVoltageConstraint =
-        new DifferentialDriveVoltageConstraint(
-            new SimpleMotorFeedforward(
-                Constants.Trajectory.ksVolts,
-                Constants.Trajectory.ksVoltSecondsPerMeter,
-                Constants.Trajectory.kaVoltSecondsSquaredPerMeter),
-                Constants.Trajectory.kDriveKinematics,
-            10);
-
-        // Create config for trajectory
-        TrajectoryConfig config =
-        new TrajectoryConfig(
-                1,
-                0.2)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(Constants.Trajectory.kDriveKinematics)
-            // Apply the voltage constraint
-            .addConstraint(autoVoltageConstraint);
-
-            Trajectory exampleTrajectory =
-            TrajectoryGenerator.generateTrajectory(
-                // Start at the origin facing the +X direction
-                new Pose2d(0, 0, new Rotation2d(0)),
-                // Pass through these two interior waypoints, making an 's' curve path
-                // List.of(new Translation2d(0.5, 0.5), ),
-                new ArrayList<>(), 
-                // End 3 meters straight ahead of where we started, facing forward
-                new Pose2d(1, 1, Rotation2d.fromDegrees(90)),
-                // Pass config
-                config);
-
-                // command = new TrajectoryCommand(drivetrain, exampleTrajectory); 
-
-
-    
   }
 
   public Command getAutonomousCommand() {

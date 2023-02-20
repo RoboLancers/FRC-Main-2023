@@ -61,7 +61,7 @@ public class PoseTracker extends SubsystemBase {
     }
 
     public Pose2d getAverageAprilPose() {
-        return PoseUtil.averagePoses(true, this.camPoseQueue);
+        return PoseUtil.averagePoses(false, this.camPoseQueue);
     }
 
     public ParametricSpline generateSpline(Displacement disp) {
@@ -75,10 +75,6 @@ public class PoseTracker extends SubsystemBase {
                                 new Waypoint(0, 0, 0, weight, 1),
                                 new Waypoint(pose.getX() + disp.getValue(), pose.getY(), pose.getRotation().getRadians(), weight, 1)
                 };
-
-                System.out.println(waypoints[1].getX());
-                System.out.println(waypoints[1].getY());
-                System.out.println(waypoints[1].getWeight());
 
         return ParametricSpline.fromWaypoints(waypoints);
     }

@@ -13,8 +13,10 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Encoder;
 import frc.robot.subsystems.drivetrain.commands.TeleopDrive;
 import frc.robot.util.Controller;
 import edu.wpi.first.wpilibj.SPI;
@@ -37,8 +39,8 @@ public class Drivetrain extends SubsystemBase {
     private final DifferentialDriveOdometry odometry;
 
     // reverse the encoders to match the reversed motors of the right side.
-    private final RelativeEncoder rightEncoder = rightMotor1.getEncoder();
-    private final RelativeEncoder leftEncoder = leftMotor1.getEncoder();
+    private final Encoder rightEncoder = new Encoder(rightMotor1.getEncoder());
+    private final Encoder leftEncoder = new Encoder(leftMotor1.getEncoder());
 
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
@@ -65,8 +67,8 @@ public class Drivetrain extends SubsystemBase {
         rightMotor3.setIdleMode(IdleMode.kBrake);
 
         // Sets the distance per pulse to the pre-defined constant we calculated for both encoders.
-        rightEncoder.setPositionConversionFactor(Constants.Drivetrain.kDistPerRot);
-        leftEncoder.setPositionConversionFactor(Constants.Drivetrain.kDistPerRot);
+        rightEncoder.getEncoder().setPositionConversionFactor(Constants.Drivetrain.kDistPerRot);
+        leftEncoder.getEncoder().setPositionConversionFactor(Constants.Drivetrain.kDistPerRot);
 
         resetEncoders();
 
@@ -80,6 +82,7 @@ public class Drivetrain extends SubsystemBase {
     public void periodic() {
         odometry.update(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
         m_field.setRobotPose(odometry.getPoseMeters());
+        SmartDashboard.putData("field", m_field);
     }
 
     // Returns the pose of the robot.
@@ -89,7 +92,7 @@ public class Drivetrain extends SubsystemBase {
 
     // Returns the current speed of the wheels of the robot.
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-        return new DifferentialDriveWheelSpeeds(leftEncoder.getVelocity(), -rightEncoder.getVelocity());
+        return new DifferentialDriveWheelSpeeds(leftEncoder.getEncoder().getVelocity(), -rightEncoder.getEncoder().getVelocity());
     }
 
     // Resets the odometry, both rotation and distance traveled.
@@ -133,12 +136,12 @@ public class Drivetrain extends SubsystemBase {
 
     // Returns the left encoders.
     public RelativeEncoder getLeftEncoder() {
-        return leftEncoder;
+        return leftEncoder.getEncoder();
     }
 
     // Returns the right encoders.
     public RelativeEncoder getRightEncoder() {
-        return rightEncoder;
+        return rightEncoder.getEncoder();
     }
 
     // Sets the max output of the drive. Used for scaling the drive to drive more slowly.
@@ -167,5 +170,9 @@ public class Drivetrain extends SubsystemBase {
     // Returns the rate at which the robot is turning in degrees per second.
     public double getTurnRate() {
         return -gyro.getRate();
+    }
+
+    public Field2d getField() {
+        return this.m_field; 
     }
 }

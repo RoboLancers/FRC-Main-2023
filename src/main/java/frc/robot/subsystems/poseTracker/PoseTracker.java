@@ -1,82 +1,80 @@
 package frc.robot.subsystems.poseTracker;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bananasamirite.robotmotionprofile.ParametricSpline;
-import org.bananasamirite.robotmotionprofile.Waypoint;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.PipelineIndex;
 import frc.robot.util.PoseUtil;
 import frc.robot.util.SizedQueue;
 import frc.robot.util.limelight.LimelightAPI;
+import org.bananasamirite.robotmotionprofile.ParametricSpline;
+import org.bananasamirite.robotmotionprofile.Waypoint;
 
 public class PoseTracker extends SubsystemBase {
-        // Getting last 3 camera pose values
-        private SizedQueue<Pose2d> camPoseQueue = new SizedQueue<Pose2d>(3);
+    // Getting last 3 camera pose values
+    private SizedQueue<Pose2d> camPoseQueue = new SizedQueue<>(3);
 
-        // Getting last 3 bot pose values
-        private SizedQueue<Pose2d> botPoseQueue = new SizedQueue<Pose2d>(3);
+    // Getting last 3 bot pose values
+    private SizedQueue<Pose2d> botPoseQueue = new SizedQueue<>(3);
 
-        private Drivetrain drivetrain;
+    private Drivetrain drivetrain;
 
-        private Pose2d avgPythonCamPose;
+    private Pose2d avgPythonCamPose;
 
-        private Pose2d avgAprilTagCamPose;
+    private Pose2d avgAprilTagCamPose;
 
-        public PoseTracker(Drivetrain drivetrain) {
-                this.drivetrain = drivetrain;
-        }
+    public PoseTracker(Drivetrain drivetrain) {
+        this.drivetrain = drivetrain;
+    }
 
-        @Override
-        public void periodic() {
-                // setting the last 3
-                this.camPoseQueue.add(LimelightAPI.adjustedCamPose(this.drivetrain));
-                SmartDashboard.putNumber("latest queue num x", LimelightAPI.adjustedCamPose(this.drivetrain).getX());
+    @Override
+    public void periodic() {
+        // setting the last 3
+        this.camPoseQueue.add(LimelightAPI.adjustCamPose());
+        SmartDashboard.putNumber("latest queue num x", LimelightAPI.adjustCamPose().getX());
 
-                this.botPoseQueue.add(LimelightAPI.botPose());
+                this.botPoseQueue.add(LimelightAPI.adjustCamPose());
 
-                this.avgAprilTagCamPose = getAverageAprilPose();
+                this.avgAprilTagCamPose =  getAverageAprilPose();
 
                 SmartDashboard.putNumber("avg campose x", avgAprilTagCamPose.getX());
                 SmartDashboard.putNumber("avg campose z", avgAprilTagCamPose.getY());
-                SmartDashboard.putNumber("heading", this.drivetrain.getHeading());
+                SmartDashboard.putNumber("avg rotation", avgAprilTagCamPose.getRotation().getDegrees());
+
+               //  System.out.println(LimelightAPI.adjustCamPose());
+
         }
 
-        // TODO: are we scrapping this? definitely something to discuss
-        public Pose2d getSensorFusionAverage() {
-                return PoseUtil.averagePipelinePoses(new ArrayList<>(List.of(avgAprilTagCamPose, avgPythonCamPose)));
-        }
+    // TODO: are we scrapping this? definitely something to discuss
+    public Pose2d getSensorFusionAverage() {
+        return PoseUtil.averagePoses(false, avgAprilTagCamPose, avgPythonCamPose);
+    }
 
-        public void clearAndSetPipeline(PipelineIndex index) {
-                this.camPoseQueue.clear();
-                this.botPoseQueue.clear();
+    public void clearAndSetPipeline(PipelineIndex index) {
+        this.camPoseQueue.clear();
+        this.botPoseQueue.clear();
 
-                LimelightAPI.setPipeline(index.getValue());
-        }
+        LimelightAPI.setPipeline(index.getValue());
+    }
 
-        public Pose2d getAverageAprilPose() {
-                return PoseUtil.averagePoses(this.camPoseQueue);
-        }
+    public Pose2d getAverageAprilPose() {
+        return PoseUtil.averagePoses(false, this.camPoseQueue);
+    }
 
-        public ParametricSpline generateSpline(){
-                Pose2d pose = this.getAverageAprilPose();
+    public ParametricSpline generateSpline() {
+        Pose2d pose = this.getAverageAprilPose();
 
-                double relativeDistance = Math.hypot(pose.getX(), pose.getY());
+        double relativeDistance = Math.hypot(pose.getX(), pose.getY());
 
-                double weight = Constants.GridAlign.kGridWeight * relativeDistance;
+        double weight = Constants.GridAlign.kGridWeight * relativeDistance;
 
                 Waypoint[] waypoints = {
-                        new Waypoint(0, 0, pose.getRotation().getRadians(), weight, 1),
-                        new Waypoint(-pose.getY(), pose.getX(), 0, weight, 1)
+                                new Waypoint(0, 0, 0, weight, 1),
+                                new Waypoint(pose.getX(), pose.getY(), pose.getRotation().getRadians(), weight, 1)
                 };
 
-                return ParametricSpline.fromWaypoints(waypoints);
-        }
+        return ParametricSpline.fromWaypoints(waypoints);
+    }
 }

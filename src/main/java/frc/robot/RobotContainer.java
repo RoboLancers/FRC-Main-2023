@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -13,20 +14,24 @@ import frc.robot.util.InstantiatorCommand;
 import frc.robot.util.limelight.LimelightAPI;
 
 public class RobotContainer {
-  /* Controllers */
-  private final Controller driverController = new Controller(0);
-  private final Controller manipulatorController = new Controller(1);
+    /* Controllers */
+    private final Controller driverController = new Controller(0);
+    private final Controller manipulatorController = new Controller(1);
 
-  /*   Subsystems   */
-  private final Drivetrain drivetrain = new Drivetrain(driverController);
-  private final PoseTracker poseTracker = new PoseTracker(drivetrain);
-
-  
-
+    /* Subsystems */
+    private final Drivetrain drivetrain = new Drivetrain(driverController);
+    private final PoseTracker poseTracker = new PoseTracker(drivetrain);
+    
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+
+  private Command command; 
 
   public RobotContainer() {
     Controller.onPress(driverController.A, new InstantCommand(this.drivetrain::zeroHeading));
+
+    Controller.onPress(driverController.B, new InstantCommand(() -> {
+      drivetrain.resetOdometry(new Pose2d());
+    }));
 
     Controller.onPress(driverController.Y, new ConditionalCommand(
       // on true, instantiate and schedule align command
@@ -39,6 +44,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    return command; 
   }
 }

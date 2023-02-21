@@ -1,12 +1,5 @@
 package frc.robot.util.limelight;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -20,6 +13,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants;
 import frc.robot.util.PoseUtil;
+<<<<<<< HEAD
+=======
+import frc.robot.util.enums.CamMode;
+import frc.robot.util.enums.LedMode;
+import frc.robot.util.enums.Snapshot;
+import frc.robot.util.enums.StreamMode;
+>>>>>>> ee262db0500fafd5ff8105455d5d0589f418a2a3
 
 public class LimelightAPI {
 
@@ -27,6 +27,11 @@ public class LimelightAPI {
 
     public static boolean logging;
 
+<<<<<<< HEAD
+=======
+    public LimelightAPI(boolean logging) {}
+
+>>>>>>> ee262db0500fafd5ff8105455d5d0589f418a2a3
     public static void logPoses(Pose3d camPose, Pose3d botPose) {
 
         SmartDashboard.putNumber("campose x (z adj)", camPose.getX() / camPose.getZ());
@@ -64,6 +69,10 @@ public class LimelightAPI {
             return new Pose2d();
         }
 
+<<<<<<< HEAD
+=======
+        // TODO: offset or do so from pipeline
+>>>>>>> ee262db0500fafd5ff8105455d5d0589f418a2a3
         double dZ = camPose.getY() + 0.69 * 0.420;
         double dX = camPose.getX();
 

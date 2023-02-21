@@ -7,6 +7,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.PoseUtil;
 import frc.robot.util.SizedQueue;
+import frc.robot.util.SmartDashboardDB;
 import frc.robot.util.enums.Displacement;
 import frc.robot.util.enums.PipelineIndex;
 import frc.robot.util.limelight.LimelightAPI;
@@ -21,6 +22,7 @@ public class PoseTracker extends SubsystemBase {
     private SizedQueue<Pose2d> botPoseQueue = new SizedQueue<>(3);
 
     private Drivetrain drivetrain;
+   
 
     private Pose2d avgPythonCamPose;
 
@@ -64,7 +66,7 @@ public class PoseTracker extends SubsystemBase {
         return PoseUtil.averagePoses(false, this.camPoseQueue);
     }
 
-    // TODO: that aint how this works
+    // TODO: that aint how this works (but it's close)
     // public ParametricSpline generateSpline(Displacement disp) {
     //     Pose2d pose = this.getAverageAprilPose();
 
@@ -81,6 +83,8 @@ public class PoseTracker extends SubsystemBase {
     // }
 
     public ParametricSpline generateSpline() {
+
+
         Pose2d pose = this.getAverageAprilPose();
 
         double relativeDistance = Math.hypot(pose.getX(), pose.getY());

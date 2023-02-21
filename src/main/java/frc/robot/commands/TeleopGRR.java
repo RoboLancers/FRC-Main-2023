@@ -12,12 +12,13 @@ import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.poseTracker.PoseTracker;
 import frc.robot.util.InstantiatorCommand;
-import frc.robot.util.enums.Displacement;
+
 
 public class TeleopGRR extends SequentialCommandGroup {
-    public TeleopGRR(Drivetrain drivetrain, PoseTracker tracker, Arm arm, Grabber grabber, Supplier<Displacement> displacement) {
+    public TeleopGRR(Drivetrain drivetrain, PoseTracker tracker, Arm arm, Grabber grabber) {
         super(
             // TODO: factor in the displacement, but do it properly
+            new SetDisplacement(),
             new InstantiatorCommand(() -> new GridAlign(drivetrain, tracker)),
             // Fix the arm BS stuff
             new MoveToPos(arm, 0, 0),

@@ -16,9 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Encoder;
-import frc.robot.subsystems.drivetrain.commands.TeleopDrive;
-import frc.robot.util.Controller;
+import frc.robot.util.Encoder;
 import edu.wpi.first.wpilibj.SPI;
 
 public class Drivetrain extends SubsystemBase {

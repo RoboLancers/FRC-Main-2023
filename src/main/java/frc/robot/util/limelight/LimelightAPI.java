@@ -1,13 +1,5 @@
 package frc.robot.util.limelight;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,12 +12,22 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants;
 import frc.robot.util.PoseUtil;
+import frc.robot.util.SmartDashboardDB;
+import frc.robot.util.enums.CamMode;
+import frc.robot.util.enums.LedMode;
+import frc.robot.util.enums.Snapshot;
+import frc.robot.util.enums.StreamMode;
 
 public class LimelightAPI {
 
     private static final NetworkTable limelightNT = NetworkTableInstance.getDefault().getTable("limelight");
 
+    private static final SmartDashboardDB db = new SmartDashboardDB();
+
     public static boolean logging;
+
+    public LimelightAPI(boolean logging) {
+    }
 
     public static void logPoses(Pose3d camPose, Pose3d botPose) {
 
@@ -64,8 +66,9 @@ public class LimelightAPI {
             return new Pose2d();
         }
 
+        // TODO: offset or do so from pipeline
         double dZ = camPose.getY() + 0.69 * 0.420;
-        double dX = camPose.getX();
+        double dX = camPose.getX() + LimelightAPI.db.getDouble("displacement");
 
         double actualRot = (Math.signum(-dX)) * camPose.getRotation().getRadians();
 

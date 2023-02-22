@@ -8,7 +8,7 @@ import java.time.chrono.ThaiBuddhistEra;
 public class Contract extends SequentialCommandGroup {
     public Contract(Arm arm) {
         addCommands(
-            new MoveAnchorJoint(Math.PI / 2, arm),
+            // new MoveAnchorJoint(Math.PI / 2, arm),
             new MoveFloatingJoint(Constants.Arm.Floating.kContracted, arm),
             new DeficientAnchorJoint(arm)
         );

@@ -7,7 +7,6 @@ import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.PoseUtil;
 import frc.robot.util.SizedQueue;
-import frc.robot.util.SmartDashboardDB;
 import frc.robot.util.enums.Displacement;
 import frc.robot.util.enums.PipelineIndex;
 import frc.robot.util.limelight.LimelightAPI;

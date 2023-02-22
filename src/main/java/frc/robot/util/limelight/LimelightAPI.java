@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants;
 import frc.robot.util.PoseUtil;
-import frc.robot.util.SmartDashboardDB;
 import frc.robot.util.enums.CamMode;
 import frc.robot.util.enums.LedMode;
 import frc.robot.util.enums.Snapshot;
@@ -22,7 +21,6 @@ public class LimelightAPI {
 
     private static final NetworkTable limelightNT = NetworkTableInstance.getDefault().getTable("limelight");
 
-    private static final SmartDashboardDB db = new SmartDashboardDB();
 
     public static boolean logging;
 
@@ -68,7 +66,7 @@ public class LimelightAPI {
 
         // TODO: offset or do so from pipeline
         double dZ = camPose.getY() + 0.69 * 0.420;
-        double dX = camPose.getX() + LimelightAPI.db.getDouble("displacement");
+        double dX = camPose.getX();
 
         double actualRot = (Math.signum(-dX)) * camPose.getRotation().getRadians();
 

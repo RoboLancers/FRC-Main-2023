@@ -78,7 +78,7 @@ public class Arm extends SubsystemBase {
    }
 
    public void initTuneControllers(){
-      SmartDashboard.putNumber("anchorKP", SmartDashboard.getNumber("anchorKP", Constants.Arm.Anchor.kP));
+      SmartDashboard.putNumber("anchor KP", SmartDashboard.getNumber("anchorKP", Constants.Arm.Anchor.kP));
       SmartDashboard.putNumber("anchorKI", SmartDashboard.getNumber("anchorKI", Constants.Arm.Anchor.kI));
       SmartDashboard.putNumber("anchorKD", SmartDashboard.getNumber("anchorKD", Constants.Arm.Anchor.kD));
       SmartDashboard.putNumber("anchorKFF", SmartDashboard.getNumber("anchorKFF", Constants.Arm.Anchor.kFF));
@@ -94,7 +94,7 @@ public class Arm extends SubsystemBase {
       double floatingKI = SmartDashboard.getEntry("floatingKI").getDouble(0);
       double floatingKD = SmartDashboard.getEntry("floatingKD").getDouble(0);
       double floatingKFF = SmartDashboard.getEntry("floatingKFF").getDouble(0);
-      double anchorKP = SmartDashboard.getEntry("anchorKP").getDouble(0);
+      double anchorKP = SmartDashboard.getEntry("anchor KP").getDouble(0);
       double anchorKI = SmartDashboard.getEntry("anchorKI").getDouble(0);
       double anchorKD = SmartDashboard.getEntry("anchorKD").getDouble(0);
       double anchorKFF = SmartDashboard.getEntry("anchorKFF").getDouble(0);

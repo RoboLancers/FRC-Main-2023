@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.time.Instant;
+
 import edu.wpi.first.math.geometry.Pose2d;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -7,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.gyro.Balance;
 import frc.robot.subsystems.gyro.Gyro;
@@ -22,7 +25,6 @@ import frc.robot.subsystems.arm.commands.MoveAnchorJoint;
 import frc.robot.subsystems.drivetrain.commands.TeleopDrive;
 import frc.robot.util.Controller;
 import frc.robot.util.InstantiatorCommand;
-import frc.robot.util.SmartDashboardDB;
 import frc.robot.util.enums.Displacement;
 import frc.robot.util.limelight.LimelightAPI;
 import frc.robot.subsystems.grabber.Grabber;
@@ -41,23 +43,18 @@ public class RobotContainer {
   private PoseTracker poseTracker = new PoseTracker(drivetrain);
     
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
-  private final SmartDashboardDB db = new SmartDashboardDB();
+  // TODO: Raf is rly dumb for this shit
+  // private final SmartDashboardDB db = new SmartDashboardDB();
 
   public RobotContainer() {
     this.drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, driverController));
+
+    // this.poseTracker.setDefaultCommand(new PrintCommand("Matt likes balls idk, Raf too"));
 
     configureButtonBindings();
   }
 
   private void configureButtonBindings(){
-
-    // Preselect
-  
-    db.setNumber("grid-select", (double) manipulatorController.dPadAngle());
-    // TODO: figure this shit out arm group
-    //db.setNumber("level-select", 0);
-
-   
 
     // Grabber
     Controller.onPress(driverController.A, new InstantCommand(grabber::toggleDeploy));
@@ -75,19 +72,30 @@ public class RobotContainer {
       LimelightAPI::validTargets
     ));
 
+    // TODO: limit switch 9
+
+
+    SmartDashboard.putNumber("target anchor angle", 30);
+
     // Arm
-    // TODO: choose our desired angle more carefully when we actually test so we don't break anything
-    Controller.onHold(driverController.X, new MoveAnchorJoint(0, arm));
+    Controller.onHold(driverController.X, new MoveAnchorJoint(() -> {
+      double desired = SmartDashboard.getNumber("target anchor angle", 30);
+      if(desired < 13) return 13;
+
+      if(desired > 90) return 90;
+
+      return desired;
+    }, arm));
 
 
    // TODO: this lowkey not really gonna work rn, need to implement displacement properly
-    Controller.onPress(driverController.LeftBumper, new ConditionalCommand(
-        // on true, instantiate and schedule align command
-        new TeleopGRR(drivetrain, poseTracker, arm, grabber),
-        // on false rumble for 1 second
-        new Rumble(driverController, Constants.GridAlign.kRumbleTime),
-        // conditional upon a valid april tag
-        LimelightAPI::validTargets));
+  //   Controller.onPress(driverController.LeftBumper, new ConditionalCommand(
+  //       // on true, instantiate and schedule align command
+  //       new TeleopGRR(drivetrain, poseTracker, arm, grabber),
+  //       // on false rumble for 1 second
+  //       new Rumble(driverController, Constants.GridAlign.kRumbleTime),
+  //       // conditional upon a valid april tag
+  //       LimelightAPI::validTargets));
   }
 
   // Complete arm controls, for now use testing

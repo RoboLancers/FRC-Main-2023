@@ -9,7 +9,6 @@ import org.bananasamirite.robotmotionprofile.TankMotionProfile.TankMotionProfile
 import frc.robot.commands.trajectory.MotionProfileCommand;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.poseTracker.PoseTracker;
-import frc.robot.util.SmartDashboardDB;
 import frc.robot.util.enums.Displacement;
 
 public class GridAlign extends MotionProfileCommand {

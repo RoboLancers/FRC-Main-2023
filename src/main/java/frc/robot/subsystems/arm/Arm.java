@@ -70,6 +70,7 @@ public class Arm extends SubsystemBase {
       this.anchorPIDController.setI(Constants.Arm.Anchor.kI);
       this.anchorPIDController.setD(Constants.Arm.Anchor.kD);
       this.anchorPIDController.setFF(Constants.Arm.Anchor.kFF);
+      // this.anchorPIDController.set 
 
       this.floatingPIDController.setP(Constants.Arm.Floating.kP);
       this.floatingPIDController.setI(Constants.Arm.Floating.kI);
@@ -78,23 +79,23 @@ public class Arm extends SubsystemBase {
    }
 
    public void initTuneControllers(){
-      SmartDashboard.putNumber("anchor KP", SmartDashboard.getNumber("anchorKP", Constants.Arm.Anchor.kP));
+      SmartDashboard.putNumber("anchor  KP", SmartDashboard.getNumber("anchorKP", Constants.Arm.Anchor.kP));
       SmartDashboard.putNumber("anchorKI", SmartDashboard.getNumber("anchorKI", Constants.Arm.Anchor.kI));
       SmartDashboard.putNumber("anchorKD", SmartDashboard.getNumber("anchorKD", Constants.Arm.Anchor.kD));
       SmartDashboard.putNumber("anchorKFF", SmartDashboard.getNumber("anchorKFF", Constants.Arm.Anchor.kFF));
    
-      SmartDashboard.putNumber("floatingKP", SmartDashboard.getNumber("floatingKP", Constants.Arm.Floating.kP));
+      SmartDashboard.putNumber("floating KP", SmartDashboard.getNumber("floatingKP", Constants.Arm.Floating.kP));
       SmartDashboard.putNumber("floatingKI", SmartDashboard.getNumber("floatingKI", Constants.Arm.Floating.kI));
       SmartDashboard.putNumber("floatingKD", SmartDashboard.getNumber("floatingKD", Constants.Arm.Floating.kD));
       SmartDashboard.putNumber("floatingKFF", SmartDashboard.getNumber("floatingKFF", Constants.Arm.Floating.kFF));
    }
 
    public void tuneControllers(){
-      double floatingKP = SmartDashboard.getEntry("floatingKP").getDouble(0);
+      double floatingKP = SmartDashboard.getEntry("floating KP").getDouble(0);
       double floatingKI = SmartDashboard.getEntry("floatingKI").getDouble(0);
       double floatingKD = SmartDashboard.getEntry("floatingKD").getDouble(0);
       double floatingKFF = SmartDashboard.getEntry("floatingKFF").getDouble(0);
-      double anchorKP = SmartDashboard.getEntry("anchor KP").getDouble(0);
+      double anchorKP = SmartDashboard.getEntry("anchor  KP").getDouble(0);
       double anchorKI = SmartDashboard.getEntry("anchorKI").getDouble(0);
       double anchorKD = SmartDashboard.getEntry("anchorKD").getDouble(0);
       double anchorKFF = SmartDashboard.getEntry("anchorKFF").getDouble(0);
@@ -155,7 +156,7 @@ public class Arm extends SubsystemBase {
       // TODO: comment out tuneControllers() at comp
       tuneControllers();
 
-      SmartDashboard.putNumber("Anchor Angle", this.getAnchorAngle());
+      SmartDashboard.putNumber("Anchor  Angle", this.getAnchorAngle());
       SmartDashboard.putNumber("Floating Angle", this.getFloatingAngle());
    }
 }

@@ -1,5 +1,7 @@
 package frc.robot.subsystems.drivetrain;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import javax.swing.LayoutStyle;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -140,19 +142,35 @@ public class Drivetrain extends SubsystemBase {
         rightMotors.set(power);
     }
 
-    private double lastNonzeroThrottle = 0; 
+    // private double lastNonzeroThrottle = 0;
+    private double lastEffThrottle = 0; 
 
     // Drives the robot with arcade controls.
     public void arcadeDrive(double throttle, double turn) {
 
-        double effThrottle = 0; 
-        if (throttle > 0 || lastNonzeroThrottle > 0) {
-            effThrottle = throttleForwardFilter.calculate(throttle); 
-        } else if (throttle < 0 || lastNonzeroThrottle < 0) {
-            effThrottle = -throttleBackwardFilter.calculate(-throttle); 
-        }
+        // TODO: use this if you want deceleration to be higher when joystick is in the opp direction as the current drive direction
+        // double effThrottle = 0; 
+        // if (throttle > 0 || lastNonzeroThrottle > 0) {
+        //     effThrottle = throttleForwardFilter.calculate(throttle); 
+        //     throttleBackwardFilter.reset(0);
+        // } else if (throttle < 0 || lastNonzeroThrottle < 0) {
+        //     effThrottle = -throttleBackwardFilter.calculate(-throttle); 
+        //     throttleForwardFilter.reset(0);
+        // }
 
-        if (throttle != 0) lastNonzeroThrottle = throttle; 
+        double effThrottle = 0; 
+        if (lastEffThrottle > 0) {
+            effThrottle = throttleForwardFilter.calculate(Math.max(throttle, 0)); 
+            throttleBackwardFilter.reset(0);
+        } else if (lastEffThrottle < 0) {
+            effThrottle = -throttleBackwardFilter.calculate(-Math.min(throttle, 0)); 
+            throttleForwardFilter.reset(0);
+        } else {
+            effThrottle = throttle > 0 ? throttleForwardFilter.calculate(throttle) : throttle < 0 ? -throttleBackwardFilter.calculate(-throttle) : 0; 
+        }
+        
+        // if (lastNonzeroThrottle != 0)
+        lastEffThrottle = effThrottle; 
 
         difDrive.curvatureDrive(effThrottle, turnFilter.calculate(turn), Math.abs(throttle) < 0.05);
         // if (throttle == 0 && turn == 0) {

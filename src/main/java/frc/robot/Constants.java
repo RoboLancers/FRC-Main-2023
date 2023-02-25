@@ -164,13 +164,13 @@ public final class Constants {
         public static final int kMaxAmps = 30; 
         public static final double kThrottleMultiplier = 0.75;
         public static final double kTurnMultiplier = 0.6;
-        public static final double kThrottleMultiplierSM = 0.4;
-        public static final double kTurnMultiplierSM = 0.3;
+        public static final double kThrottleMultiplierSM = 0.2;
+        public static final double kTurnMultiplierSM = 0.15;
 
         public static final double kForwardThrottleAccelFilter = 1.25;
-        public static final double kForwardThrottleDecelFilter = 1;
+        public static final double kForwardThrottleDecelFilter = 1.00;
         public static final double kBackwardThrottleAccelFilter = 1.25;
-        public static final double kBackwardThrottleDecelFilter = 1;
+        public static final double kBackwardThrottleDecelFilter = 1.00;
         public static final double kTurnFilter = 2;
     }
 

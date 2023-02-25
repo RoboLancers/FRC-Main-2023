@@ -19,6 +19,8 @@ public class Controller {
     public Trigger Y;
     public Trigger LeftBumper;
     public Trigger RightBumper;
+    public Trigger LeftTrigger; 
+    public Trigger RightTrigger; 
 
     private double deadzone;
     double throttleMultiplier = Constants.Drivetrain.kThrottleMultiplier;
@@ -43,6 +45,8 @@ public class Controller {
         this.Y = new Trigger(this._controller::getYButton);
         this.LeftBumper = new Trigger(this._controller::getLeftBumper);
         this.RightBumper = new Trigger(this._controller::getRightBumper);
+        this.LeftTrigger = new Trigger(() -> this._controller.getLeftTriggerAxis() >= 0.5); 
+        this.RightTrigger = new Trigger(() -> this._controller.getRightTriggerAxis() >= 0.5); 
         this.deadzone = deadzone; 
     }
  

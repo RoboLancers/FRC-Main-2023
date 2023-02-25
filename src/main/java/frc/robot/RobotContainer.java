@@ -69,8 +69,8 @@ public class RobotContainer {
     // Controller.onPress(driverController.B, new Balance(drivetrain, gyro, 0));
 
     //slow mode
-    Controller.onHold(driverController.RightBumper, new InstantCommand(() -> driverController.setSlowMode(Mode.SLOW)));
-    Controller.onRelease(driverController.RightBumper, new InstantCommand(() -> driverController.setSlowMode(Mode.NORMAL)));
+    Controller.onHold(driverController.RightTrigger, new InstantCommand(() -> driverController.setSlowMode(Mode.SLOW)));
+    Controller.onRelease(driverController.RightTrigger, new InstantCommand(() -> driverController.setSlowMode(Mode.NORMAL)));
   
     // // Grid Align
     // Controller.onPress(driverController.Y, new ConditionalCommand(

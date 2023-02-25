@@ -154,8 +154,6 @@ public class Drivetrain extends SubsystemBase {
 
         if (throttle != 0) lastNonzeroThrottle = throttle; 
 
-        System.out.println(effThrottle);
-
         difDrive.curvatureDrive(effThrottle, turnFilter.calculate(turn), Math.abs(throttle) < 0.05);
         // if (throttle == 0 && turn == 0) {
         //     tankDriveVolts(0, 0);

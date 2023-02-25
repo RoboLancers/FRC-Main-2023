@@ -23,6 +23,7 @@ import frc.robot.commands.GridAlign;
 import frc.robot.commands.Rumble;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.commands.MoveAnchorJoint;
+import frc.robot.subsystems.arm.commands.MoveFloatingJoint;
 import frc.robot.subsystems.drivetrain.commands.TeleopDrive;
 import frc.robot.util.Controller;
 import frc.robot.util.InstantiatorCommand;
@@ -61,38 +62,46 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     // Grabber
-    Controller.onPress(driverController.A, new InstantCommand(grabber::toggleDeploy));
+    // Controller.onPress(driverController.A, new InstantCommand(grabber::toggleDeploy));
 
-    // Balance
-    Controller.onPress(driverController.B, new Balance(drivetrain, gyro, 0));
+    // // Balance
+    // Controller.onPress(driverController.B, new Balance(drivetrain, gyro, 0));
 
     //slow mode
     Controller.onPress(driverController.RightBumper, new InstantCommand(driverController :: toggleSlowMode));
   
-    // Grid Align
-    Controller.onPress(driverController.Y, new ConditionalCommand(
-      // on true, instantiate and schedule align command
-      new InstantiatorCommand(() -> new GridAlign(drivetrain, poseTracker)),
-      // on false rumble for 1 second
-      new Rumble(driverController, Constants.GridAlign.kRumbleTime),
-      // conditional upon a valid april tag
-      LimelightAPI::validTargets
-    ));
-
-    // TODO: limit switch 9
+    // // Grid Align
+    // Controller.onPress(driverController.Y, new ConditionalCommand(
+    //   // on true, instantiate and schedule align command
+    //   new InstantiatorCommand(() -> new GridAlign(drivetrain, poseTracker)),
+    //   // on false rumble for 1 second
+    //   new Rumble(driverController, Constants.GridAlign.kRumbleTime),
+    //   // conditional upon a valid april tag
+    //   LimelightAPI::validTargets
+    // ));
 
 
-    SmartDashboard.putNumber("target anchor angle", 30);
+    // SmartDashboard.putNumber("target anchor  angle", 30);
+    // SmartDashboard.putNumber("target floating   angle", 0);
 
     // Arm
-    Controller.onHold(driverController.X, new MoveAnchorJoint(() -> {
-      double desired = SmartDashboard.getNumber("target anchor angle", 30);
-      if(desired < 13) return 13;
+    // Controller.onHold(driverController.X, new MoveAnchorJoint(() -> {
+    //   double desired = SmartDashboard.getNumber("target anchor  angle", 30);
+    //   if(desired < 13) return 13;
 
-      if(desired > 90) return 90;
+    //   if(desired > 90) return 90;
 
-      return desired;
-    }, arm));
+    //   return desired;
+    // }, arm));
+
+    // Controller.onHold(driverController.Y, new MoveFloatingJoint(() -> {
+    //   double desired = SmartDashboard.getNumber("target floating   angle", 0);
+    //   if(desired < 0) return 0;
+
+    //   if(desired > 90) return 90;
+
+    //   return desired;
+    // }, arm));
 
 
    // TODO: this lowkey not really gonna work rn, need to implement displacement properly

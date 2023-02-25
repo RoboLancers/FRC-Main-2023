@@ -9,7 +9,7 @@ public final class Constants {
             public static final boolean kInverted = true;
             public static final double kRatio = (90.0 - 13.0) / (27.0); // TODO: this probably isn't correct because of gearing
 
-            public static final double kP = 0.001;
+            public static final double kP = 0.025;
             public static final double kI = 0.0;
             public static final double kD = 0.0;
             public static final double kFF = 0.0;
@@ -26,7 +26,7 @@ public final class Constants {
         // L2
         public static final class Floating {
             public static final boolean kInverted = true;
-            public static final double kRatio = 1.0; // TODO: this probably isn't correct because of gearing
+            public static final double kRatio = 360.0/72; // TODO: this probably isn't correct because of gearing
 
             public static final double kP = 0.001;
             public static final double kI = 0.0;
@@ -44,7 +44,7 @@ public final class Constants {
         public static final class Ports {
             public static final int kAnchorPort = 22;
             public static final int kFloatingPort = 23;
-            public static final int kAnchorLimitSwitchPort = 0;
+            public static final int kAnchorLimitSwitchPort = 9;
             public static final int kFloatingLimitSwitchPort = 0;
         }
 

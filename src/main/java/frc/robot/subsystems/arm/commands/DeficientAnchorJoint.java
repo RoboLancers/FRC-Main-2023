@@ -7,7 +7,7 @@ import frc.robot.Constants;
 public class DeficientAnchorJoint extends SequentialCommandGroup {
     public DeficientAnchorJoint(Arm arm) {
         addCommands(
-            new MoveFloatingJoint(Constants.Arm.Floating.kContracted, arm),
+            // new MoveFloatingJoint(Constants.Arm.Floating.kContracted, arm),
             // new MoveAnchorJoint(Constants.Arm.Misc.kUndershotAngle, arm),
             new RollUntilSwitch(arm)
         );

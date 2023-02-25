@@ -1,9 +1,12 @@
 package frc.robot.subsystems.drivetrain;
 
+import javax.swing.LayoutStyle;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -16,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.Drivetrain.RightMotors;
 import frc.robot.util.Encoder;
 import edu.wpi.first.wpilibj.SPI;
 
@@ -48,8 +52,11 @@ public class Drivetrain extends SubsystemBase {
 
     private final Field2d m_field = new Field2d();
 
-    private final SlewRateLimiter throttleFilter = new SlewRateLimiter(Constants.Drivetrain.kThrottleFilter);
+    private final SlewRateLimiter throttleForwardFilter = new SlewRateLimiter(Constants.Drivetrain.kForwardThrottleAccelFilter, -Constants.Drivetrain.kForwardThrottleDecelFilter, 0);
+    private final SlewRateLimiter throttleBackwardFilter = new SlewRateLimiter(Constants.Drivetrain.kBackwardThrottleAccelFilter, -Constants.Drivetrain.kBackwardThrottleDecelFilter,0);
     private final SlewRateLimiter turnFilter = new SlewRateLimiter(Constants.Drivetrain.kTurnFilter);
+
+    double outputMax = 0.5;
 
     public Drivetrain(){
         rightMotor1.setInverted(true);
@@ -76,6 +83,13 @@ public class Drivetrain extends SubsystemBase {
         rightMotor1.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
         rightMotor2.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
         rightMotor3.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
+
+        leftMotor1.enableVoltageCompensation(12);
+        leftMotor2.enableVoltageCompensation(12);
+        leftMotor3.enableVoltageCompensation(12);
+        rightMotor1.enableVoltageCompensation(12);
+        rightMotor2.enableVoltageCompensation(12);
+        rightMotor3.enableVoltageCompensation(12);
 
         // Sets the distance per pulse to the pre-defined constant we calculated for both encoders.
         rightEncoder.getEncoder().setPositionConversionFactor(Constants.Trajectory.kMetersPerRot);
@@ -126,9 +140,23 @@ public class Drivetrain extends SubsystemBase {
         rightMotors.set(power);
     }
 
+    private double lastNonzeroThrottle = 0; 
+
     // Drives the robot with arcade controls.
     public void arcadeDrive(double throttle, double turn) {
-        difDrive.curvatureDrive(throttleFilter.calculate(throttle*Constants.Drivetrain.kThrottleMultiplier), turnFilter.calculate(turn*Constants.Drivetrain.kTurnMultiplier), throttle < 0.05);
+
+        double effThrottle = 0; 
+        if (throttle > 0 || lastNonzeroThrottle > 0) {
+            effThrottle = throttleForwardFilter.calculate(throttle); 
+        } else if (throttle < 0 || lastNonzeroThrottle < 0) {
+            effThrottle = -throttleBackwardFilter.calculate(-throttle); 
+        }
+
+        if (throttle != 0) lastNonzeroThrottle = throttle; 
+
+        System.out.println(effThrottle);
+
+        difDrive.curvatureDrive(effThrottle, turnFilter.calculate(turn), Math.abs(throttle) < 0.05);
         // if (throttle == 0 && turn == 0) {
         //     tankDriveVolts(0, 0);
         // }
@@ -194,4 +222,5 @@ public class Drivetrain extends SubsystemBase {
     public Field2d getField() {
         return this.m_field; 
     }
+    
 }

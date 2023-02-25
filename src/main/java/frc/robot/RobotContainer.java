@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.gyro.Balance;
 import frc.robot.subsystems.gyro.Gyro;
@@ -47,14 +48,17 @@ public class RobotContainer {
   // private final SmartDashboardDB db = new SmartDashboardDB();
 
   public RobotContainer() {
-    this.drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, driverController));
+    // this.drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, driverController));
+    this.drivetrain.setDefaultCommand(new RunCommand(() -> {
+      drivetrain.arcadeDrive(this.driverController.getThrottle(), this.driverController.getTurn());
+    }, drivetrain));
 
     // this.poseTracker.setDefaultCommand(new PrintCommand("Matt likes balls idk, Raf too"));
 
     configureButtonBindings();
   }
 
-  private void configureButtonBindings(){
+  private void configureButtonBindings() {
 
     // Grabber
     Controller.onPress(driverController.A, new InstantCommand(grabber::toggleDeploy));
@@ -62,6 +66,9 @@ public class RobotContainer {
     // Balance
     Controller.onPress(driverController.B, new Balance(drivetrain, gyro, 0));
 
+    //slow mode
+    Controller.onPress(driverController.RightBumper, new InstantCommand(driverController :: toggleSlowMode));
+  
     // Grid Align
     Controller.onPress(driverController.Y, new ConditionalCommand(
       // on true, instantiate and schedule align command

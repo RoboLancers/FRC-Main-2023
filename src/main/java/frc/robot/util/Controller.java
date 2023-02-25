@@ -2,10 +2,13 @@ package frc.robot.util;
 
 import java.util.function.Consumer;
 
+import org.opencv.imgproc.GeneralizedHoughBallard;
+
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants;
 
 public class Controller {
     private XboxController _controller;
@@ -17,7 +20,15 @@ public class Controller {
     public Trigger LeftBumper;
     public Trigger RightBumper;
 
-    private double deadzone; 
+    private double deadzone;
+    double throttleMultiplier = Constants.Drivetrain.kThrottleMultiplier;
+    double turnMultiplier = Constants.Drivetrain.kTurnMultiplier;
+
+    public enum Mode {
+        NORMAL,
+        SLOW
+        }
+    Mode mode = Mode.NORMAL;
 
     public Controller(int port) {
         this(port, 0.15); 
@@ -90,5 +101,32 @@ public class Controller {
 
     public void setRumble(boolean rumble){
         this._controller.setRumble(RumbleType.kBothRumble, rumble ? 1 : 0);
+    }
+
+    public double getThrottle(){
+        return -getLeftStickY() * throttleMultiplier;
+    }
+
+    public double getTurn(){
+        return -getRightStickX() * turnMultiplier;
+    }
+
+    public boolean getQuickTurn(){
+        return Math.abs(-getLeftStickY()) < 0.05;
+    }
+    public void toggleSlowMode(){
+        switch(mode){
+            case NORMAL:
+            throttleMultiplier = Constants.Drivetrain.kThrottleMultiplierSM;
+            turnMultiplier = Constants.Drivetrain.kTurnMultiplierSM;
+            mode = Mode.SLOW;
+            break;
+
+            case SLOW:
+            throttleMultiplier = Constants.Drivetrain.kThrottleMultiplier;
+            turnMultiplier = Constants.Drivetrain.kTurnMultiplier;
+            mode = Mode.NORMAL;
+            break;
+        }
     }
 }

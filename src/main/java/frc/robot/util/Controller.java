@@ -114,19 +114,24 @@ public class Controller {
     public boolean getQuickTurn(){
         return Math.abs(-getLeftStickY()) < 0.05;
     }
-    public void toggleSlowMode(){
-        switch(mode){
-            case NORMAL:
-            throttleMultiplier = Constants.Drivetrain.kThrottleMultiplierSM;
-            turnMultiplier = Constants.Drivetrain.kTurnMultiplierSM;
-            mode = Mode.SLOW;
-            break;
-
-            case SLOW:
+    public void setSlowMode(Mode m) {
+        if (m == Mode.NORMAL) {
             throttleMultiplier = Constants.Drivetrain.kThrottleMultiplier;
             turnMultiplier = Constants.Drivetrain.kTurnMultiplier;
-            mode = Mode.NORMAL;
-            break;
+        } else {
+            throttleMultiplier = Constants.Drivetrain.kThrottleMultiplierSM;
+            turnMultiplier = Constants.Drivetrain.kTurnMultiplierSM;
         }
+        // switch(m){
+        //     case NORMAL:
+
+        //     // mode = Mode.SLOW;
+        //     // break;
+
+        //     case SLOW:
+
+        //     // mode = Mode.NORMAL;
+        //     // break;
+        // }
     }
 }

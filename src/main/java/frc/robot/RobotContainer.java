@@ -27,6 +27,7 @@ import frc.robot.subsystems.arm.commands.MoveFloatingJoint;
 import frc.robot.subsystems.drivetrain.commands.TeleopDrive;
 import frc.robot.util.Controller;
 import frc.robot.util.InstantiatorCommand;
+import frc.robot.util.Controller.Mode;
 import frc.robot.util.enums.Displacement;
 import frc.robot.util.limelight.LimelightAPI;
 import frc.robot.subsystems.grabber.Grabber;
@@ -68,7 +69,8 @@ public class RobotContainer {
     // Controller.onPress(driverController.B, new Balance(drivetrain, gyro, 0));
 
     //slow mode
-    Controller.onPress(driverController.RightBumper, new InstantCommand(driverController :: toggleSlowMode));
+    Controller.onHold(driverController.RightBumper, new InstantCommand(() -> driverController.setSlowMode(Mode.SLOW)));
+    Controller.onRelease(driverController.RightBumper, new InstantCommand(() -> driverController.setSlowMode(Mode.NORMAL)));
   
     // // Grid Align
     // Controller.onPress(driverController.Y, new ConditionalCommand(

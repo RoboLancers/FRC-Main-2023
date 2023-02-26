@@ -56,9 +56,7 @@ public class Drivetrain extends SubsystemBase {
 
     private final SlewRateLimiter throttleForwardFilter = new SlewRateLimiter(Constants.Drivetrain.kForwardThrottleAccelFilter, -Constants.Drivetrain.kForwardThrottleDecelFilter, 0);
     private final SlewRateLimiter throttleBackwardFilter = new SlewRateLimiter(Constants.Drivetrain.kBackwardThrottleAccelFilter, -Constants.Drivetrain.kBackwardThrottleDecelFilter,0);
-    private final SlewRateLimiter turnFilter = new SlewRateLimiter(Constants.Drivetrain.kTurnFilter);
-
-    double outputMax = 0.5;
+    // private final SlewRateLimiter turnFilter = new SlewRateLimiter(Constants.Drivetrain.kTurnFilter);
 
     public Drivetrain(){
         rightMotor1.setInverted(true);
@@ -172,7 +170,9 @@ public class Drivetrain extends SubsystemBase {
         // if (lastNonzeroThrottle != 0)
         lastEffThrottle = effThrottle; 
 
-        difDrive.curvatureDrive(effThrottle, turnFilter.calculate(turn), Math.abs(throttle) < 0.05);
+        difDrive.curvatureDrive(effThrottle, 
+        turn // turnFilter.calculate(turn)
+        , Math.abs(throttle) < 0.05);
         // if (throttle == 0 && turn == 0) {
         //     tankDriveVolts(0, 0);
         // }

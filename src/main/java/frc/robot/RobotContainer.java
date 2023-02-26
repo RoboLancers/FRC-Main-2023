@@ -26,16 +26,12 @@ import frc.robot.subsystems.arm.commands.MoveAnchorJoint;
 import frc.robot.subsystems.arm.commands.MoveFloatingJoint;
 import frc.robot.subsystems.drivetrain.commands.TeleopDrive;
 import frc.robot.util.Controller;
+import frc.robot.util.DriverController;
 import frc.robot.util.InstantiatorCommand;
-import frc.robot.util.Controller.Mode;
-import frc.robot.util.enums.Displacement;
-import frc.robot.util.limelight.LimelightAPI;
-import frc.robot.subsystems.grabber.Grabber;
-import frc.robot.subsystems.arm.Arm;
-
+import frc.robot.util.DriverController.Mode;
 public class RobotContainer {
   /* Controllers */
-  private final Controller driverController = new Controller(0);
+  private final DriverController driverController = new DriverController(0);
   private final Controller manipulatorController = new Controller(1);
 
   /* Subsystems */

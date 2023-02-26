@@ -2,8 +2,6 @@ package frc.robot.util;
 
 import java.util.function.Consumer;
 
-import org.opencv.imgproc.GeneralizedHoughBallard;
-
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,21 +20,10 @@ public class Controller {
     public Trigger LeftTrigger; 
     public Trigger RightTrigger; 
 
-    private double deadzone;
     double throttleMultiplier = Constants.Drivetrain.kThrottleMultiplier;
     double turnMultiplier = Constants.Drivetrain.kTurnMultiplier;
 
-    public enum Mode {
-        NORMAL,
-        SLOW
-        }
-    Mode mode = Mode.NORMAL;
-
     public Controller(int port) {
-        this(port, 0.15); 
-    }
-
-    public Controller(int port, double deadzone){
         this._controller = new XboxController(port);
 
         this.A = new Trigger(this._controller::getAButton);
@@ -47,7 +34,6 @@ public class Controller {
         this.RightBumper = new Trigger(this._controller::getRightBumper);
         this.LeftTrigger = new Trigger(() -> this._controller.getLeftTriggerAxis() >= 0.5); 
         this.RightTrigger = new Trigger(() -> this._controller.getRightTriggerAxis() >= 0.5); 
-        this.deadzone = deadzone; 
     }
  
     private static void bindEvent(Consumer<Command> responder, Command response){
@@ -74,28 +60,27 @@ public class Controller {
         Controller.bindEvent(capturer::cancelWhenActive, response);
     }
 
-    // TODO: may be bad to do it this way
-    public double getLeftStickX(){
-        return ControllerUtils.applyDeadband(this._controller.getLeftX(), deadzone);
+    public double getLeftStickX() {
+        return this._controller.getLeftX();
     }
 
-    public double getLeftStickY(){
-        return ControllerUtils.applyDeadband(this._controller.getLeftY(), deadzone);
+    public double getLeftStickY() {
+        return this._controller.getLeftY();
     }
 
-    public double getRightStickX(){
-        return ControllerUtils.applyDeadband(this._controller.getRightX(), deadzone); 
+    public double getRightStickX() {
+        return this._controller.getRightX(); 
     }
 
-    public double getRightStickY(){
-        return ControllerUtils.applyDeadband(this._controller.getRightY(), deadzone);
+    public double getRightStickY() {
+        return this._controller.getRightY();
     }
 
-    public double getLeftTrigger(){
+    public double getLeftTrigger() {
         return this._controller.getLeftTriggerAxis();
     }
 
-    public double getRightTrigger(){
+    public double getRightTrigger() {
         return this._controller.getRightTriggerAxis();
     }
 
@@ -105,37 +90,5 @@ public class Controller {
 
     public void setRumble(boolean rumble){
         this._controller.setRumble(RumbleType.kBothRumble, rumble ? 1 : 0);
-    }
-
-    public double getThrottle(){
-        return -getLeftStickY() * throttleMultiplier;
-    }
-
-    public double getTurn(){
-        return -getRightStickX() * turnMultiplier;
-    }
-
-    public boolean getQuickTurn(){
-        return Math.abs(-getLeftStickY()) < 0.05;
-    }
-    public void setSlowMode(Mode m) {
-        if (m == Mode.NORMAL) {
-            throttleMultiplier = Constants.Drivetrain.kThrottleMultiplier;
-            turnMultiplier = Constants.Drivetrain.kTurnMultiplier;
-        } else {
-            throttleMultiplier = Constants.Drivetrain.kThrottleMultiplierSM;
-            turnMultiplier = Constants.Drivetrain.kTurnMultiplierSM;
-        }
-        // switch(m){
-        //     case NORMAL:
-
-        //     // mode = Mode.SLOW;
-        //     // break;
-
-        //     case SLOW:
-
-        //     // mode = Mode.NORMAL;
-        //     // break;
-        // }
     }
 }

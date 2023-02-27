@@ -36,12 +36,26 @@ public class RobotContainer {
   private final Controller driverController = new Controller(0);
   private final Controller manipulatorController = new Controller(1);
 
+ 
   /* Subsystems */
   private Drivetrain drivetrain = new Drivetrain();
   private Arm arm = new Arm();
   private Grabber grabber = new Grabber();
   private Gyro gyro = new Gyro();
-  private PoseTracker poseTracker = new PoseTracker(drivetrain);
+  private PoseTracker poseTracker = new PoseTracker(drivetrain, () -> {
+    switch (manipulatorController.dPadAngle()) {
+      case 0:
+        return Displacement.RIGHT;
+      case 90:
+        return Displacement.CENTER;
+
+      case 180:
+        return Displacement.LEFT;
+      default:
+        return Displacement.CENTER;
+    }
+
+  });
     
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
   // TODO: Raf is rly dumb for this shit
@@ -49,6 +63,8 @@ public class RobotContainer {
 
   public RobotContainer() {
     this.drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, driverController));
+
+    
 
     // this.poseTracker.setDefaultCommand(new PrintCommand("Matt likes balls idk, Raf too"));
 

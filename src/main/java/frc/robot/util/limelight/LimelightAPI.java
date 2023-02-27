@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.util.PoseUtil;
 import frc.robot.util.enums.CamMode;
+import frc.robot.util.enums.Displacement;
 import frc.robot.util.enums.LedMode;
 import frc.robot.util.enums.Snapshot;
 import frc.robot.util.enums.StreamMode;
@@ -56,7 +57,7 @@ public class LimelightAPI {
     }
 
     /** Returns an adjusted Pose3D based on camera pose */
-    public static Pose2d adjustCamPose() {
+    public static Pose2d adjustCamPose(Displacement displacement) {
 
         Pose2d camPose = LimelightAPI.camPose();
 
@@ -83,7 +84,7 @@ public class LimelightAPI {
         double adjustedX = (distance * Math.cos(theta)) - Constants.GridAlign.kAdjustZ * Math.cos(actualRot);
         double adjustedZ = (-(distance * Math.sin(theta)) - Constants.GridAlign.kAdjustZ * Math.sin(actualRot));
 
-        return new Pose2d(adjustedX, adjustedZ, new Rotation2d(actualRot));
+        return new Pose2d(adjustedX + displacement.getValue(), adjustedZ, new Rotation2d(actualRot));
         // return new Pose2d(adjustedCamPoseX, pose3d.getY(), adjustedCamPoseZ,
         // pose3d.getRotation());
     }

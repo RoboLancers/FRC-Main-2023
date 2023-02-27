@@ -26,27 +26,28 @@ public class PoseTracker extends SubsystemBase {
 
     private Drivetrain drivetrain;
 
-    private Supplier<Displacement> displacement;
+    private Supplier<Displacement> displacementSupplier;
 
-  
+    private Displacement displacement;
 
     private Pose2d avgPythonCamPose;
 
     private Pose2d avgAprilTagCamPose;
 
-    public PoseTracker(Drivetrain drivetrain, Supplier<Displacement> displacement) {
+    public PoseTracker(Drivetrain drivetrain, Supplier<Displacement> displacementSupplier) {
         this.drivetrain = drivetrain;
-        this.displacement = displacement;
+        this.displacementSupplier = displacementSupplier;
     }
 
     @Override
     public void periodic() {
         // setting the queue to the last 3 values and getting displacement
 
+        // gets latest displacement
+        this.displacement = this.displacementSupplier.get();
 
-       
-        this.camPoseQueue.add(LimelightAPI.adjustCamPose(this.displacement.get()));
-        SmartDashboard.putNumber("latest queue num x", LimelightAPI.adjustCamPose(this.displacement.get()).getX());
+        this.camPoseQueue.add(LimelightAPI.adjustCamPose(this.displacement));
+        SmartDashboard.putNumber("latest queue num x", LimelightAPI.adjustCamPose(this.displacement).getX());
 
         this.avgAprilTagCamPose = getAverageAprilPose();
 
@@ -86,11 +87,7 @@ public class PoseTracker extends SubsystemBase {
     // return ParametricSpline.fromWaypoints(waypoints);
     // }
 
-  
-  
     public ParametricSpline generateSpline() {
-
-      
 
         Pose2d pose = this.getAverageAprilPose();
 

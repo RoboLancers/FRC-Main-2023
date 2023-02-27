@@ -12,6 +12,8 @@ public class DriverController extends Controller {
         NORMAL,
         SLOW
         }
+    
+    public static Mode mode;
 
     public DriverController(int port) {
         this(port, 0.15); 
@@ -55,9 +57,11 @@ public class DriverController extends Controller {
         if (m == Mode.NORMAL) {
             throttleMultiplier = Constants.Drivetrain.kThrottleMultiplier;
             turnMultiplier = Constants.Drivetrain.kTurnMultiplier;
+            mode = Mode.SLOW;
         } else {
             throttleMultiplier = Constants.Drivetrain.kThrottleMultiplierSM;
             turnMultiplier = Constants.Drivetrain.kTurnMultiplierSM;
+            mode = Mode.NORMAL;
         }
     }
 }

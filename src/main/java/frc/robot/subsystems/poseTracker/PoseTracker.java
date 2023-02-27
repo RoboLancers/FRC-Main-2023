@@ -28,7 +28,7 @@ public class PoseTracker extends SubsystemBase {
 
     private Supplier<Displacement> displacementSupplier;
 
-    private Displacement displacement;
+    private Displacement displacement = Displacement.CENTER;
 
     private Pose2d avgPythonCamPose;
 

@@ -48,7 +48,7 @@ public class RobotContainer {
   public RobotContainer() {
     // this.drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, driverController));
     this.drivetrain.setDefaultCommand(new RunCommand(() -> {
-      drivetrain.arcadeDrive(this.driverController.getThrottle(), this.driverController.getTurn());
+      drivetrain.curvatureDrive(this.driverController.getThrottle(), this.driverController.getTurn(), driverController.getSlowMode());
     }, drivetrain));
 
     // this.poseTracker.setDefaultCommand(new PrintCommand("Matt likes balls idk, Raf too"));
@@ -59,7 +59,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     // Grabber
-    // Controller.onPress(driverController.A, new InstantCommand(grabber::toggleDeploy));
+    Controller.onPress(driverController.A, new InstantCommand(grabber::toggleDeploy));
 
     // // Balance
     // Controller.onPress(driverController.B, new Balance(drivetrain, gyro, 0));

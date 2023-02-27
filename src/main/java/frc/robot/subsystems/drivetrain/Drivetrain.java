@@ -58,7 +58,7 @@ public class Drivetrain extends SubsystemBase {
 
     private final SlewRateLimiter throttleForwardFilter = new SlewRateLimiter(Constants.Drivetrain.kForwardThrottleAccelFilter, -Constants.Drivetrain.kForwardThrottleDecelFilter, 0);
     private final SlewRateLimiter throttleBackwardFilter = new SlewRateLimiter(Constants.Drivetrain.kBackwardThrottleAccelFilter, -Constants.Drivetrain.kBackwardThrottleDecelFilter,0);
-    // private final SlewRateLimiter turnFilter = new SlewRateLimiter(Constants.Drivetrain.kTurnFilter);
+    private final SlewRateLimiter turnFilter = new SlewRateLimiter(Constants.Drivetrain.kTurnFilter);
 
     public Drivetrain(){
         rightMotor1.setInverted(true);
@@ -146,7 +146,7 @@ public class Drivetrain extends SubsystemBase {
     private double lastEffThrottle = 0; 
 
     // Drives the robot with arcade controls.
-    public void arcadeDrive(double throttle, double turn) {
+    public void curvatureDrive(double throttle, double turn, Mode mode) {
 
         // TODO: use this if you want deceleration to be higher when joystick is in the opp direction as the current drive direction
         // double effThrottle = 0; 
@@ -159,7 +159,7 @@ public class Drivetrain extends SubsystemBase {
         // }
         
         double effThrottle = 0; 
-        if (DriverController.mode == Mode.SLOW) {
+        if (mode == Mode.SLOW) {
             effThrottle = throttle;
             throttleBackwardFilter.reset(0); 
             throttleForwardFilter.reset(0); 
@@ -179,8 +179,8 @@ public class Drivetrain extends SubsystemBase {
         lastEffThrottle = effThrottle; 
 
         difDrive.curvatureDrive(effThrottle, 
-        turn // turnFilter.calculate(turn)
-        , Math.abs(throttle) < 0.05);
+        turnFilter.calculate(turn), 
+        Math.abs(throttle) < 0.05);
         // if (throttle == 0 && turn == 0) {
         //     tankDriveVolts(0, 0);
         // }

@@ -23,7 +23,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Drivetrain.RightMotors;
 import frc.robot.util.Encoder;
+import frc.robot.util.DriverController.Mode;
 import edu.wpi.first.wpilibj.SPI;
+import frc.robot.util.DriverController;
 
 public class Drivetrain extends SubsystemBase {
     private final CANSparkMax leftMotor1 = new CANSparkMax(Constants.Drivetrain.LeftMotors.kLeftMotor1_Port, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -155,7 +157,7 @@ public class Drivetrain extends SubsystemBase {
         //     effThrottle = -throttleBackwardFilter.calculate(-throttle); 
         //     throttleForwardFilter.reset(0);
         // }
-
+        
         double effThrottle = 0; 
         if (lastEffThrottle > 0) {
             effThrottle = throttleForwardFilter.calculate(Math.max(throttle, 0)); 
@@ -163,7 +165,10 @@ public class Drivetrain extends SubsystemBase {
         } else if (lastEffThrottle < 0) {
             effThrottle = -throttleBackwardFilter.calculate(-Math.min(throttle, 0)); 
             throttleForwardFilter.reset(0);
-        } else {
+        } else if(DriverController.mode == Mode.SLOW){
+            effThrottle = throttle;
+        }
+        else {
             effThrottle = throttle > 0 ? throttleForwardFilter.calculate(throttle) : throttle < 0 ? -throttleBackwardFilter.calculate(-throttle) : 0; 
         }
         

@@ -159,17 +159,20 @@ public class Drivetrain extends SubsystemBase {
         // }
         
         double effThrottle = 0; 
-        if (lastEffThrottle > 0) {
-            effThrottle = throttleForwardFilter.calculate(Math.max(throttle, 0)); 
-            throttleBackwardFilter.reset(0);
-        } else if (lastEffThrottle < 0) {
-            effThrottle = -throttleBackwardFilter.calculate(-Math.min(throttle, 0)); 
-            throttleForwardFilter.reset(0);
-        } else if(DriverController.mode == Mode.SLOW){
+        if (DriverController.mode == Mode.SLOW) {
             effThrottle = throttle;
-        }
-        else {
-            effThrottle = throttle > 0 ? throttleForwardFilter.calculate(throttle) : throttle < 0 ? -throttleBackwardFilter.calculate(-throttle) : 0; 
+            throttleBackwardFilter.reset(0); 
+            throttleForwardFilter.reset(0); 
+        } else {
+            if (lastEffThrottle > 0) {
+                effThrottle = throttleForwardFilter.calculate(Math.max(throttle, 0)); 
+                throttleBackwardFilter.reset(0);
+            } else if (lastEffThrottle < 0) {
+                effThrottle = -throttleBackwardFilter.calculate(-Math.min(throttle, 0)); 
+                throttleForwardFilter.reset(0);
+            } else {
+                effThrottle = throttle > 0 ? throttleForwardFilter.calculate(throttle) : throttle < 0 ? -throttleBackwardFilter.calculate(-throttle) : 0; 
+            }
         }
         
         // if (lastNonzeroThrottle != 0)

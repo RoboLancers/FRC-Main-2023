@@ -51,7 +51,7 @@ public class RobotContainer {
       case 180:
         return Displacement.LEFT;
       default:
-        return Displacement.CENTER;
+        return Displacement.NONE;
     }
 
   });

@@ -44,7 +44,11 @@ public class PoseTracker extends SubsystemBase {
         // setting the queue to the last 3 values and getting displacement
 
         // gets latest displacement
-        this.displacement = this.displacementSupplier.get();
+        Displacement newestDisplacement = this.displacementSupplier.get();
+
+        if (newestDisplacement != Displacement.NONE) {
+            this.displacement = newestDisplacement;
+        }
 
         this.camPoseQueue.add(LimelightAPI.adjustCamPose(this.displacement));
         SmartDashboard.putNumber("latest queue num x", LimelightAPI.adjustCamPose(this.displacement).getX());

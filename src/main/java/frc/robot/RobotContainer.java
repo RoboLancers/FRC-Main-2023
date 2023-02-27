@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.gyro.Balance;
 import frc.robot.subsystems.gyro.Gyro;
@@ -25,15 +26,12 @@ import frc.robot.subsystems.arm.commands.MoveAnchorJoint;
 import frc.robot.subsystems.arm.commands.MoveFloatingJoint;
 import frc.robot.subsystems.drivetrain.commands.TeleopDrive;
 import frc.robot.util.Controller;
+import frc.robot.util.DriverController;
 import frc.robot.util.InstantiatorCommand;
-import frc.robot.util.enums.Displacement;
-import frc.robot.util.limelight.LimelightAPI;
-import frc.robot.subsystems.grabber.Grabber;
-import frc.robot.subsystems.arm.Arm;
-
+import frc.robot.util.DriverController.Mode;
 public class RobotContainer {
   /* Controllers */
-  private final Controller driverController = new Controller(0);
+  private final DriverController driverController = new DriverController(0);
   private final Controller manipulatorController = new Controller(1);
 
  
@@ -62,7 +60,10 @@ public class RobotContainer {
   // private final SmartDashboardDB db = new SmartDashboardDB();
 
   public RobotContainer() {
-    this.drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, driverController));
+    // this.drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, driverController));
+    this.drivetrain.setDefaultCommand(new RunCommand(() -> {
+      drivetrain.arcadeDrive(this.driverController.getThrottle(), this.driverController.getTurn());
+    }, drivetrain));
 
     
 
@@ -71,7 +72,7 @@ public class RobotContainer {
     configureButtonBindings();
   }
 
-  private void configureButtonBindings(){
+  private void configureButtonBindings() {
 
     // Grabber
     // Controller.onPress(driverController.A, new InstantCommand(grabber::toggleDeploy));
@@ -79,6 +80,10 @@ public class RobotContainer {
     // // Balance
     // Controller.onPress(driverController.B, new Balance(drivetrain, gyro, 0));
 
+    //slow mode
+    Controller.onHold(driverController.RightTrigger, new InstantCommand(() -> driverController.setSlowMode(Mode.SLOW)));
+    Controller.onRelease(driverController.RightTrigger, new InstantCommand(() -> driverController.setSlowMode(Mode.NORMAL)));
+  
     // // Grid Align
     // Controller.onPress(driverController.Y, new ConditionalCommand(
     //   // on true, instantiate and schedule align command

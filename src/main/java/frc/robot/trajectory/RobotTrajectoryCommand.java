@@ -18,11 +18,13 @@ public class RobotTrajectoryCommand extends SequentialCommandGroup {
         Object[] commands = trajectory.getTasks().stream().map(e -> {
             if (e instanceof WaypointTask && ((WaypointTask) e).getWaypoints().size() > 1)
                 return new MotionProfileCommand(drivetrain, ((WaypointTask) e).createProfile());
-            if (e instanceof CommandTask) {
+            if (e instanceof CommandTask && !((CommandTask) e).getWaypoint().getCommandName().equals("")) {
                 try {
                     return TrajectoryCommandsManager.getInstance().getCommandConfig(((CommandTask) e).getWaypoint().getCommandName()).createCommand(((CommandTask) e).getWaypoint().getParameters().toArray());
                 } catch (Exception ex) {
-                    throw new RuntimeException(ex);
+                    System.err.println("Error parsing Command Task with name, " + ((CommandTask) e).getWaypoint().getName() + ": Please check if the command, " + ((CommandTask) e).getWaypoint().getCommandName() + ", is registered. ");
+                    ex.printStackTrace();
+                    return null;
                 }
             }
             return null;

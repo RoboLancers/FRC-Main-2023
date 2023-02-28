@@ -1,5 +1,7 @@
 package frc.robot.subsystems.grabber;
 
+import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator.Validity;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -27,7 +29,11 @@ public class Grabber extends SubsystemBase {
         SmartDashboard.putString("Grabber Deployed", grabberPiston.get().toString());
     }
     public void toggleDeploy() {
-        grabberPiston.toggle();
+        if (grabberPiston.get() == Value.kOff || grabberPiston.get() == Value.kReverse) {
+            grabberPiston.set(Value.kForward);
+        } else {
+            grabberPiston.set(Value.kReverse);
+        }
     }
 
     public boolean isForward(){

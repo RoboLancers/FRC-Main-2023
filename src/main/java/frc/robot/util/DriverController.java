@@ -58,12 +58,11 @@ public class DriverController extends Controller {
         if (m == Mode.NORMAL) {
             throttleMultiplier = Constants.Drivetrain.kThrottleMultiplier;
             turnMultiplier = Constants.Drivetrain.kTurnMultiplier;
-            mode = Mode.SLOW;
         } else {
             throttleMultiplier = Constants.Drivetrain.kThrottleMultiplierSM;
             turnMultiplier = Constants.Drivetrain.kTurnMultiplierSM;
-            mode = Mode.NORMAL;
         }
+        this.mode = m; 
     }
     
     public Mode getSlowMode() {

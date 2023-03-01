@@ -1,6 +1,7 @@
 package frc.robot.subsystems.gyro;
 
 import edu.wpi.first.wpilibj2.command.PIDCommand;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
@@ -14,7 +15,7 @@ public class Balance extends PIDCommand {
             // Set reference to target
             () -> setpoint,
             // Pipe output to turn robot
-            (outputPower) -> drivetrain.arcadeDrive(outputPower, 0), // TODO: was this negative?
+            (outputPower) -> drivetrain.curvatureDrive(outputPower, 0, frc.robot.util.DriverController.Mode.NORMAL), // TODO: was this negative?
             drivetrain
         );
 

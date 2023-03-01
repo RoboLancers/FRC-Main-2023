@@ -23,7 +23,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Drivetrain.RightMotors;
 import frc.robot.util.Encoder;
+import frc.robot.util.DriverController.Mode;
 import edu.wpi.first.wpilibj.SPI;
+import frc.robot.util.DriverController;
 
 public class Drivetrain extends SubsystemBase {
     private final CANSparkMax leftMotor1 = new CANSparkMax(Constants.Drivetrain.LeftMotors.kLeftMotor1_Port, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -56,7 +58,7 @@ public class Drivetrain extends SubsystemBase {
 
     private final SlewRateLimiter throttleForwardFilter = new SlewRateLimiter(Constants.Drivetrain.kForwardThrottleAccelFilter, -Constants.Drivetrain.kForwardThrottleDecelFilter, 0);
     private final SlewRateLimiter throttleBackwardFilter = new SlewRateLimiter(Constants.Drivetrain.kBackwardThrottleAccelFilter, -Constants.Drivetrain.kBackwardThrottleDecelFilter,0);
-    // private final SlewRateLimiter turnFilter = new SlewRateLimiter(Constants.Drivetrain.kTurnFilter);
+    private final SlewRateLimiter turnFilter = new SlewRateLimiter(Constants.Drivetrain.kTurnFilter);
 
     public Drivetrain(){
         rightMotor1.setInverted(true);
@@ -144,7 +146,7 @@ public class Drivetrain extends SubsystemBase {
     private double lastEffThrottle = 0; 
 
     // Drives the robot with arcade controls.
-    public void arcadeDrive(double throttle, double turn) {
+    public void curvatureDrive(double throttle, double turn, Mode mode) {
 
         // TODO: use this if you want deceleration to be higher when joystick is in the opp direction as the current drive direction
         // double effThrottle = 0; 
@@ -155,24 +157,30 @@ public class Drivetrain extends SubsystemBase {
         //     effThrottle = -throttleBackwardFilter.calculate(-throttle); 
         //     throttleForwardFilter.reset(0);
         // }
-
+        
         double effThrottle = 0; 
-        if (lastEffThrottle > 0) {
-            effThrottle = throttleForwardFilter.calculate(Math.max(throttle, 0)); 
-            throttleBackwardFilter.reset(0);
-        } else if (lastEffThrottle < 0) {
-            effThrottle = -throttleBackwardFilter.calculate(-Math.min(throttle, 0)); 
-            throttleForwardFilter.reset(0);
+        if (mode == Mode.SLOW) {
+            effThrottle = throttle;
+            throttleBackwardFilter.reset(0); 
+            throttleForwardFilter.reset(0); 
         } else {
-            effThrottle = throttle > 0 ? throttleForwardFilter.calculate(throttle) : throttle < 0 ? -throttleBackwardFilter.calculate(-throttle) : 0; 
+            if (lastEffThrottle > 0) {
+                effThrottle = throttleForwardFilter.calculate(Math.max(throttle, 0)); 
+                throttleBackwardFilter.reset(0);
+            } else if (lastEffThrottle < 0) {
+                effThrottle = -throttleBackwardFilter.calculate(-Math.min(throttle, 0)); 
+                throttleForwardFilter.reset(0);
+            } else {
+                effThrottle = throttle > 0 ? throttleForwardFilter.calculate(throttle) : throttle < 0 ? -throttleBackwardFilter.calculate(-throttle) : 0; 
+            }
         }
         
         // if (lastNonzeroThrottle != 0)
         lastEffThrottle = effThrottle; 
 
         difDrive.curvatureDrive(effThrottle, 
-        turn // turnFilter.calculate(turn)
-        , Math.abs(throttle) < 0.05);
+        turnFilter.calculate(turn), 
+        Math.abs(throttle) < 0.05);
         // if (throttle == 0 && turn == 0) {
         //     tankDriveVolts(0, 0);
         // }

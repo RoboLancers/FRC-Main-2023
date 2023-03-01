@@ -95,7 +95,7 @@ public final class Constants {
         }
     }
 
-    public static  class Grabber {
+    public static class Grabber {
         public static int kPistonDeploy = 0;
         public static int kPistonRetract = 1;
         public static int kGrabberSensor;
@@ -104,6 +104,12 @@ public final class Constants {
         public static double kMax;
         public static double kStart;
         public static double kMin;
+    }
+
+    public static class Intake {
+        public static int kPort; // TODO
+        public static double kForwardPower = 0.2;
+        public static double kBackwardPower = -0.2;
     }
 
     public static class Trajectory {

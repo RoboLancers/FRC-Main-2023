@@ -2,7 +2,12 @@ package frc.robot;
 
 import java.time.Instant;
 
-import edu.wpi.first.cameraserver.CameraServer;
+import org.bananasamirite.robotmotionprofile.ParametricSpline;
+import org.bananasamirite.robotmotionprofile.TankMotionProfile;
+import org.bananasamirite.robotmotionprofile.Waypoint;
+import org.bananasamirite.robotmotionprofile.TankMotionProfile.ProfileMethod;
+import org.bananasamirite.robotmotionprofile.TankMotionProfile.TankMotionProfileConstraints;
+
 import edu.wpi.first.math.geometry.Pose2d;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -18,6 +23,7 @@ import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.commands.GridAlign;
 import frc.robot.commands.Rumble;
 import frc.robot.commands.TeleopGRR;
+import frc.robot.commands.trajectory.MotionProfileCommand;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.poseTracker.PoseTracker;
 import frc.robot.commands.GridAlign;
@@ -30,6 +36,7 @@ import frc.robot.util.Controller;
 import frc.robot.util.DriverController;
 import frc.robot.util.InstantiatorCommand;
 import frc.robot.util.DriverController.Mode;
+import frc.robot.util.limelight.LimelightAPI;
 public class RobotContainer {
   /* Controllers */
   private final DriverController driverController = new DriverController(0);
@@ -43,15 +50,21 @@ public class RobotContainer {
   private PoseTracker poseTracker = new PoseTracker(drivetrain);
     
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+
+  private final MotionProfileCommand command;
   // TODO: Raf is rly dumb for this shit
   // private final SmartDashboardDB db = new SmartDashboardDB();
 
   public RobotContainer() {
-    CameraServer.startAutomaticCapture(); 
     // this.drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, driverController));
     this.drivetrain.setDefaultCommand(new RunCommand(() -> {
-      drivetrain.curvatureDrive(this.driverController.getThrottle(), this.driverController.getTurn(), driverController.getSlowMode());
+      drivetrain.curvatureDrive(this.driverController.getThrottle(), this.driverController.getTurn(), this.driverController.getSlowMode());
     }, drivetrain));
+
+    command = new MotionProfileCommand(drivetrain, new TankMotionProfile(ParametricSpline.fromWaypoints(new Waypoint[] {
+      new Waypoint(0, 0, 0, 1, 1), 
+      new Waypoint(2, 1, Math.toRadians(90), 1, 1)
+    }), ProfileMethod.TIME, new TankMotionProfileConstraints(1, 0.2))); 
 
     // this.poseTracker.setDefaultCommand(new PrintCommand("Matt likes balls idk, Raf too"));
 
@@ -69,16 +82,20 @@ public class RobotContainer {
     //slow mode
     Controller.onHold(driverController.RightTrigger, new InstantCommand(() -> driverController.setSlowMode(Mode.SLOW)));
     Controller.onRelease(driverController.RightTrigger, new InstantCommand(() -> driverController.setSlowMode(Mode.NORMAL)));
+
+    Controller.onPress(driverController.X, new InstantCommand(() -> {
+      drivetrain.resetOdometry(new Pose2d());
+    }));
   
-    // // Grid Align
-    // Controller.onPress(driverController.Y, new ConditionalCommand(
-    //   // on true, instantiate and schedule align command
-    //   new InstantiatorCommand(() -> new GridAlign(drivetrain, poseTracker)),
-    //   // on false rumble for 1 second
-    //   new Rumble(driverController, Constants.GridAlign.kRumbleTime),
-    //   // conditional upon a valid april tag
-    //   LimelightAPI::validTargets
-    // ));
+    // Grid Align
+    Controller.onPress(driverController.Y, new ConditionalCommand(
+      // on true, instantiate and schedule align command
+      new InstantiatorCommand(() -> new GridAlign(drivetrain, poseTracker)),
+      // on false rumble for 1 second
+      new Rumble(driverController, Constants.GridAlign.kRumbleTime),
+      // conditional upon a valid april tag
+      LimelightAPI::validTargets
+    ));
 
 
     // SmartDashboard.putNumber("target anchor  angle", 30);
@@ -133,7 +150,8 @@ public class RobotContainer {
   */
 
   public Command getAutonomousCommand() {
-    return new InstantCommand(() -> {});
+    // return new InstantCommand(() -> {});
+    return command; 
   }
 
   public void doSendables() {

@@ -39,7 +39,7 @@ public class Arm extends SubsystemBase {
       this.initTuneControllers();
    }
 
-   public void configureMotors(){
+   public void configureMotors() {
       this.anchorMotor.setInverted(Constants.Arm.Anchor.kInverted);
       this.floatingMotor.setInverted(Constants.Arm.Anchor.kInverted);
 

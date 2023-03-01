@@ -86,6 +86,8 @@ public class MotionProfileCommand extends CommandBase {
             return;
         }
 
+        SmartDashboard.putNumber("curvature", state.curvatureRadPerMeter); 
+
         ChassisSpeeds speeds = ramseteController.calculate(
                 subsystem.getPose()
                 , state);

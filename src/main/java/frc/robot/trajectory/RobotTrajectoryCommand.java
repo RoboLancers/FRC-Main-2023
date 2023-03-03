@@ -2,7 +2,7 @@ package frc.robot.trajectory;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.trajectory.MotionProfileCommand;
+import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import org.bananasamirite.robotmotionprofile.data.Trajectory;
 import org.bananasamirite.robotmotionprofile.data.task.CommandTask;
@@ -17,7 +17,12 @@ public class RobotTrajectoryCommand extends SequentialCommandGroup {
     public RobotTrajectoryCommand(Drivetrain drivetrain, Trajectory trajectory) {
         Object[] commands = trajectory.getTasks().stream().map(e -> {
             if (e instanceof WaypointTask && ((WaypointTask) e).getWaypoints().size() > 1)
-                return new MotionProfileCommand(drivetrain, ((WaypointTask) e).createProfile());
+                return Constants.Trajectory.trajectoryCreator.createCommand(
+                        drivetrain,
+                        ((WaypointTask) e).getSpline(),
+                        ((WaypointTask) e).getConstraints().getMaxVelocity(),
+                        ((WaypointTask) e).getConstraints().getMaxAcceleration()
+                );
             if (e instanceof CommandTask && !((CommandTask) e).getWaypoint().getCommandName().equals("")) {
                 try {
                     return TrajectoryCommandsManager.getInstance().getCommandConfig(((CommandTask) e).getWaypoint().getCommandName()).createCommand(((CommandTask) e).getWaypoint().getParameters().toArray());

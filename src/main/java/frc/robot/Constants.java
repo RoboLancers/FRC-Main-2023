@@ -1,6 +1,9 @@
 package frc.robot;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.math.util.Units;
+import frc.robot.trajectory.TrajectoryCreator;
 
 public final class Constants {
     public static final class Arm {
@@ -111,12 +114,22 @@ public final class Constants {
         public static final double ksVoltSecondsPerMeter = 1.7953;
         public static final double kaVoltSecondsSquaredPerMeter = 0.35086;
 
+        public static final double kMaxSpeedMetersPerSecond = 2.5;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 0.8;
+
+        public static final double kMaxVoltage = 10;
+
         // TODO: redo drivetrain angular characterization
         public static final double kTrackWidthMeters = Units.inchesToMeters(23); 
         public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidthMeters);
 
-        public static final double kMaxSpeedMetersPerSecond = 2.5;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 2;
+        public static final TrajectoryCreator trajectoryCreator = new TrajectoryCreator(
+                kDriveKinematics,
+                new DifferentialDriveVoltageConstraint(
+                        new SimpleMotorFeedforward(ksVolts, ksVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter),
+                        kDriveKinematics, kMaxVoltage
+                )
+        );
 
         public static final double kRamseteB = 2;
         public static final double kRamseteZeta = 0.7;

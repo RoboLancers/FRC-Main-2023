@@ -1,37 +1,22 @@
 package frc.robot;
 
-import java.time.Instant;
-
-import org.bananasamirite.robotmotionprofile.ParametricSpline;
-import org.bananasamirite.robotmotionprofile.TankMotionProfile;
+import frc.robot.commands.trajectory.TrajectoryCommand;
 import org.bananasamirite.robotmotionprofile.Waypoint;
-import org.bananasamirite.robotmotionprofile.TankMotionProfile.ProfileMethod;
-import org.bananasamirite.robotmotionprofile.TankMotionProfile.TankMotionProfileConstraints;
 
 import edu.wpi.first.math.geometry.Pose2d;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.grabber.Grabber;
-import frc.robot.subsystems.gyro.Balance;
 import frc.robot.subsystems.gyro.Gyro;
-import frc.robot.commands.GridAlign;
-import frc.robot.commands.Rumble;
-import frc.robot.commands.TeleopGRR;
-import frc.robot.commands.trajectory.MotionProfileCommand;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.poseTracker.PoseTracker;
 import frc.robot.commands.GridAlign;
 import frc.robot.commands.Rumble;
 import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.commands.MoveAnchorJoint;
-import frc.robot.subsystems.arm.commands.MoveFloatingJoint;
-import frc.robot.subsystems.drivetrain.commands.TeleopDrive;
 import frc.robot.util.Controller;
 import frc.robot.util.DriverController;
 import frc.robot.util.InstantiatorCommand;
@@ -51,7 +36,7 @@ public class RobotContainer {
     
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
-  private final MotionProfileCommand command;
+  private final TrajectoryCommand command;
   // TODO: Raf is rly dumb for this shit
   // private final SmartDashboardDB db = new SmartDashboardDB();
 
@@ -61,10 +46,15 @@ public class RobotContainer {
       drivetrain.curvatureDrive(this.driverController.getThrottle(), this.driverController.getTurn(), this.driverController.getSlowMode());
     }, drivetrain));
 
-    command = new MotionProfileCommand(drivetrain, new TankMotionProfile(ParametricSpline.fromWaypoints(new Waypoint[] {
-      new Waypoint(0, 0, 0, 1, 1), 
-      new Waypoint(2, 1, Math.toRadians(90), 1, 1)
-    }), ProfileMethod.TIME, new TankMotionProfileConstraints(1, 0.2))); 
+//    command = new MotionProfileCommand(drivetrain, new TankMotionProfile(ParametricSpline.fromWaypoints(new Waypoint[] {
+//      new Waypoint(0, 0, 0, 1, 1),
+//      new Waypoint(2, 1, Math.toRadians(90), 1, 1)
+//    }), ProfileMethod.TIME, new TankMotionProfileConstraints(1, 0.2)));
+    command = Constants.Trajectory.trajectoryCreator.createCommand(drivetrain,
+            new Waypoint[] {
+                    new Waypoint(0, 0, 0, 1, 1),
+                    new Waypoint(2, 1, Math.toRadians(90), 1, 1)
+            }, 1, 0.2, false);
 
     // this.poseTracker.setDefaultCommand(new PrintCommand("Matt likes balls idk, Raf too"));
 

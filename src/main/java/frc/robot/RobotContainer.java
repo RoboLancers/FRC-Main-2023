@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.grabber.Grabber;
+import frc.robot.subsystems.gyro.Balance;
 import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.poseTracker.PoseTracker;
@@ -67,7 +68,7 @@ public class RobotContainer {
     Controller.onPress(driverController.A, new InstantCommand(grabber::toggleDeploy));
 
     // // Balance
-    // Controller.onPress(driverController.B, new Balance(drivetrain, gyro, 0));
+    Controller.onPress(driverController.B, new Balance(drivetrain, gyro, 0));
 
     //slow mode
     Controller.onHold(driverController.RightTrigger, new InstantCommand(() -> driverController.setSlowMode(Mode.SLOW)));
@@ -92,8 +93,9 @@ public class RobotContainer {
     // SmartDashboard.putNumber("target floating   angle", 0);
 
     // Arm
+    // SmartDashboard.putNumber("anchor-setpoint", 0);
     // Controller.onHold(driverController.X, new MoveAnchorJoint(() -> {
-    //   double desired = SmartDashboard.getNumber("target anchor  angle", 30);
+    //   double desired = SmartDashboard.getNumber("anchor-setpoint", 30);
     //   if(desired < 13) return 13;
 
     //   if(desired > 90) return 90;

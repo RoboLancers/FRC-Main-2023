@@ -11,7 +11,7 @@ public class Balance extends PIDCommand {
     public Balance(Drivetrain drivetrain, Gyro gyro, double setpoint) {
         super(
             new PIDController(Constants.Balance.kP, Constants.Balance.kI, Constants.Balance.kD),
-            gyro::getRoll,
+            gyro::getPitch,
             // Set reference to target
             () -> setpoint,
             // Pipe output to turn robot
@@ -20,7 +20,8 @@ public class Balance extends PIDCommand {
         );
 
         SmartDashboard.putBoolean("Balance Running", true);
-        SmartDashboard.putNumber("kP", SmartDashboard.getNumber("kP", Constants.Balance.kP));
+        SmartDashboard.putNumber("balance-kP", SmartDashboard.getNumber("balance-kP", Constants.Balance.kP));
+        SmartDashboard.putNumber("balance-kD", SmartDashboard.getNumber("balance-kD", Constants.Balance.kD));
 
         this.getController().setTolerance(Constants.Balance.kErrorThreshold);
     
@@ -29,12 +30,14 @@ public class Balance extends PIDCommand {
 
     @Override
     public void execute(){
+        this.m_controller.setP(SmartDashboard.getNumber("balance-kP", 0));
+        this.m_controller.setD(SmartDashboard.getNumber("balance-kD", 0));
+
         double output = this.m_controller.calculate(this.m_measurement.getAsDouble(), this.m_setpoint.getAsDouble());
 
-        this.m_useOutput.accept(output);
+        this.m_useOutput.accept(-output);
 
         // TODO: we can tune this more if necessary, but 0.008 works well
-        // this.m_controller.setP(SmartDashboard.getNumber("kP", 0));
     }
 
     @Override

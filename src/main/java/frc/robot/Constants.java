@@ -184,6 +184,7 @@ public final class Constants {
         public static final double kP = 0.008;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final double kErrorThreshold = 2.0;
+        public static final double kPositionTolerance = 2.0; // TODO: tune this, also keep in mind gyro alignment is trash
+        public static final double kVelocityTolerance = 1.0; // TODO: tune this, 1 degree per second seems pretty reasonable for stopped state
     }
 }

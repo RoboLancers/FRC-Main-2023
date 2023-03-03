@@ -1,6 +1,9 @@
 package frc.robot;
 
 import frc.robot.commands.trajectory.TrajectoryCommand;
+
+import javax.naming.ldap.Control;
+
 import org.bananasamirite.robotmotionprofile.Waypoint;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -13,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.gyro.Balance;
 import frc.robot.subsystems.gyro.Gyro;
+import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.poseTracker.PoseTracker;
 import frc.robot.commands.GridAlign;
@@ -21,19 +25,21 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.util.Controller;
 import frc.robot.util.DriverController;
 import frc.robot.util.InstantiatorCommand;
+import frc.robot.util.ManipulatorController;
 import frc.robot.util.DriverController.Mode;
 import frc.robot.util.limelight.LimelightAPI;
 public class RobotContainer {
   /* Controllers */
   private final DriverController driverController = new DriverController(0);
-  private final Controller manipulatorController = new Controller(1);
+  private final ManipulatorController manipulatorController = new ManipulatorController(1);
 
   /* Subsystems */
   private Drivetrain drivetrain = new Drivetrain();
   private Arm arm = new Arm();
-  private Grabber grabber = new Grabber();
+  // private Grabber grabber = new Grabber();
   private Gyro gyro = new Gyro();
   private PoseTracker poseTracker = new PoseTracker(drivetrain);
+  private Intake intake = new Intake(); 
     
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -64,8 +70,20 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
 
-    // Grabber
-    Controller.onPress(driverController.A, new InstantCommand(grabber::toggleDeploy));
+    // intake
+    // don't question this
+    Controller.onPress(manipulatorController.intakeElementTrigger, new RunCommand(() -> {
+      intake.intake();
+    }, intake));
+    Controller.onPress(manipulatorController.outtakeElementTrigger, new RunCommand(() -> {
+      intake.outtake();
+    }, intake));
+    Controller.onPress(manipulatorController.intakeOffTrigger, new RunCommand(() -> {
+      intake.off();
+    }, intake));
+
+    // // Grabber
+    // Controller.onPress(driverController.A, new InstantCommand(grabber::toggleDeploy));
 
     // // Balance
     Controller.onPress(driverController.B, new Balance(drivetrain, gyro, 0));

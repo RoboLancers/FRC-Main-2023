@@ -110,9 +110,12 @@ public final class Constants {
     }
 
     public static class Intake {
-        public static int kPort; // TODO
+        public static int kPort = 24; 
         public static double kForwardPower = 0.2;
         public static double kBackwardPower = -0.2;
+
+        public static double kAutoIntakeSeconds = 1;
+        public static double kAutoOuttakeSeconds = 1;
     }
 
     public static class Trajectory {

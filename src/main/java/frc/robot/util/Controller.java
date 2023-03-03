@@ -20,9 +20,6 @@ public class Controller {
     public Trigger LeftTrigger; 
     public Trigger RightTrigger; 
 
-    double throttleMultiplier = Constants.Drivetrain.kThrottleMultiplier;
-    double turnMultiplier = Constants.Drivetrain.kTurnMultiplier;
-
     public Controller(int port) {
         this._controller = new XboxController(port);
 
@@ -90,5 +87,9 @@ public class Controller {
 
     public void setRumble(boolean rumble){
         this._controller.setRumble(RumbleType.kBothRumble, rumble ? 1 : 0);
+    }
+
+    protected XboxController getController() {
+        return this._controller; 
     }
 }

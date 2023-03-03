@@ -11,26 +11,27 @@ public class Intake extends SubsystemBase {
 
     private int direction = 0;
     
-    public Intake(){
-        this.motor = new CANSparkMax(0, MotorType.kBrushless);
+    public Intake() {
+        this.motor = new CANSparkMax(Constants.Intake.kPort, MotorType.kBrushless);
     }
 
     @Override
-    public void periodic(){
+    public void periodic() {
         double power = direction == 0 ? 0 : direction == 1 ? Constants.Intake.kForwardPower : Constants.Intake.kBackwardPower;
 
         this.motor.set(power);
     }
 
-    public void off(){
+    public void off() {
         this.direction = 0;
     }
 
-    public void forward(){
-        this.direction = -1;
+    // TODO: modify these or motor direction
+    public void outtake() {
+        this.direction = 1;
     }
 
-    public void backward(){
+    public void intake() {
         this.direction = -1;
     }
 }

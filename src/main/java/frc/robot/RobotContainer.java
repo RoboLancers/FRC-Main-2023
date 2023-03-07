@@ -9,9 +9,11 @@ import org.bananasamirite.robotmotionprofile.Waypoint;
 import edu.wpi.first.math.geometry.Pose2d;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.gyro.Balance;
@@ -22,6 +24,8 @@ import frc.robot.subsystems.poseTracker.PoseTracker;
 import frc.robot.commands.GridAlign;
 import frc.robot.commands.Rumble;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.commands.MoveAnchorJoint;
+import frc.robot.subsystems.arm.commands.MoveFloatingJoint;
 import frc.robot.util.Controller;
 import frc.robot.util.DriverController;
 import frc.robot.util.InstantiatorCommand;
@@ -43,7 +47,7 @@ public class RobotContainer {
     
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
-  private final TrajectoryCommand command;
+  private final RamseteCommand command;
   // TODO: Raf is rly dumb for this shit
   // private final SmartDashboardDB db = new SmartDashboardDB();
 
@@ -60,7 +64,7 @@ public class RobotContainer {
     command = Constants.Trajectory.trajectoryCreator.createCommand(drivetrain,
             new Waypoint[] {
                     new Waypoint(0, 0, 0, 1, 1),
-                    new Waypoint(2, 1, Math.toRadians(90), 1, 1)
+                    new Waypoint(2, 0, Math.toRadians(0), 1, 1)
             }, 1, 0.2, false);
 
     // this.poseTracker.setDefaultCommand(new PrintCommand("Matt likes balls idk, Raf too"));
@@ -91,44 +95,43 @@ public class RobotContainer {
     //slow mode
     Controller.onHold(driverController.RightTrigger, new InstantCommand(() -> driverController.setSlowMode(Mode.SLOW)));
     Controller.onRelease(driverController.RightTrigger, new InstantCommand(() -> driverController.setSlowMode(Mode.NORMAL)));
-
-    Controller.onPress(driverController.X, new InstantCommand(() -> {
-      drivetrain.resetOdometry(new Pose2d());
-    }));
   
     // Grid Align
-    Controller.onPress(driverController.Y, new ConditionalCommand(
-      // on true, instantiate and schedule align command
-      new InstantiatorCommand(() -> new GridAlign(drivetrain, poseTracker)),
-      // on false rumble for 1 second
-      new Rumble(driverController, Constants.GridAlign.kRumbleTime),
-      // conditional upon a valid april tag
-      LimelightAPI::validTargets
-    ));
+    // Controller.onPress(driverController.Y, new ConditionalCommand(
+    //   // on true, instantiate and schedule align command
+    //   new InstantiatorCommand(() -> new GridAlign(drivetrain, poseTracker)),
+    //   // on false rumble for 1 second
+    //   new Rumble(driverController, Constants.GridAlign.kRumbleTime),
+    //   // conditional upon a valid april tag
+    //   LimelightAPI::validTargets
+    // ));
 
 
     // SmartDashboard.putNumber("target anchor  angle", 30);
     // SmartDashboard.putNumber("target floating   angle", 0);
 
     // Arm
-    // SmartDashboard.putNumber("anchor-setpoint", 0);
-    // Controller.onHold(driverController.X, new MoveAnchorJoint(() -> {
-    //   double desired = SmartDashboard.getNumber("anchor-setpoint", 30);
-    //   if(desired < 13) return 13;
+    SmartDashboard.putNumber("anchor--setpoint", 0);
+    Controller.onPress(driverController.X, new MoveAnchorJoint(() -> {
+      double desired = SmartDashboard.getNumber("anchor--setpoint", 30);
 
-    //   if(desired > 90) return 90;
+      if(desired < 13) return 13;
 
-    //   return desired;
-    // }, arm));
+      if(desired > 90) return 90;
 
-    // Controller.onHold(driverController.Y, new MoveFloatingJoint(() -> {
-    //   double desired = SmartDashboard.getNumber("target floating   angle", 0);
-    //   if(desired < 0) return 0;
+      return desired;
+    }, arm));
 
-    //   if(desired > 90) return 90;
+    SmartDashboard.getNumber("floating setpoint", 0);
 
-    //   return desired;
-    // }, arm));
+    Controller.onPress(driverController.Y, new MoveFloatingJoint(() -> {
+      double desired = SmartDashboard.getNumber("floating setpoint", 0);
+      if(desired < 22) return 22;
+
+      if(desired > 90) return 90;
+
+      return desired;
+    }, arm));
 
 
    // TODO: this lowkey not really gonna work rn, need to implement displacement properly

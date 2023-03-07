@@ -16,8 +16,8 @@ public class ManipulatorController extends Controller {
 
     public ManipulatorController(int port) {
         super(port); 
-        this.intakeElementTrigger = new Trigger(() -> getController().getLeftTriggerAxis() > 0.2);
-        this.outtakeElementTrigger = new Trigger(() -> getController().getLeftTriggerAxis() < -0.2);
-        this.intakeOffTrigger = new Trigger(() -> getController().getLeftTriggerAxis() > -0.2 && getController().getLeftTriggerAxis() < 0.2); 
+        this.intakeElementTrigger = new Trigger(() -> -getLeftStickY() > 0.2);
+        this.outtakeElementTrigger = new Trigger(() -> -getLeftStickY() < -0.2);
+        this.intakeOffTrigger = new Trigger(() -> -getLeftStickY() > -0.2 && -getLeftStickY() < 0.2); 
     }
 }

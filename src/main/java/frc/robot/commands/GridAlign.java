@@ -15,7 +15,7 @@ public GridAlign(Drivetrain drivetrain, PoseTracker tracker) {
     public GridAlign(Drivetrain drivetrain, PoseTracker poseTracker, double maxVel, double maxAccel) {
         super(
             drivetrain,
-                Constants.Trajectory.trajectoryCreator.create(maxVel, maxAccel, poseTracker.generateSpline())
+                Constants.Trajectory.trajectoryCreator.create(maxVel, maxAccel, poseTracker.generateWaypoints(), false)
         );
     }
 }

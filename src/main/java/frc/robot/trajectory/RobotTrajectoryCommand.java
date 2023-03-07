@@ -19,9 +19,10 @@ public class RobotTrajectoryCommand extends SequentialCommandGroup {
             if (e instanceof WaypointTask && ((WaypointTask) e).getWaypoints().size() > 1)
                 return Constants.Trajectory.trajectoryCreator.createCommand(
                         drivetrain,
-                        ((WaypointTask) e).getSpline(),
+                        ((WaypointTask) e).getWaypoints(),
                         ((WaypointTask) e).getConstraints().getMaxVelocity(),
-                        ((WaypointTask) e).getConstraints().getMaxAcceleration()
+                        ((WaypointTask) e).getConstraints().getMaxAcceleration(), 
+                        ((WaypointTask) e).getReversed()
                 );
             if (e instanceof CommandTask && !((CommandTask) e).getWaypoint().getCommandName().equals("")) {
                 try {

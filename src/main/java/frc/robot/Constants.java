@@ -12,10 +12,10 @@ public final class Constants {
             public static final boolean kInverted = true;
             public static final double kRatio = (90.0 - 13.0) / (27.0); // TODO: this probably isn't correct because of gearing
 
-            public static final double kP = 0.025;
+            public static double kP = 0.015;
             public static final double kI = 0.0;
             public static final double kD = 0.0;
-            public static final double kFF = 0.0;
+            public static double kFF = 0.05;
             public static double kErrorThreshold = 2.0;
 
             // TODO: this doesn't sound right?
@@ -37,7 +37,7 @@ public final class Constants {
             public static final double kFF = 0.0;
             public static double kErrorThreshold = 0.0;
 
-            public static final double kContracted = 0.0;
+            public static final double kContracted = 22.0;
             public static final double kMinAngle = 22.0;
             public static final double kMaxAngle = 180.0;
 
@@ -111,12 +111,13 @@ public final class Constants {
 
     public static class Intake {
         public static int kPort = 24; 
-        public static double kForwardPower = 0.2;
-        public static double kBackwardPower = -0.2;
+        public static double kForwardPower = 0.7;
+        public static double kBackwardPower = -0.7;
 
         public static double kAutoIntakeSeconds = 1;
         public static double kAutoOuttakeSeconds = 1;
     }
+
 
     public static class Trajectory {
         public static final double ksVolts = 0.23636;

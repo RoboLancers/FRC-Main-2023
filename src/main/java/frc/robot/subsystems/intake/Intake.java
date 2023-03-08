@@ -9,10 +9,10 @@ import frc.robot.Constants;
 public class Intake extends SubsystemBase {
     private CANSparkMax motor;
 
-    private int direction = 0;
+    public int direction = 0;
     
     public Intake(){
-        this.motor = new CANSparkMax(0, MotorType.kBrushless);
+        this.motor = new CANSparkMax(Constants.Intake.kPort, MotorType.kBrushless);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void forward(){
-        this.direction = -1;
+        this.direction = 1;
     }
 
     public void backward(){

@@ -21,19 +21,30 @@ public class MoveAnchorJoint extends CommandBase {
     @Override
     public void execute() {
         double maintainTerm = Constants.Arm.Anchor.kFF * Math.sin(arm.getAnchorAngle() * Math.PI / 180);
-        double correctionTerm = Constants.Arm.Anchor.kP * (arm.getAnchorAngle() - desiredAngle.getAsDouble());
+        double correctionTerm = Constants.Arm.Anchor.kP * -(arm.getAnchorAngle() - desiredAngle.getAsDouble());
 
         double output = maintainTerm + correctionTerm;
 
         SmartDashboard.putNumber("anchor-output", output);
 
-        // arm.anchorMotor.set(output);
+        SmartDashboard.putBoolean("running anchor motor", true);
+
+        arm.anchorMotor.set(output);
     }
 
     @Override
     public boolean isFinished() {
-        return arm.isAnchorAtAngle(desiredAngle.getAsDouble());
+        return false;
+
+        // SmartDashboard.putBoolean("running anchor motor", true);
+        
+        // return arm.isAnchorAtAngle(desiredAngle.getAsDouble());
 
         // return arm.isAnchorAtAngle(desiredAngle.getAsDouble()) && (arm.getAnchorMotorPower() < Constants.Arm.Miscellaneous.minOscillationThreshold);
+    }
+
+    @Override
+    public void end(boolean intrerrupted){
+        this.arm.anchorMotor.set(0);
     }
 }

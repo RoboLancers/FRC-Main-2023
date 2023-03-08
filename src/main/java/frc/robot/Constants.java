@@ -9,10 +9,10 @@ public final class Constants {
             public static final boolean kInverted = true;
             public static final double kRatio = (90.0 - 13.0) / (27.0); // TODO: this probably isn't correct because of gearing
 
-            public static final double kP = 0.025;
+            public static final double kP = 0.015;
             public static final double kI = 0.0;
             public static final double kD = 0.0;
-            public static final double kFF = 0.0;
+            public static final double kFF = 0.042;
             public static double kErrorThreshold = 2.0;
 
             // TODO: this doesn't sound right?
@@ -28,13 +28,13 @@ public final class Constants {
             public static final boolean kInverted = true;
             public static final double kRatio = 360.0/72; // TODO: this probably isn't correct because of gearing
 
-            public static final double kP = 0.001;
+            public static final double kP = 0.01;
             public static final double kI = 0.0;
             public static final double kD = 0.0;
             public static final double kFF = 0.0;
             public static double kErrorThreshold = 0.0;
 
-            public static final double kContracted = 0.0;
+            public static final double kContracted = 22.0;
             public static final double kMinAngle = 22.0;
             public static final double kMaxAngle = 180.0;
 
@@ -51,8 +51,8 @@ public final class Constants {
         // TODO: calculate these or do it dynamically, but something needs to happen with them
         // TODO: if we do these statically, create a "ArmState" wrapper
         public static final class Positions {
-            public static final double kLowFloating = 0.0;
-            public static final double kLowAnchor = 0.0;
+            public static final double kLowFloating = 75.4;
+            public static final double kLowAnchor = 13.0;
             public static final double kMidNodeFloating = 0.0;
             public static final double kMidNodeAnchor = 0.0;
             public static final double kMidShelfFloating = 0.0;
@@ -107,9 +107,9 @@ public final class Constants {
     }
 
     public static class Intake {
-        public static int kPort; // TODO
-        public static double kForwardPower = 0.2;
-        public static double kBackwardPower = -0.2;
+        public static int kPort = 24; // TODO
+        public static double kForwardPower = 0.4;
+        public static double kBackwardPower = -0.4;
     }
 
     public static class Trajectory {
@@ -169,15 +169,15 @@ public final class Constants {
 
         public static final int kMaxAmps = 30; 
         public static final double kThrottleMultiplier = 0.75;
-        public static final double kTurnMultiplier = 0.6;
+        public static final double kTurnMultiplier = 0.3;
         public static final double kThrottleMultiplierSM = 0.2;
         public static final double kTurnMultiplierSM = 0.15;
 
-        public static final double kForwardThrottleAccelFilter = 1.25;
-        public static final double kForwardThrottleDecelFilter = 1.00;
-        public static final double kBackwardThrottleAccelFilter = 1.25;
-        public static final double kBackwardThrottleDecelFilter = 1.00;
-        public static final double kTurnFilter = 2;
+        public static final double kForwardThrottleAccelFilter = 0.85;
+        public static final double kForwardThrottleDecelFilter = 0.80;
+        public static final double kBackwardThrottleAccelFilter = 0.85;
+        public static final double kBackwardThrottleDecelFilter = 0.80;
+        public static final double kTurnFilter = 1.5;
     }
 
     public static class Balance {

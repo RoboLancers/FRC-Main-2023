@@ -12,6 +12,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 public class Arm extends SubsystemBase {
+   public double anchorSetpoint = Constants.Arm.Anchor.kContracted;
+   public double floatingSetpoint = Constants.Arm.Floating.kContracted;
+
    // TODO: ideally privatize these for semantics, but not super important
    public CANSparkMax anchorMotor, floatingMotor;
    public RelativeEncoder anchorEncoder, floatingEncoder;
@@ -36,7 +39,7 @@ public class Arm extends SubsystemBase {
 
       this.configureControllers();
 
-      this.initTuneControllers();
+      // this.initTuneControllers();
    }
 
    public void configureMotors(){
@@ -154,7 +157,7 @@ public class Arm extends SubsystemBase {
    @Override
    public void periodic(){
       // TODO: comment out tuneControllers() at comp
-      tuneControllers();
+      // tuneControllers();
 
       SmartDashboard.putNumber("Anchor  Angle", this.getAnchorAngle());
       SmartDashboard.putNumber("Floating Angle", this.getFloatingAngle());

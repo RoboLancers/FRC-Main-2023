@@ -21,6 +21,7 @@ public class MoveFloatingJoint extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return arm.isFloatingAtAngle(desiredAngle.getAsDouble());
+        return false;
+        //return arm.isFloatingAtAngle(desiredAngle.getAsDouble());
     }
 }

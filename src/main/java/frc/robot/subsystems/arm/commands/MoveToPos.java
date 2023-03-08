@@ -1,17 +1,15 @@
 package frc.robot.subsystems.arm.commands;
 
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.arm.Arm;
 
-public class MoveToPos extends SequentialCommandGroup {
-    public MoveToPos(Arm arm, double desiredAnchor, double desiredFloating){
+public class MoveToPos extends ParallelCommandGroup {
+    public MoveToPos(Arm arm){
         addCommands(
-            new SequentialCommandGroup(
-                // new MoveAnchorJoint(0, arm),
-                // new MoveAnchorJoint(Math.PI / 2, arm), 
-                // new MoveFloatingJoint(desiredFloating, arm)
-                // new MoveAnchorJoint(desiredAnchor, arm)
-            )
+            new MoveAnchorJoint(() -> arm.anchorSetpoint, arm),
+            new MoveFloatingJoint(() -> arm.floatingSetpoint, arm)
         );
 
         addRequirements(arm);

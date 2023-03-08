@@ -21,7 +21,7 @@ public class TeleopGRR extends SequentialCommandGroup {
             // TODO: factor in the displacement, but do it properly
             new InstantiatorCommand(() -> new GridAlign(drivetrain, tracker)),
             // Fix the arm BS stuff
-            new MoveToPos(arm, 0, 0),
+            // new MoveToPos(arm, 0, 0),
             new InstantCommand(() -> grabber.toggleDeploy(), grabber)
         );
 

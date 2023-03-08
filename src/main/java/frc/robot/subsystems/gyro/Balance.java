@@ -7,6 +7,8 @@ import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 
 public class Balance extends PIDCommand {
+    private Gyro gyro;
+
     public Balance(Drivetrain drivetrain, Gyro gyro, double setpoint) {
         super(
             new PIDController(Constants.Balance.kP, Constants.Balance.kI, Constants.Balance.kD),
@@ -14,15 +16,15 @@ public class Balance extends PIDCommand {
             // Set reference to target
             () -> setpoint,
             // Pipe output to turn robot
-            (outputPower) -> drivetrain.arcadeDrive(outputPower, 0), // TODO: was this negative?
+            (outputPower) -> drivetrain.arcadeDrive(outputPower, 0),
             drivetrain
         );
+
+        this.gyro = gyro;
 
         SmartDashboard.putBoolean("Balance Running", true);
         SmartDashboard.putNumber("balance-kP", SmartDashboard.getNumber("balance-kP", Constants.Balance.kP));
         SmartDashboard.putNumber("balance-kD", SmartDashboard.getNumber("balance-kD", Constants.Balance.kD));
-
-        this.getController().setTolerance(Constants.Balance.kErrorThreshold);
     
         addRequirements(drivetrain);
     }
@@ -48,6 +50,9 @@ public class Balance extends PIDCommand {
 
     @Override
     public boolean isFinished(){
-        return this.getController().atSetpoint();
+        return (
+            Math.abs(this.m_measurement.getAsDouble()) < Constants.Balance.kPositionTolerance &&
+            Math.abs(this.gyro.getPitchVelocity()) < Constants.Balance.kVelocityTolerance
+        );
     }
 }

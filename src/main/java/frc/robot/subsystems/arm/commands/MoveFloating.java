@@ -8,17 +8,21 @@ import java.time.chrono.MinguoChronology;
 
 public class MoveFloating extends CommandBase {
     Arm arm;
+    DoubleSupplier setpoint;
 
     public MoveFloating(Arm arm, double setpoint){
         this.arm = arm;
-
-        arm.floatingSetpoint = setpoint;
+        this.setpoint = () -> setpoint;
     }
 
     public MoveFloating(Arm arm, DoubleSupplier setpoint){
         this.arm = arm;
+        this.setpoint = setpoint;
+    }
 
-        arm.floatingSetpoint = setpoint.getAsDouble();
+    @Override
+    public void initialize(){
+        this.arm.floatingSetpoint = this.setpoint.getAsDouble();
     }
 
     @Override

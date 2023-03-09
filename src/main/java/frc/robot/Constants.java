@@ -8,15 +8,15 @@ public final class Constants {
             public static final boolean kInverted = true;
             public static final double kRatio = (90.0 - 13.0) / (27.0);
 
-            public static final double kP = 0.015;
+            public static final double kP = 0.016;
             public static final double kI = 0.0;
             public static final double kD = 0.0;
             public static final double kFF = 0.042;
-            public static double kErrorThreshold = 2.0;
+            public static double kErrorThreshold = 5.0;
 
             public static final double kContracted = 13.0;
             public static final double kMinAngle = 13.0;
-            public static final double kMaxAngle = 85.0; // TODO: idk about this one
+            public static final double kMaxAngle = 95.0; // TODO: idk about this one
         }
         
         public static final class Floating {
@@ -27,7 +27,7 @@ public final class Constants {
             public static final double kI = 0.0;
             public static final double kD = 0.0;
             public static final double kFF = 0.0;
-            public static double kErrorThreshold = 0.0;
+            public static double kErrorThreshold = 5.0;
 
             public static final double kContracted = 22.0;
             public static final double kMinAngle = 22.0;
@@ -62,20 +62,20 @@ public final class Constants {
 
             // cube upper shelf
             public static final class Cube {
-                public static final double kAnchor = 0.0;
-                public static final double kFloating = 0.0;
+                public static final double kAnchor = 85.0;
+                public static final double kFloating = 115.0;
             }
 
             // cone middle shelf
             public static final class MiddleCone {
-                public static final double kAnchor = 0.0;
-                public static final double kFloating = 0.0;
+                public static final double kAnchor = 58.0;
+                public static final double kFloating = 69.0;
             }
 
             // cone high shelf
             public static final class HighCone {
-                public static final double kAnchor = 0.0;
-                public static final double kFloating = 0.0;
+                public static final double kAnchor = 95.0;
+                public static final double kFloating = 110.0;
             }
         }
         
@@ -88,8 +88,8 @@ public final class Constants {
 
     public static class Intake {
         public static int kPort = 24;
-        public static double kForwardPower = 0.8;
-        public static double kBackwardPower = -0.8;
+        public static double kForwardPower = 0.5;
+        public static double kBackwardPower = -0.5;
     }
 
     public static class Trajectory {

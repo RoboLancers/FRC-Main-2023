@@ -8,17 +8,21 @@ import java.time.chrono.ThaiBuddhistDate;
 
 public class MoveAnchor extends CommandBase {
     Arm arm;
+    DoubleSupplier setpoint;
 
     public MoveAnchor(Arm arm, double setpoint){
         this.arm = arm;
-
-        arm.anchorSetpoint = setpoint;
+        this.setpoint = () -> setpoint;
     }
 
     public MoveAnchor(Arm arm, DoubleSupplier setpoint){
         this.arm = arm;
+        this.setpoint = setpoint;
+    }
 
-        arm.anchorSetpoint = setpoint.getAsDouble();
+    @Override
+    public void initialize(){
+        this.arm.anchorSetpoint = setpoint.getAsDouble();
     }
 
     @Override

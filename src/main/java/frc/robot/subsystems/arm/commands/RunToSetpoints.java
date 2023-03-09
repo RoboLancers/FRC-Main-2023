@@ -10,6 +10,8 @@ public class RunToSetpoints extends CommandBase {
 
     public RunToSetpoints(Arm arm){
         this.arm = arm;
+
+        addRequirements(arm);
     }
 
     @Override

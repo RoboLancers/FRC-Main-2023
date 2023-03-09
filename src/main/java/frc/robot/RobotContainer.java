@@ -59,8 +59,8 @@ public class RobotContainer {
     SmartDashboard.putNumber("floating-setpoint", 22.0);
     Controller.onPress(manipulatorController.X, new MoveToPos(
       arm,
-      () -> ControllerUtils.clamp(SmartDashboard.getNumber("anchor-setpoint", 0.0), 13.0, 90.0),
-      () -> ControllerUtils.clamp(SmartDashboard.getNumber("floating-setpoint", 0.0), 22.0, 90.0)
+      () -> ControllerUtils.clamp(SmartDashboard.getNumber("anchor-setpoint", 0.0), 13.0, 95.0),
+      () -> ControllerUtils.clamp(SmartDashboard.getNumber("floating-setpoint", 0.0), 22.0, 180.0)
     ));
 
     //slow mode

@@ -266,5 +266,4 @@ public class LimelightAPI {
     public static Pose2d camPose() {
         return flattenPose(LimelightAPI.getPose("camerapose_targetspace"));
     }
-
 }

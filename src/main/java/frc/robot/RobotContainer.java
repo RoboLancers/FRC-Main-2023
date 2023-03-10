@@ -1,10 +1,8 @@
 package frc.robot;
 
-import org.bananasamirite.robotmotionprofile.Waypoint;
-
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -12,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.drivetrain.commands.MoveBackward;
+import frc.robot.subsystems.drivetrain.commands.MoveForward;
 import frc.robot.subsystems.poseTracker.PoseTracker;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.commands.MoveToPos;
@@ -46,18 +46,20 @@ public class RobotContainer {
 
     CameraServer.startAutomaticCapture(); 
 
-    command = Constants.Trajectory.trajectoryCreator.createCommand(drivetrain,
-            new Waypoint[] {
-                    new Waypoint(0, 0, 0, 2.734564202601426, 1),
-                    new Waypoint(1.594, 0.798, Math.toRadians(1.145), 2.4, 1), 
-                    // new Waypoint(
-                    //   2, 1, Math.toRadians(45), 1.85, 1
-                    // )
-            }, new TrajectoryConfig(1, 0.2));
-
+    // command = Constants.Trajectory.trajectoryCreator.createCommand(drivetrain,
+    //         new Waypoint[] {
+    //                 new Waypoint(0, 0, 0, 2.734564202601426, 1),
+    //                 new Waypoint(1.594, 0.798, Math.toRadians(1.145), 2.4, 1), 
+    //                 // new Waypoint(
+    //                 //   2, 1, Math.toRadians(45), 1.85, 1
+    //                 // )
+    //         }, new TrajectoryConfig(1, 0.2));
+    SmartDashboard.putNumber("Angular Setpoint", 0);
+    // command = new TurnToAngle(drivetrain, () -> SmartDashboard.getNumber("Angular Setpoint", 0));
 
             configureButtonBindings();
-
+            configureAutos(); 
+            doSendables();
         }
     // command = new TurnTuner(drivetrain);
     // try {
@@ -109,16 +111,30 @@ public class RobotContainer {
     //   () -> ControllerUtils.clamp(SmartDashboard.getNumber("floating-setpoint", 0.0), 22.0, 180.0)
     // ));
 
-    //slow mode
+    // slow mode
     Controller.onHold(driverController.RightBumper, new InstantCommand(() -> driverController.setSlowMode(Mode.SLOW)));
     Controller.onRelease(driverController.RightBumper, new InstantCommand(() -> driverController.setSlowMode(Mode.NORMAL)));
+
+    // auto steer
+    // Controller.onPress(driverController.A, new InstantCommand(() -> {
+    //   drivetrain.isAutoSteer = true; 
+    // }));
+    // Controller.onPressCancel(driverController.A, new InstantCommand(() -> {
+    //   drivetrain.isAutoSteer = false; 
+    // }));
+  }
+
+  public void configureAutos() {
+    autoChooser.addOption("Move Forward", new MoveForward(drivetrain, 3));
+    autoChooser.addOption("Move Backward", new MoveBackward(drivetrain, 3));
   }
 
   public Command getAutonomousCommand() {
     // return new InstantCommand(() -> {});
-    return command; 
+    return autoChooser.getSelected(); 
   }
 
   public void doSendables() {
+    SmartDashboard.putData(autoChooser);
   }
 }

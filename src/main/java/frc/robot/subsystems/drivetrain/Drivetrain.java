@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.Encoder;
 import frc.robot.util.DriverController.Mode;
+import frc.robot.util.limelight.LimelightAPI;
 import edu.wpi.first.wpilibj.SPI;
 
 public class Drivetrain extends SubsystemBase {
@@ -53,6 +54,8 @@ public class Drivetrain extends SubsystemBase {
     private final SlewRateLimiter throttleForwardFilter = new SlewRateLimiter(Constants.Drivetrain.kForwardThrottleAccelFilter, -Constants.Drivetrain.kForwardThrottleDecelFilter, 0);
     private final SlewRateLimiter throttleBackwardFilter = new SlewRateLimiter(Constants.Drivetrain.kBackwardThrottleAccelFilter, -Constants.Drivetrain.kBackwardThrottleDecelFilter,0);
     private final SlewRateLimiter turnFilter = new SlewRateLimiter(Constants.Drivetrain.kTurnFilter);
+
+    public boolean isAutoSteer = false; 
 
     // private final PIDController throttlePID = new PIDController(.15, 0.00, 0.0);
     // private final PIDController throttlePID2 = new PIDController(.25, 0.00, 0.0);
@@ -192,6 +195,22 @@ public class Drivetrain extends SubsystemBase {
         // if (throttle == 0 && turn == 0) {
         //     tankDriveVolts(0, 0);
         // }
+    }
+
+    public void autoSteerCurvatureDrive(double throttle, Mode mode, Pose2d aprilTagPose) { // aprilTagPose = pose relative to robot
+        double turnPower = aprilTagPose.getRotation().getDegrees() * Constants.GridAlign.kSteer * (throttle != 0 ? throttle : 0.25);
+
+        curvatureDrive(throttle, turnPower, mode);
+    }
+
+    public void drive(double throttle, double turn, Mode mode) {
+        Pose2d pose = LimelightAPI.targetPoseBotSpace(); 
+
+        if (isAutoSteer && pose != null) {
+            autoSteerCurvatureDrive(throttle, mode, pose);
+        } else {
+            curvatureDrive(throttle, turn, mode);
+        }
     }
 
     // Controls the left and right side motors directly with voltage.

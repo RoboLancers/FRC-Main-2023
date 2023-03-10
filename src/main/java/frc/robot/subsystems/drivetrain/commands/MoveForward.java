@@ -12,11 +12,11 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 
 public class MoveForward extends TrajectoryCommand {
 
-    public MoveForward(Drivetrain drivetrain, Trajectory trajectory, double distance, double maxVel, double maxAccel) {
-        super(drivetrain, Constants.Trajectory.trajectoryCreator.create(List.of(new Waypoint(0, 0, 0, 1, 1), new Waypoint(distance, 0, 0, 1, 1)), new TrajectoryConfig(maxVel, maxAccel).setReversed(false)));
+    public MoveForward(Drivetrain drivetrain, double distanceMeters, double maxVel, double maxAccel) {
+        super(drivetrain, Constants.Trajectory.trajectoryCreator.create(List.of(new Waypoint(0, 0, 0, 1, 1), new Waypoint(distanceMeters, 0, 0, 1, 1)), new TrajectoryConfig(maxVel, maxAccel).setReversed(false)));
     }
     
-    public MoveForward(Drivetrain drivetrain, Trajectory trajectory, double distance) {
-        this(drivetrain, trajectory, distance, Constants.Trajectory.kMaxSpeedMetersPerSecond, Constants.Trajectory.kMaxAccelerationMetersPerSecondSquared); 
+    public MoveForward(Drivetrain drivetrain, double distanceMeters) {
+        this(drivetrain, distanceMeters, Constants.Trajectory.kMaxSpeedMetersPerSecond, Constants.Trajectory.kMaxAccelerationMetersPerSecondSquared); 
     }
 }

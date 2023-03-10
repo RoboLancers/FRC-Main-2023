@@ -11,7 +11,7 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 public class TurnToAngle extends PIDCommand {
         private Drivetrain drivetrain;  
     
-        public TurnToAngle(Drivetrain drivetrain, DoubleSupplier setpoint){
+        public TurnToAngle(Drivetrain drivetrain, DoubleSupplier setpoint) {
             super(
                 new PIDController(
                     Constants.Drivetrain.kTurnP,
@@ -21,36 +21,42 @@ public class TurnToAngle extends PIDCommand {
                 drivetrain::getHeading,
                 () -> {
                     double setpointValue = setpoint.getAsDouble();
-                    SmartDashboard.putNumber("Angular Setpoint", setpointValue);
                     SmartDashboard.putNumber("Angular Error", setpointValue - drivetrain.getHeading());
                     return setpointValue;
                 },
                 (outputPower) -> {
-                    SmartDashboard.putNumber("Angular Output", outputPower);
-                    drivetrain.leftMotors.set(outputPower);
-                    drivetrain.rightMotors.set(-outputPower);
+                    drivetrain.leftMotors.set(-outputPower);
+                    drivetrain.rightMotors.set(outputPower);
                 },
                 drivetrain
             );
             this.getController().setTolerance(Constants.Drivetrain.kTurnErrorThreshold);
             this.getController().enableContinuousInput(-180.0, 180.0);
 
+            SmartDashboard.putNumber("Angular kP", 0.0); 
+            SmartDashboard.putNumber("Angular kI", 0.0); 
+            SmartDashboard.putNumber("Angular kD", 0.0); 
+
             SmartDashboard.putBoolean("Angular Running", true);
     
             this.drivetrain = drivetrain;
         }
     
-        // @Override
-        // public void execute(){
-        //     this.getController().setPID(
-        //         SmartDashboard.getNumber("Angular kP", 0.0),
-        //         SmartDashboard.getNumber("Angular kI", 0.0),
-        //         SmartDashboard.getNumber("Angular kD", 0.0)
-        //     );
-        // }
+        @Override
+        public void execute() {
+            // System.out.println(SmartDashboard.getNumber("Angular kP", 0.0));
+            // super.execute();
+            // this.getController().setPID(
+            //     SmartDashboard.getNumber("Angular kP", 0.0),
+            //     SmartDashboard.getNumber("Angular kI", 0.0),
+            //     SmartDashboard.getNumber("Angular kD", 0.0)
+            // );
+
+            // this.m_useOutput.accept(output);
+        }
     
         @Override
-        public void end(boolean interrupted){
+        public void end(boolean interrupted) {
             SmartDashboard.putBoolean("Angular Running", false);
             drivetrain.leftMotors.set(0);
             drivetrain.rightMotors.set(0);

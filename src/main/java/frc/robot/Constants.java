@@ -140,6 +140,9 @@ public final class Constants {
 
         public static final double kCamSanityZMax = 0;
         public static final double kCamSanityZMin = -10;
+
+        // TODO: tune next week
+        public static final double kSteer = 0.0; 
     }
 
     public static class Drivetrain {
@@ -167,10 +170,10 @@ public final class Constants {
         public static final double kTurnFilter = 3;
 
         // TODO: tune these
-        public static final double kTurnP = 0; 
+        public static final double kTurnP = 0.005; 
         public static final double kTurnI = 0; 
         public static final double kTurnD = 0; 
-        public static final double kTurnErrorThreshold = 2; 
+        public static final double kTurnErrorThreshold = 5; 
     }
 
     public static class Balance {

@@ -165,6 +165,12 @@ public final class Constants {
         public static final double kBackwardThrottleAccelFilter = 0.85;
         public static final double kBackwardThrottleDecelFilter = 0.8;
         public static final double kTurnFilter = 3;
+
+        // TODO: tune these
+        public static final double kTurnP = 0; 
+        public static final double kTurnI = 0; 
+        public static final double kTurnD = 0; 
+        public static final double kTurnErrorThreshold = 2; 
     }
 
     public static class Balance {

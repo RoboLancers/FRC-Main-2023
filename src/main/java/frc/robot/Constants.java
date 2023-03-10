@@ -13,6 +13,7 @@ public final class Constants {
             public static final double kD = 0.0;
             public static final double kFF = 0.042;
             public static double kErrorThreshold = 5.0;
+            public static double kMaxDownwardOutput = -0.5;
 
             public static final double kContracted = 13.0;
             public static final double kMinAngle = 13.0;
@@ -56,14 +57,14 @@ public final class Constants {
 
             // human player station
             public static final class Shelf {
-                public static final double kAnchor = 87.0;
-                public static final double kFloating = 111.0;
+                public static final double kAnchor = 95.0;
+                public static final double kFloating = 133.0;
             }
 
             // cube upper shelf
             public static final class Cube {
-                public static final double kAnchor = 85.0;
-                public static final double kFloating = 115.0;
+                public static final double kAnchor = 25.0; // 85.0;
+                public static final double kFloating = 40.0; // 115.0;
             }
 
             // cone middle shelf
@@ -88,8 +89,8 @@ public final class Constants {
 
     public static class Intake {
         public static int kPort = 24;
-        public static double kForwardPower = 0.5;
-        public static double kBackwardPower = -0.5;
+        public static double kLowPower = 0.9;
+        public static double kHighPower = 0.2;
     }
 
     public static class Trajectory {

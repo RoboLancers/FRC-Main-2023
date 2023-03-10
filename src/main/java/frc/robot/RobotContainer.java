@@ -1,8 +1,11 @@
 package frc.robot;
 
+import java.util.ResourceBundle.Control;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.gyro.Gyro;
@@ -49,19 +52,40 @@ public class RobotContainer {
     Controller.onHold(manipulatorController.intakeElementTrigger, new RunCommand(intake::forward));
     Controller.onHold(manipulatorController.outtakeElementTrigger, new RunCommand(intake::backward));
 
-    // contract
-    Controller.onPress(manipulatorController.A, new MoveToPos(arm, Constants.Arm.Positions.Contracted.kAnchor, Constants.Arm.Positions.Contracted.kFloating));
+    // toggle cube
+    Controller.onPress(manipulatorController.RightBumper, new InstantCommand(() -> { this.arm.armMode = true; }));
+    // toggle cone
+    Controller.onPress(manipulatorController.LeftBumper, new InstantCommand(() -> { this.arm.armMode = false; }));
+
     // ground
-    Controller.onPress(manipulatorController.B, new MoveToPos(arm, Constants.Arm.Positions.Ground.kAnchor, Constants.Arm.Positions.Ground.kFloating));
+    Controller.onPress(manipulatorController.A, new MoveToPos(arm, Constants.Arm.Positions.Ground.kAnchor, Constants.Arm.Positions.Ground.kFloating));
+    // contract
+    Controller.onPress(manipulatorController.B, new MoveToPos(arm, Constants.Arm.Positions.Contracted.kAnchor, Constants.Arm.Positions.Contracted.kFloating));
+    // mid
+    Controller.onPress(manipulatorController.X, new ConditionalCommand(
+      // cube (from shelf)
+      new MoveToPos(arm, Constants.Arm.Positions.Shelf.kAnchor, Constants.Arm.Positions.Shelf.kFloating),
+      //cone (mid)
+      new MoveToPos(arm, Constants.Arm.Positions.MiddleCone.kAnchor, Constants.Arm.Positions.MiddleCone.kFloating),
+      () -> this.arm.armMode
+    ));
+    // high
+    Controller.onPress(manipulatorController.Y, new ConditionalCommand(
+      // cube (high)
+      new MoveToPos(arm, Constants.Arm.Positions.Cube.kAnchor, Constants.Arm.Positions.Cube.kFloating),
+      // cone (high)
+      new MoveToPos(arm, Constants.Arm.Positions.HighCone.kAnchor, Constants.Arm.Positions.HighCone.kFloating),
+      () -> this.arm.armMode
+    ));
 
     // dynamic for tuning
-    SmartDashboard.putNumber("anchor-setpoint", 13.0);
-    SmartDashboard.putNumber("floating-setpoint", 22.0);
-    Controller.onPress(manipulatorController.X, new MoveToPos(
-      arm,
-      () -> ControllerUtils.clamp(SmartDashboard.getNumber("anchor-setpoint", 0.0), 13.0, 95.0),
-      () -> ControllerUtils.clamp(SmartDashboard.getNumber("floating-setpoint", 0.0), 22.0, 180.0)
-    ));
+    // SmartDashboard.putNumber("anchor-setpoint", 13.0);
+    // SmartDashboard.putNumber("floating-setpoint", 22.0);
+    // Controller.onPress(manipulatorController.X, new MoveToPos(
+    //   arm,
+    //   () -> ControllerUtils.clamp(SmartDashboard.getNumber("anchor-setpoint", 0.0), 13.0, 95.0),
+    //   () -> ControllerUtils.clamp(SmartDashboard.getNumber("floating-setpoint", 0.0), 22.0, 180.0)
+    // ));
 
     //slow mode
     Controller.onHold(driverController.RightBumper, new InstantCommand(() -> driverController.setSlowMode(Mode.SLOW)));

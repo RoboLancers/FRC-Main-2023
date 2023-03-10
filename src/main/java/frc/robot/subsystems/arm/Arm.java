@@ -19,6 +19,8 @@ public class Arm extends SubsystemBase {
    public double anchorSetpoint = Constants.Arm.Anchor.kContracted;
    public double floatingSetpoint = Constants.Arm.Floating.kContracted;
 
+   public boolean armMode = true; // true: cube, false: cone
+
    // TODO: port error, uncomment when limit switches actually exist
    // public DigitalInput anchorLimitSwitch, floatingLimitSwitch;
 

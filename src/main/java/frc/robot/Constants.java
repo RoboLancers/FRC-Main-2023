@@ -56,8 +56,8 @@ public final class Constants {
 
             // human player station
             public static final class Shelf {
-                public static final double kAnchor = 0.0;
-                public static final double kFloating = 0.0;
+                public static final double kAnchor = 87.0;
+                public static final double kFloating = 111.0;
             }
 
             // cube upper shelf
@@ -147,7 +147,7 @@ public final class Constants {
             public static final int kRightMotor3_Port = 17;
         }
 
-        public static final int kMaxAmps = 30; 
+        public static final int kMaxAmps = 40; 
         public static final double kThrottleMultiplier = 0.75;
         public static final double kTurnMultiplier = 0.3;
         public static final double kThrottleMultiplierSM = 0.2;

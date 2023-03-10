@@ -159,6 +159,8 @@ public class Arm extends SubsystemBase {
       // TODO: comment out tuneControllers() at comp
       // tuneControllers();
 
+      SmartDashboard.putBoolean("on cube", this.armMode);
+
       SmartDashboard.putNumber("Anchor Angle", this.getAnchorAngle());
       SmartDashboard.putNumber("Floating Angle", this.getFloatingAngle());
    }

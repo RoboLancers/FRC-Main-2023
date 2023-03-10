@@ -33,8 +33,6 @@ public class RobotContainer {
   private PoseTracker poseTracker = new PoseTracker(drivetrain);
     
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
-
-  private Command command;
   // TODO: Raf is rly dumb for this shit
   // private final SmartDashboardDB db = new SmartDashboardDB();
 
@@ -73,8 +71,13 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     // intake
-    Controller.onHold(driverController.RightTrigger, new RunCommand(intake::intake, intake));
-    Controller.onHold(driverController.LeftTrigger, new RunCommand(intake::outtake, intake));
+    Controller.onHold(driverController.RightTrigger, new RunCommand(intake::outtakeFast, intake));
+    Controller.onHold(driverController.LeftTrigger, new RunCommand(intake::intakeFast, intake));
+    
+    Controller.onHold(manipulatorController.intakeElementTriggerFast, new RunCommand(intake::intakeFast));
+    Controller.onHold(manipulatorController.outtakeElementTriggerFast, new RunCommand(intake::outtakeFast));
+    Controller.onHold(manipulatorController.intakeElementTriggerSlow, new RunCommand(intake::intakeSlow));
+    Controller.onHold(manipulatorController.outtakeElementTriggerSlow, new RunCommand(intake::outtakeSlow));
 
     // toggle cube
     Controller.onPress(manipulatorController.RightBumper, new InstantCommand(() -> { this.arm.armMode = true; }));
@@ -86,13 +89,7 @@ public class RobotContainer {
     // contract
     Controller.onPress(manipulatorController.B, new MoveToPos(arm, Constants.Arm.Position.CONTRACTED));
     // mid
-    Controller.onPress(manipulatorController.X, new ConditionalCommand(
-      // cube (from shelf)
-      new MoveToPos(arm, Constants.Arm.Position.SHELF),
-      //cone (mid)
-      new MoveToPos(arm, Constants.Arm.Position.MID_CONE),
-      () -> this.arm.armMode
-    ));
+    Controller.onPress(manipulatorController.X, new MoveToPos(arm, Constants.Arm.Position.MID_CONE));
     // high
     Controller.onPress(manipulatorController.Y, new ConditionalCommand(
       // cube (high)
@@ -101,6 +98,8 @@ public class RobotContainer {
       new MoveToPos(arm, Constants.Arm.Position.HIGH_CONE),
       () -> this.arm.armMode
     ));
+    // shelf
+    Controller.onPress(manipulatorController.dPadDown, new MoveToPos(arm, Constants.Arm.Position.SHELF));
 
     // dynamic for tuning
     // SmartDashboard.putNumber("anchor-setpoint", 13.0);

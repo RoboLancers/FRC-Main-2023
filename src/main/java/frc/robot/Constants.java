@@ -16,6 +16,7 @@ public final class Constants {
             public static final double kD = 0.0;
             public static final double kFF = 0.042;
             public static double kErrorThreshold = 5.0;
+            public static double kMaxDownwardOutput = -0.5;
 
             public static final double kContracted = 13.0;
             public static final double kMinAngle = 13.0;
@@ -80,12 +81,11 @@ public final class Constants {
     }
 
     public static class Intake {
-        public static int kPort = 24;
-        public static double kForwardPower = 0.5;
-        public static double kBackwardPower = -0.5;
-
-        public static double kAutoIntakeSeconds = 1;
-        public static double kAutoOuttakeSeconds = 1;
+        public static final int kPort = 24;
+        public static final double kLowPower = 0.9;
+        public static final double kHighPower = 0.2;
+        public static final double kAutoIntakeSeconds = 1; 
+        public static final double kAutoOuttakeSeconds = 1; 
     }
 
 

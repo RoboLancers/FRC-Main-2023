@@ -1,18 +1,16 @@
 package frc.robot.subsystems.intake.commands;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.intake.Intake;
 
-public class IntakeElement extends SequentialCommandGroup {
+public class IntakeElement extends ParallelRaceGroup {
     public IntakeElement(Intake intake) {
-        addCommands(new InstantCommand(() -> {
-            intake.intake();
-        }), new WaitCommand(Constants.Intake.kAutoIntakeSeconds), new InstantCommand(() -> {
-            intake.off();
-        }));
+        addCommands(new RunCommand(() -> {
+            intake.intakeFast();
+        }), new WaitCommand(Constants.Intake.kAutoIntakeSeconds));
 
         addRequirements(intake);
     }

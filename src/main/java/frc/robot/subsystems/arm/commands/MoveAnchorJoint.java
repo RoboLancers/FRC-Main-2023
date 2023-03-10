@@ -20,21 +20,7 @@ public class MoveAnchorJoint extends CommandBase {
 
     @Override
     public void execute() {
-        double maintainTerm = SmartDashboard.getNumber("anchorKFF", 0) * Math.sin(arm.getAnchorAngle() * Math.PI / 180);
-        double correctionTerm = SmartDashboard.getNumber("anchorKP", 0) * -(arm.getAnchorAngle() - desiredAngle.getAsDouble());
-
-        double output = maintainTerm + correctionTerm;
-
-        SmartDashboard.putNumber("anchor-output", output);
-        SmartDashboard.putNumber("error", -(arm.getAnchorAngle() - desiredAngle.getAsDouble())); 
-        SmartDashboard.putNumber("anchor angle", arm.getAnchorAngle()); 
-
-        arm.anchorMotor.set(output);
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        arm.anchorMotor.set(0);
+        arm.setAnchorAngle(desiredAngle.getAsDouble());
     }
 
     @Override

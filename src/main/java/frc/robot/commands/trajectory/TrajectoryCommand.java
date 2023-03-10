@@ -131,11 +131,21 @@ public class TrajectoryCommand extends CommandBase
         double leftSpeedSetpoint = wheelSpeeds.leftMetersPerSecond;
         double rightSpeedSetpoint = wheelSpeeds.rightMetersPerSecond;
 
+        SmartDashboard.putNumber("expectedLeftSpeed", leftSpeedSetpoint); 
+        SmartDashboard.putNumber("robotLeftSpeed", subsystem.getWheelSpeeds().leftMetersPerSecond); 
+        SmartDashboard.putNumber("expectedRightSpeed", rightSpeedSetpoint); 
+        SmartDashboard.putNumber("robotRightSpeed", subsystem.getWheelSpeeds().leftMetersPerSecond); 
+
         double leftFeedforward = feedforward.calculate(leftSpeedSetpoint, (leftSpeedSetpoint - prevSpeeds.leftMetersPerSecond) / dt);
         double rightFeedforward = feedforward.calculate(rightSpeedSetpoint, (rightSpeedSetpoint - prevSpeeds.rightMetersPerSecond) / dt);
 
         double leftOutput = leftFeedforward + ctrlLeft.calculate(subsystem.getWheelSpeeds().leftMetersPerSecond, leftSpeedSetpoint);
         double rightOutput = rightFeedforward + ctrlRight.calculate(subsystem.getWheelSpeeds().rightMetersPerSecond, rightSpeedSetpoint);
+
+        SmartDashboard.putNumber("expectedLeftVoltage", leftOutput); 
+        SmartDashboard.putNumber("robotLeftVoltage", subsystem.getLeftVoltage()); 
+        SmartDashboard.putNumber("expectedRightVoltage", rightOutput); 
+        SmartDashboard.putNumber("robotRightVoltage", subsystem.getRightVoltage()); 
 
         this.subsystem.tankDriveVolts(leftOutput, rightOutput);
 

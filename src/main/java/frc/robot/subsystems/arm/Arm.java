@@ -17,6 +17,9 @@ public class Arm extends SubsystemBase {
    public RelativeEncoder anchorEncoder, floatingEncoder;
    public SparkMaxPIDController anchorPIDController, floatingPIDController;
 
+   private double desiredAnchor; 
+   private double desiredFloating; 
+
    // TODO: port error, uncomment when limit switches actually exist
    // public DigitalInput anchorLimitSwitch, floatingLimitSwitch;
 
@@ -36,7 +39,7 @@ public class Arm extends SubsystemBase {
 
       this.configureControllers();
 
-      this.initTuneControllers();
+      // this.initTuneControllers();
    }
 
    public void configureMotors() {
@@ -63,6 +66,9 @@ public class Arm extends SubsystemBase {
 
       this.anchorEncoder.setPosition(Constants.Arm.Anchor.kContracted);
       this.floatingEncoder.setPosition(Constants.Arm.Floating.kContracted);
+
+      this.desiredAnchor = this.anchorEncoder.getPosition(); 
+      this.desiredFloating = this.floatingEncoder.getPosition(); 
    }
 
    public void configureControllers(){
@@ -135,8 +141,9 @@ public class Arm extends SubsystemBase {
       return this.floatingEncoder.getPosition();
    }
 
-   public void setFloatingAngle(double floatingAngle){
-      this.floatingPIDController.setReference(floatingAngle, CANSparkMax.ControlType.kPosition);
+   public void setFloatingAngle(double floatingAngle) {
+      // this.floatingPIDController.setReference(floatingAngle, CANSparkMax.ControlType.kPosition);
+      this.desiredFloating = floatingAngle; 
    }
 
    public void setAnchorAngle(double anchorAngle) {
@@ -154,9 +161,24 @@ public class Arm extends SubsystemBase {
    @Override
    public void periodic(){
       // TODO: comment out tuneControllers() at comp
-      tuneControllers();
+      // tuneControllers();
+
+      updateFloatingJoint();
 
       SmartDashboard.putNumber("Anchor  Angle", this.getAnchorAngle());
       SmartDashboard.putNumber("Floating Angle", this.getFloatingAngle());
+   }
+
+   private void updateFloatingJoint() {
+      double maintainTerm = SmartDashboard.getNumber("anchorKFF", 0) * Math.sin(getAnchorAngle() * Math.PI / 180);
+      double correctionTerm = SmartDashboard.getNumber("anchorKP", 0) * -(getAnchorAngle() - desiredFloating);
+
+      double output = maintainTerm + correctionTerm;
+
+      SmartDashboard.putNumber("anchor-output", output);
+      SmartDashboard.putNumber("error", -(getAnchorAngle() - desiredFloating)); 
+      SmartDashboard.putNumber("anchor angle", getAnchorAngle()); 
+
+      anchorMotor.set(output);
    }
 }

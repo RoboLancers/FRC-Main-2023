@@ -30,9 +30,9 @@ public class TrajectoryCreator {
         this.voltageConstraint = voltageConstraint;
     }
 
-    public Trajectory create(double maxVel, double maxAccel, List<Waypoint> waypoints, boolean reversed) {
+    public Trajectory create(List<Waypoint> waypoints, TrajectoryConfig config) {
 
-        TrajectoryConfig config = new TrajectoryConfig(maxVel, maxAccel).setKinematics(kinematics).addConstraint(voltageConstraint);
+        config.addConstraint(voltageConstraint); 
 
         TrajectoryGenerator.ControlVectorList controlVectors = new TrajectoryGenerator.ControlVectorList();
         for (Waypoint w : waypoints) {
@@ -45,36 +45,36 @@ public class TrajectoryCreator {
         return TrajectoryGenerator.generateTrajectory(controlVectors, config);
     }
 
-    public Trajectory create(double maxVel, double maxAccel, Waypoint[] waypoints, boolean reversed) {
-        return create(maxVel, maxAccel, List.of(waypoints), reversed); 
+    public Trajectory create(Waypoint[] waypoints, TrajectoryConfig config) {
+        return create(List.of(waypoints), config); 
     }
 
-    public RamseteCommand createCommand(Drivetrain drivetrain, List<Waypoint> waypoints, double maxVel, double maxAccel, boolean reversed) {
+    public TrajectoryCommand createCommand(Drivetrain drivetrain, List<Waypoint> waypoints, TrajectoryConfig config) {
                 // Trajectory t = create(maxVel, maxAccel, waypoints, reversed);
 
-                TrajectoryConfig config = new TrajectoryConfig(maxVel, maxAccel).setKinematics(kinematics).addConstraint(voltageConstraint);
-                Trajectory t = TrajectoryGenerator.generateTrajectory(new Pose2d(), List.of(new Translation2d(1, 1)), new Pose2d(new Translation2d(2, 1), new Rotation2d()), config); 
+                // TrajectoryConfig config = new TrajectoryConfig(maxVel, maxAccel).setKinematics(kinematics).addConstraint(voltageConstraint);
+                // Trajectory t = TrajectoryGenerator.generateTrajectory(new Pose2d(), List.of(new Translation2d(1, 1)), new Pose2d(new Translation2d(2, 1), new Rotation2d()), config); 
                 // return new RamseteCommand(t,  drivetrain::getPose, new RamseteController(), new SimpleMotorFeedforward(Constants.Trajectory.ksVolts, Constants.Trajectory.ksVoltSecondsPerMeter, Constants.Trajectory.kaVoltSecondsSquaredPerMeter), () -> drivetrain.getWheelSpeeds(), new PIDController(Constants.Trajectory.kPDriveVel, 0, 0), new PIDController(Constants.Trajectory.kPDriveVel, 0, 0), (a, b) -> drivetrain.tankDriveVolts(a, b), drivetrain); 
         
-                return new RamseteCommand(
-                    t,
-                    drivetrain::getPose,
-                    new RamseteController(),
-                    new SimpleMotorFeedforward(
-                        Constants.Trajectory.ksVolts,
-                        Constants.Trajectory.ksVoltSecondsPerMeter,
-                        Constants.Trajectory.kaVoltSecondsSquaredPerMeter),
-                        Constants.Trajectory.kDriveKinematics,
-                    drivetrain::getWheelSpeeds,
-                    new PIDController(Constants.Trajectory.kPDriveVel, 0, 0),
-                    new PIDController(Constants.Trajectory.kPDriveVel, 0, 0),
-                    // RamseteCommand passes volts to the callback
-                    drivetrain::tankDriveVolts,
-                    drivetrain);
-                // return new TrajectoryCommand(drivetrain, create(maxVel, maxAccel, waypoints, reversed));
+                // return new RamseteCommand(
+                //     t,
+                //     drivetrain::getPose,
+                //     new RamseteController(),
+                //     new SimpleMotorFeedforward(
+                //         Constants.Trajectory.ksVolts,
+                //         Constants.Trajectory.ksVoltSecondsPerMeter,
+                //         Constants.Trajectory.kaVoltSecondsSquaredPerMeter),
+                //         Constants.Trajectory.kDriveKinematics,
+                //     drivetrain::getWheelSpeeds,
+                //     new PIDController(Constants.Trajectory.kPDriveVel, 0, 0),
+                //     new PIDController(Constants.Trajectory.kPDriveVel, 0, 0),
+                //     // RamseteCommand passes volts to the callback
+                //     drivetrain::tankDriveVolts,
+                //     drivetrain);
+                return new TrajectoryCommand(drivetrain, create(waypoints, config));
     }
 
-    public RamseteCommand createCommand(Drivetrain drivetrain, Waypoint[] waypoints, double maxVel, double maxAccel, boolean reversed) {
-        return createCommand(drivetrain, List.of(waypoints), maxVel, maxAccel, reversed); 
+    public TrajectoryCommand createCommand(Drivetrain drivetrain, Waypoint[] waypoints, TrajectoryConfig config) {
+        return createCommand(drivetrain, List.of(waypoints), config); 
     }
 }

@@ -45,9 +45,9 @@ public class PoseTracker extends SubsystemBase {
 
                 this.avgAprilTagCamPose =  getAverageAprilPose();
 
-                SmartDashboard.putNumber("avg campose x", avgAprilTagCamPose.getX());
-                SmartDashboard.putNumber("avg campose z", avgAprilTagCamPose.getY());
-                SmartDashboard.putNumber("avg rotation", avgAprilTagCamPose.getRotation().getDegrees());
+                SmartDashboard.putNumber("avg campose forward", avgAprilTagCamPose.getX());
+                SmartDashboard.putNumber("avg campose sideways", -avgAprilTagCamPose.getY());
+                SmartDashboard.putNumber("avg rotation", -avgAprilTagCamPose.getRotation().getDegrees());
 
                //  System.out.println(LimelightAPI.adjustCamPose());
 

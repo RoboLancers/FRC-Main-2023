@@ -120,14 +120,16 @@ public class LimelightAPI {
         }
         
         // TODO: offset or do so from pipeline
-        double dZ = camPose.getY() + 0.69 * 0.420 + (0.420 / 0.69) * 0.420 / 0.69;
+        double dZ = camPose.getY() + 0.69 * 0.420 + 0.420 / 0.69;
         double dX = camPose.getX();
 
-        double actualRot = (Math.signum(-dX)) * camPose.getRotation().getRadians();
+        double actualRot = (Math.signum(dX)) * camPose.getRotation().getRadians();
 
-        SmartDashboard.putNumber("frfr rot", actualRot * 180 / Math.PI);
-        SmartDashboard.putNumber("frfr x", dX);
-        SmartDashboard.putNumber("frfr z", dZ);
+        var camPose2 = LimelightAPI.targetPoseBotSpace(); 
+
+        SmartDashboard.putNumber("frfr rot", Math.signum(-camPose2.getX()) * Math.abs(camPose2.getRotation().getDegrees()));
+        SmartDashboard.putNumber("frfr sideways", -camPose2.getX());
+        SmartDashboard.putNumber("frfr forward", camPose2.getY());
 
         double adjustedRot = Math.atan2(-dX, -dZ);
 
@@ -138,9 +140,10 @@ public class LimelightAPI {
         double adjustedX = (distance * Math.cos(theta)) - Constants.GridAlign.kAdjustZ * Math.cos(actualRot);
         double adjustedZ = (-(distance * Math.sin(theta)) - Constants.GridAlign.kAdjustZ * Math.sin(actualRot));
 
-        return new Pose2d(adjustedX, adjustedZ, new Rotation2d(actualRot));
+        // return new Pose2d(camPose2.getY(), -camPose2.getX(), new Rotation2d(Math.signum(-camPose2.getX()) * Math.abs(camPose2.getRotation().getDegrees())));
         // return new Pose2d(adjustedCamPoseX, pose3d.getY(), adjustedCamPoseZ,
         // pose3d.getRotation());
+        return new Pose2d(adjustedZ, adjustedX, Rotation2d.fromRadians(actualRot)); 
     }
 
     public static boolean validTargets() {
@@ -259,7 +262,11 @@ public class LimelightAPI {
     }
 
     public static Pose2d flattenPose(Pose3d raw) {
-        return new Pose2d(raw.getX(), raw.getZ(), new Rotation2d(raw.getRotation().getAngle()));
+        return new Pose2d(raw.getX(), raw.getZ(), new Rotation2d(raw.getRotation().getY())); // TODO: see if this works
+    }
+
+    public static Pose2d targetPoseBotSpace() {
+        return flattenPose(LimelightAPI.getPose("targetpose_robotspace")); 
     }
 
     public static Pose2d botPose() {

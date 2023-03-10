@@ -13,6 +13,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -26,7 +27,7 @@ import frc.robot.util.Encoder;
 import frc.robot.util.DriverController.Mode;
 import edu.wpi.first.wpilibj.SPI;
 import frc.robot.util.DriverController;
-
+import frc.robot.subsystems.drivetrain.PIDController;
 public class Drivetrain extends SubsystemBase {
     private final CANSparkMax leftMotor1 = new CANSparkMax(Constants.Drivetrain.LeftMotors.kLeftMotor1_Port, CANSparkMaxLowLevel.MotorType.kBrushless);
     private final CANSparkMax leftMotor2 = new CANSparkMax(Constants.Drivetrain.LeftMotors.kLeftMotor2_Port, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -59,6 +60,10 @@ public class Drivetrain extends SubsystemBase {
     private final SlewRateLimiter throttleForwardFilter = new SlewRateLimiter(Constants.Drivetrain.kForwardThrottleAccelFilter, -Constants.Drivetrain.kForwardThrottleDecelFilter, 0);
     private final SlewRateLimiter throttleBackwardFilter = new SlewRateLimiter(Constants.Drivetrain.kBackwardThrottleAccelFilter, -Constants.Drivetrain.kBackwardThrottleDecelFilter,0);
     private final SlewRateLimiter turnFilter = new SlewRateLimiter(Constants.Drivetrain.kTurnFilter);
+
+    private final PIDController throttlePID = new PIDController(.15, 0.00, 0.0);
+    private final PIDController throttlePID2 = new PIDController(.25, 0.00, 0.0);
+    private final PIDController steeringPID = new PIDController(.3, 0.00, 0.03);    
 
     public Drivetrain(){
         rightMotor1.setInverted(true);
@@ -127,7 +132,11 @@ public class Drivetrain extends SubsystemBase {
 
     // Returns the current speed of the wheels of the robot.
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-        return new DifferentialDriveWheelSpeeds(leftEncoder.getEncoder().getVelocity(), -rightEncoder.getEncoder().getVelocity());
+        return new DifferentialDriveWheelSpeeds(leftEncoder.getEncoder().getVelocity(), rightEncoder.getEncoder().getVelocity());
+    }
+
+    public ChassisSpeeds getChassisSpeeds() {
+        return Constants.Trajectory.kDriveKinematics.toChassisSpeeds(getWheelSpeeds()); 
     }
 
     // Resets the odometry, both rotation and distance traveled.
@@ -144,6 +153,10 @@ public class Drivetrain extends SubsystemBase {
 
     // private double lastNonzeroThrottle = 0;
     private double lastEffThrottle = 0; 
+
+    public void rawCurvatureDrive(double throttle, double turn, boolean turnInPlace) {
+        difDrive.curvatureDrive(throttle, turn, turnInPlace);
+    }
 
     // Drives the robot with arcade controls.
     public void curvatureDrive(double throttle, double turn, Mode mode) {
@@ -178,9 +191,11 @@ public class Drivetrain extends SubsystemBase {
         // if (lastNonzeroThrottle != 0)
         lastEffThrottle = effThrottle; 
 
+        SmartDashboard.putBoolean("is quickturning", Math.abs(effThrottle) < 0.05); 
+
         difDrive.curvatureDrive(effThrottle, 
         turnFilter.calculate(turn), 
-        Math.abs(throttle) < 0.05);
+        Math.abs(effThrottle) < 0.05);
         // if (throttle == 0 && turn == 0) {
         //     tankDriveVolts(0, 0);
         // }

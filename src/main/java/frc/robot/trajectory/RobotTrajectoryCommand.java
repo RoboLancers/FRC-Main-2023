@@ -1,9 +1,12 @@
 package frc.robot.trajectory;
 
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+
+import org.bananasamirite.robotmotionprofile.Waypoint;
 import org.bananasamirite.robotmotionprofile.data.Trajectory;
 import org.bananasamirite.robotmotionprofile.data.task.CommandTask;
 import org.bananasamirite.robotmotionprofile.data.task.WaypointTask;
@@ -16,14 +19,22 @@ import java.util.Objects;
 public class RobotTrajectoryCommand extends SequentialCommandGroup {
     public RobotTrajectoryCommand(Drivetrain drivetrain, Trajectory trajectory) {
         Object[] commands = trajectory.getTasks().stream().map(e -> {
-            if (e instanceof WaypointTask && ((WaypointTask) e).getWaypoints().size() > 1)
+            if (e instanceof WaypointTask && ((WaypointTask) e).getWaypoints().size() > 1) {
+                for (Waypoint w : ((WaypointTask) e).getWaypoints()) {
+                    System.out.println(w.getX() + " " + w.getY() + " " + w.getWeight() + " " + w.getAngle() + " " + ((WaypointTask) e).getConstraints().getMaxVelocity() + " " + ((WaypointTask) e).getConstraints().getMaxAcceleration());
+                    System.out.println();
+                }
                 return Constants.Trajectory.trajectoryCreator.createCommand(
                         drivetrain,
                         ((WaypointTask) e).getWaypoints(),
-                        ((WaypointTask) e).getConstraints().getMaxVelocity(),
-                        ((WaypointTask) e).getConstraints().getMaxAcceleration(), 
-                        ((WaypointTask) e).getReversed()
+                        new TrajectoryConfig(
+                            ((WaypointTask) e).getConstraints().getMaxVelocity(),
+                            ((WaypointTask) e).getConstraints().getMaxAcceleration()
+                        ).setReversed(
+                            ((WaypointTask) e).getReversed()
+                        )
                 );
+            }
             if (e instanceof CommandTask && !((CommandTask) e).getWaypoint().getCommandName().equals("")) {
                 try {
                     return TrajectoryCommandsManager.getInstance().getCommandConfig(((CommandTask) e).getWaypoint().getCommandName()).createCommand(((CommandTask) e).getWaypoint().getParameters().toArray());

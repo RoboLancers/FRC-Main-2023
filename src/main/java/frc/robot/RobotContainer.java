@@ -2,12 +2,16 @@ package frc.robot;
 
 import frc.robot.commands.trajectory.TrajectoryCommand;
 
+import java.io.IOException;
+
 import javax.naming.ldap.Control;
 
 import org.bananasamirite.robotmotionprofile.Waypoint;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
-
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,8 +25,10 @@ import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.poseTracker.PoseTracker;
+import frc.robot.trajectory.RobotTrajectoryCommand;
 import frc.robot.commands.GridAlign;
 import frc.robot.commands.Rumble;
+import frc.robot.commands.TurnTuner;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.commands.MoveAnchorJoint;
 import frc.robot.subsystems.arm.commands.MoveFloatingJoint;
@@ -47,7 +53,7 @@ public class RobotContainer {
     
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
-  private final RamseteCommand command;
+  private Command command;
   // TODO: Raf is rly dumb for this shit
   // private final SmartDashboardDB db = new SmartDashboardDB();
 
@@ -57,17 +63,29 @@ public class RobotContainer {
       drivetrain.curvatureDrive(this.driverController.getThrottle(), this.driverController.getTurn(), this.driverController.getSlowMode());
     }, drivetrain));
 
-//    command = new MotionProfileCommand(drivetrain, new TankMotionProfile(ParametricSpline.fromWaypoints(new Waypoint[] {
-//      new Waypoint(0, 0, 0, 1, 1),
-//      new Waypoint(2, 1, Math.toRadians(90), 1, 1)
-//    }), ProfileMethod.TIME, new TankMotionProfileConstraints(1, 0.2)));
+  //  command = new MotionProfileCommand(drivetrain, new TankMotionProfile(ParametricSpline.fromWaypoints(new Waypoint[] {
+  //    new Waypoint(1, 1, 0, 1, 1),
+  //    new Waypoint(2, 1, Math.toRadians(90), 1, 1)
+  //  }), ProfileMethod.TIME, new TankMotionProfileConstraints(1, 0.2)));
     command = Constants.Trajectory.trajectoryCreator.createCommand(drivetrain,
             new Waypoint[] {
-                    new Waypoint(0, 0, 0, 1, 1),
-                    new Waypoint(2, 0, Math.toRadians(0), 1, 1)
-            }, 1, 0.2, false);
+                    new Waypoint(0, 0, 0, 2.734564202601426, 1),
+                    new Waypoint(1.594, 0.798, Math.toRadians(1.145), 2.4, 1), 
+                    // new Waypoint(
+                    //   2, 1, Math.toRadians(45), 1.85, 1
+                    // )
+            }, new TrajectoryConfig(1, 0.2));
+    // command = new TurnTuner(drivetrain);
+    // try {
+    //   command = RobotTrajectoryCommand.fromFile(drivetrain, Filesystem.getDeployDirectory().toPath().resolve("auto6.json").toFile());
+    // } catch (IOException e) {
+    //   // TODO Auto-generated catch block
+    //   e.printStackTrace();
+    // }
 
     // this.poseTracker.setDefaultCommand(new PrintCommand("Matt likes balls idk, Raf too"));
+
+    CameraServer.startAutomaticCapture(); 
 
     configureButtonBindings();
   }
@@ -76,13 +94,13 @@ public class RobotContainer {
 
     // intake
     // don't question this
-    Controller.onPress(manipulatorController.intakeElementTrigger, new RunCommand(() -> {
+    Controller.onPress(manipulatorController.intakeElementTrigger, new InstantCommand(() -> {
       intake.intake();
     }, intake));
-    Controller.onPress(manipulatorController.outtakeElementTrigger, new RunCommand(() -> {
+    Controller.onPress(manipulatorController.outtakeElementTrigger, new InstantCommand(() -> {
       intake.outtake();
     }, intake));
-    Controller.onPress(manipulatorController.intakeOffTrigger, new RunCommand(() -> {
+    Controller.onPress(manipulatorController.intakeOffTrigger, new InstantCommand(() -> {
       intake.off();
     }, intake));
 
@@ -97,14 +115,14 @@ public class RobotContainer {
     Controller.onRelease(driverController.RightTrigger, new InstantCommand(() -> driverController.setSlowMode(Mode.NORMAL)));
   
     // Grid Align
-    // Controller.onPress(driverController.Y, new ConditionalCommand(
-    //   // on true, instantiate and schedule align command
-    //   new InstantiatorCommand(() -> new GridAlign(drivetrain, poseTracker)),
-    //   // on false rumble for 1 second
-    //   new Rumble(driverController, Constants.GridAlign.kRumbleTime),
-    //   // conditional upon a valid april tag
-    //   LimelightAPI::validTargets
-    // ));
+    Controller.onPress(driverController.Y, new ConditionalCommand(
+      // on true, instantiate and schedule align command
+      new InstantiatorCommand(() -> new GridAlign(drivetrain, poseTracker)),
+      // on false rumble for 1 second
+      new Rumble(driverController, Constants.GridAlign.kRumbleTime),
+      // conditional upon a valid april tag
+      LimelightAPI::validTargets
+    ));
 
 
     // SmartDashboard.putNumber("target anchor  angle", 30);

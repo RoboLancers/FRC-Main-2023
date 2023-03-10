@@ -120,9 +120,9 @@ public final class Constants {
 
 
     public static class Trajectory {
-        public static final double ksVolts = 0.23636;
-        public static final double ksVoltSecondsPerMeter = 1.7953;
-        public static final double kaVoltSecondsSquaredPerMeter = 0.35086;
+        public static final double ksVolts = 0.24855;
+        public static final double ksVoltSecondsPerMeter = 1.7848;
+        public static final double kaVoltSecondsSquaredPerMeter = 0.47551;
 
         public static final double kMaxSpeedMetersPerSecond = 2.5;
         public static final double kMaxAccelerationMetersPerSecondSquared = 0.8;
@@ -130,7 +130,7 @@ public final class Constants {
         public static final double kMaxVoltage = 10;
 
         // TODO: redo drivetrain angular characterization
-        public static final double kTrackWidthMeters = Units.inchesToMeters(23); 
+        public static final double kTrackWidthMeters = 1.2546; // Units.inchesToMeters(23);   
         public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidthMeters);
 
         public static final TrajectoryCreator trajectoryCreator = new TrajectoryCreator(
@@ -144,7 +144,7 @@ public final class Constants {
         public static final double kRamseteB = 2;
         public static final double kRamseteZeta = 0.7;
 
-        public static final double kPDriveVel = 0;
+        public static final double kPDriveVel = 0; // 2.5614;
 
         public static final double kGearRatio = 6.8027597438; 
         public static final double kWheelRadiusInches = 3; 
@@ -186,9 +186,9 @@ public final class Constants {
 
         public static final int kMaxAmps = 30; 
         public static final double kThrottleMultiplier = 0.70;
-        public static final double kTurnMultiplier = 0.5;
-        public static final double kThrottleMultiplierSM = 0.2;
-        public static final double kTurnMultiplierSM = 0.3;
+        public static final double kTurnMultiplier = 0.3;
+        public static final double kThrottleMultiplierSM = 0.18;
+        public static final double kTurnMultiplierSM = 0.2;
 
         public static final double kForwardThrottleAccelFilter = 0.85;
         public static final double kForwardThrottleDecelFilter = 0.8;

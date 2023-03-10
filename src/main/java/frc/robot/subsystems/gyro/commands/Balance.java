@@ -1,4 +1,4 @@
-package frc.robot.subsystems.gyro;
+package frc.robot.subsystems.gyro.commands;
 
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 
@@ -6,6 +6,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.gyro.Gyro;
 
 public class Balance extends PIDCommand {
     private Gyro gyro;

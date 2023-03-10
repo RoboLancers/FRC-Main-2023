@@ -1,15 +1,8 @@
 package frc.robot;
 
-import frc.robot.commands.trajectory.TrajectoryCommand;
-
-import java.io.IOException;
-
-import javax.naming.ldap.Control;
-
 import org.bananasamirite.robotmotionprofile.Waypoint;
 
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -87,23 +80,23 @@ public class RobotContainer {
     Controller.onPress(manipulatorController.LeftBumper, new InstantCommand(() -> { this.arm.armMode = false; }));
 
     // ground
-    Controller.onPress(manipulatorController.A, new MoveToPos(arm, Constants.Arm.Positions.Ground.kAnchor, Constants.Arm.Positions.Ground.kFloating));
+    Controller.onPress(manipulatorController.A, new MoveToPos(arm, Constants.Arm.Position.GROUND));
     // contract
-    Controller.onPress(manipulatorController.B, new MoveToPos(arm, Constants.Arm.Positions.Contracted.kAnchor, Constants.Arm.Positions.Contracted.kFloating));
+    Controller.onPress(manipulatorController.B, new MoveToPos(arm, Constants.Arm.Position.CONTRACTED));
     // mid
     Controller.onPress(manipulatorController.X, new ConditionalCommand(
       // cube (from shelf)
-      new MoveToPos(arm, Constants.Arm.Positions.Shelf.kAnchor, Constants.Arm.Positions.Shelf.kFloating),
+      new MoveToPos(arm, Constants.Arm.Position.SHELF),
       //cone (mid)
-      new MoveToPos(arm, Constants.Arm.Positions.MiddleCone.kAnchor, Constants.Arm.Positions.MiddleCone.kFloating),
+      new MoveToPos(arm, Constants.Arm.Position.MID_CONE),
       () -> this.arm.armMode
     ));
     // high
     Controller.onPress(manipulatorController.Y, new ConditionalCommand(
       // cube (high)
-      new MoveToPos(arm, Constants.Arm.Positions.Cube.kAnchor, Constants.Arm.Positions.Cube.kFloating),
+      new MoveToPos(arm, Constants.Arm.Position.HIGH_CUBE),
       // cone (high)
-      new MoveToPos(arm, Constants.Arm.Positions.HighCone.kAnchor, Constants.Arm.Positions.HighCone.kFloating),
+      new MoveToPos(arm, Constants.Arm.Position.HIGH_CONE),
       () -> this.arm.armMode
     ));
 

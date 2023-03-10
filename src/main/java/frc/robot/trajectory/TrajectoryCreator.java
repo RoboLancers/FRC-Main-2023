@@ -1,25 +1,16 @@
 package frc.robot.trajectory;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.RamseteController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.spline.Spline;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
-import frc.robot.Constants;
 import frc.robot.commands.trajectory.TrajectoryCommand;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 
 import java.util.List;
 
-import org.bananasamirite.robotmotionprofile.ParametricSpline;
 import org.bananasamirite.robotmotionprofile.Waypoint;
 
 public class TrajectoryCreator {
@@ -32,7 +23,7 @@ public class TrajectoryCreator {
 
     public Trajectory create(List<Waypoint> waypoints, TrajectoryConfig config) {
 
-        config.addConstraint(voltageConstraint); 
+        config.addConstraint(voltageConstraint).setKinematics(kinematics); 
 
         TrajectoryGenerator.ControlVectorList controlVectors = new TrajectoryGenerator.ControlVectorList();
         for (Waypoint w : waypoints) {

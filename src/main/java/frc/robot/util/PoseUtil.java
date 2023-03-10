@@ -2,11 +2,7 @@ package frc.robot.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.opencv.core.Size;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -19,16 +15,10 @@ public class PoseUtil {
     public static Pose2d averagePoses(SizedQueue<Pose2d> posesRaw) {
         SizedQueue<Pose2d> poses = posesRaw; // sanitizePoses(posesRaw);
 
-        // System.out.println("san");
-        // System.out.println(poses);
-
         Translation2d avgTranslation = poses.stream()
             .map(pose -> pose.getTranslation())
             .reduce(new Translation2d(), (prev, curr) -> prev.plus(curr))
             .div(poses.size());
-
-            // System.out.println("trans");
-            // System.out.println(avgTranslation);
 
         Rotation2d avgRotation = poses.stream()
             .map(pose -> pose.getRotation())

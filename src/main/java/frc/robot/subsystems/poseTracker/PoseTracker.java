@@ -3,11 +3,9 @@ package frc.robot.subsystems.poseTracker;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bananasamirite.robotmotionprofile.ParametricSpline;
 import org.bananasamirite.robotmotionprofile.Waypoint;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -49,8 +47,6 @@ public class PoseTracker extends SubsystemBase {
                 SmartDashboard.putNumber("avg campose sideways", -avgAprilTagCamPose.getY());
                 SmartDashboard.putNumber("avg rotation", -avgAprilTagCamPose.getRotation().getDegrees());
 
-               //  System.out.println(LimelightAPI.adjustCamPose());
-
         }
 
         // TODO: are we scrapping this? definitely something to discuss
@@ -76,10 +72,6 @@ public class PoseTracker extends SubsystemBase {
                 double relativeDistance = Math.hypot(pose.getX(), pose.getY());
 
                 double weight = Constants.GridAlign.kGridWeight * relativeDistance;
-
-                // System.out.println(waypoints[1].getX());
-                // System.out.println(waypoints[1].getY());
-                // System.out.println(waypoints[1].getWeight());
 
                 return new Waypoint[] {
                         new Waypoint(0, 0, 0, weight, 1),

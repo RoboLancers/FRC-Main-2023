@@ -20,10 +20,6 @@ public class RobotTrajectoryCommand extends SequentialCommandGroup {
     public RobotTrajectoryCommand(Drivetrain drivetrain, Trajectory trajectory) {
         Object[] commands = trajectory.getTasks().stream().map(e -> {
             if (e instanceof WaypointTask && ((WaypointTask) e).getWaypoints().size() > 1) {
-                for (Waypoint w : ((WaypointTask) e).getWaypoints()) {
-                    System.out.println(w.getX() + " " + w.getY() + " " + w.getWeight() + " " + w.getAngle() + " " + ((WaypointTask) e).getConstraints().getMaxVelocity() + " " + ((WaypointTask) e).getConstraints().getMaxAcceleration());
-                    System.out.println();
-                }
                 return Constants.Trajectory.trajectoryCreator.createCommand(
                         drivetrain,
                         ((WaypointTask) e).getWaypoints(),

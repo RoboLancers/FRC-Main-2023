@@ -43,43 +43,33 @@ public final class Constants {
             public static final int kAnchorLimitSwitchPort = 9;
             public static final int kFloatingLimitSwitchPort = 0;
         }
-        
-        public static final class Positions {
-            public static final class Contracted {
-                public static final double kAnchor = 13.0;
-                public static final double kFloating = 22.0;
+
+        public enum Position {
+            CONTRACTED(13.0, 22.0), 
+            GROUND(13.0, 92.0), 
+            SHELF(87.0, 111.0), 
+
+            HIGH_CUBE(85.0, 115.0),
+
+            HIGH_CONE(95.0, 110.0), 
+            MID_CONE(58.0, 69.0); 
+
+            private final double anchor; 
+            private final double floating; 
+
+            Position(double anchor, double floating) {
+                this.anchor = anchor; 
+                this.floating = floating; 
             }
 
-            public static final class Ground {
-                public static final double kAnchor = 13.0;
-                public static final double kFloating = 92.0;
+            public double getAnchor() {
+                return anchor; 
             }
 
-            // TODO: all of the below positions
-
-            // human player station
-            public static final class Shelf {
-                public static final double kAnchor = 87.0;
-                public static final double kFloating = 111.0;
+            public double getFloating() {
+                return floating; 
             }
 
-            // cube upper shelf
-            public static final class Cube {
-                public static final double kAnchor = 85.0;
-                public static final double kFloating = 115.0;
-            }
-
-            // cone middle shelf
-            public static final class MiddleCone {
-                public static final double kAnchor = 58.0;
-                public static final double kFloating = 69.0;
-            }
-
-            // cone high shelf
-            public static final class HighCone {
-                public static final double kAnchor = 95.0;
-                public static final double kFloating = 110.0;
-            }
         }
         
         public static final class Misc {

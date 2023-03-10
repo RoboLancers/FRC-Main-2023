@@ -1,14 +1,9 @@
 package frc.robot.subsystems.drivetrain;
 
-import java.util.concurrent.ThreadLocalRandom;
-
-import javax.swing.LayoutStyle;
-
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -22,12 +17,10 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.Drivetrain.RightMotors;
 import frc.robot.util.Encoder;
 import frc.robot.util.DriverController.Mode;
 import edu.wpi.first.wpilibj.SPI;
-import frc.robot.util.DriverController;
-import frc.robot.subsystems.drivetrain.PIDController;
+
 public class Drivetrain extends SubsystemBase {
     private final CANSparkMax leftMotor1 = new CANSparkMax(Constants.Drivetrain.LeftMotors.kLeftMotor1_Port, CANSparkMaxLowLevel.MotorType.kBrushless);
     private final CANSparkMax leftMotor2 = new CANSparkMax(Constants.Drivetrain.LeftMotors.kLeftMotor2_Port, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -61,9 +54,9 @@ public class Drivetrain extends SubsystemBase {
     private final SlewRateLimiter throttleBackwardFilter = new SlewRateLimiter(Constants.Drivetrain.kBackwardThrottleAccelFilter, -Constants.Drivetrain.kBackwardThrottleDecelFilter,0);
     private final SlewRateLimiter turnFilter = new SlewRateLimiter(Constants.Drivetrain.kTurnFilter);
 
-    private final PIDController throttlePID = new PIDController(.15, 0.00, 0.0);
-    private final PIDController throttlePID2 = new PIDController(.25, 0.00, 0.0);
-    private final PIDController steeringPID = new PIDController(.3, 0.00, 0.03);    
+    // private final PIDController throttlePID = new PIDController(.15, 0.00, 0.0);
+    // private final PIDController throttlePID2 = new PIDController(.25, 0.00, 0.0);
+    // private final PIDController steeringPID = new PIDController(.3, 0.00, 0.03);
 
     public Drivetrain(){
         rightMotor1.setInverted(true);

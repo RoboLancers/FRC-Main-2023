@@ -93,8 +93,6 @@ public class TrajectoryCommand extends CommandBase
         );
 
         subsystem.resetOdometry(initialState.poseMeters);
-
-        System.out.println("starting motion profile");
     }
 
     // Called every time the scheduler runs while the command is scheduled.

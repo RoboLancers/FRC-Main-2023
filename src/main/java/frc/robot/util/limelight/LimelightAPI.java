@@ -1,12 +1,6 @@
 package frc.robot.util.limelight;
 
-import java.net.URI;
 import java.net.URISyntaxException;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -16,13 +10,9 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-// import edu.wpi.first.networktables.NetworkTableInstance;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants;
-import frc.robot.subsystems.drivetrain.Drivetrain;
-// import frc.robot.util.Websocket;
 import frc.robot.util.enums.CamMode;
 import frc.robot.util.enums.LedMode;
 import frc.robot.util.enums.Snapshot;

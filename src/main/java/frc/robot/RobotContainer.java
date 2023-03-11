@@ -16,6 +16,7 @@ import frc.robot.subsystems.poseTracker.PoseTracker;
 import frc.robot.commands.BottomLaneAuto;
 import frc.robot.commands.MidLaneAuto;
 import frc.robot.commands.TopLaneAuto;
+import frc.robot.commands.ScanAndAlign;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.commands.MoveToPos;
 import frc.robot.util.Controller;
@@ -33,7 +34,7 @@ public class RobotContainer {
   private Arm arm = new Arm();
   private Intake intake = new Intake();
   private Gyro gyro = new Gyro();
-  private PoseTracker poseTracker = new PoseTracker(drivetrain);
+  private PoseTracker poseTracker = new PoseTracker();
     
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
   // TODO: Raf is rly dumb for this shit
@@ -73,20 +74,30 @@ public class RobotContainer {
     // this.poseTracker.setDefaultCommand(new PrintCommand("Matt likes balls idk, Raf too"));
 
   private void configureButtonBindings() {
-    // intake
-    Controller.onHold(driverController.RightTrigger, new RunCommand(intake::outtakeFast, intake));
-    Controller.onHold(driverController.LeftTrigger, new RunCommand(intake::intakeFast, intake));
-    
+    // driver slow mode
+    Controller.onHold(driverController.RightBumper, new InstantCommand(() -> driverController.setSlowMode(Mode.SLOW)));
+    Controller.onRelease(driverController.RightBumper, new InstantCommand(() -> driverController.setSlowMode(Mode.NORMAL)));
+
+    // manipulator grid align
+    Controller.onBothPress(manipulatorController.LeftBumper, manipulatorController.RightBumper, new ScanAndAlign(drivetrain, arm, poseTracker, manipulatorController));
+
+    // driver intake
+    Controller.onHold(driverController.RightTrigger, new RunCommand(intake::intakeFast, intake));
+    Controller.onHold(driverController.LeftTrigger, new RunCommand(intake::outtakeFast, intake));
+    // manipulator intake
     Controller.onHold(manipulatorController.intakeElementTriggerFast, new RunCommand(intake::intakeFast));
     Controller.onHold(manipulatorController.outtakeElementTriggerFast, new RunCommand(intake::outtakeFast));
     Controller.onHold(manipulatorController.intakeElementTriggerSlow, new RunCommand(intake::intakeSlow));
     Controller.onHold(manipulatorController.outtakeElementTriggerSlow, new RunCommand(intake::outtakeSlow));
 
-    // toggle cube
+    // manipulator toggle cube
     Controller.onPress(manipulatorController.RightBumper, new InstantCommand(() -> { this.arm.armMode = true; }));
-    // toggle cone
+    // manipulator toggle cone
     Controller.onPress(manipulatorController.LeftBumper, new InstantCommand(() -> { this.arm.armMode = false; }));
 
+    /*
+      Manipulator Arm State
+    */
     // ground
     Controller.onPress(manipulatorController.A, new MoveToPos(arm, Constants.Arm.Position.GROUND));
     // contract
@@ -104,7 +115,7 @@ public class RobotContainer {
     // shelf
     Controller.onPress(manipulatorController.dPadDown, new MoveToPos(arm, Constants.Arm.Position.SHELF));
 
-    // dynamic for tuning
+    // dynamic
     // SmartDashboard.putNumber("anchor-setpoint", 13.0);
     // SmartDashboard.putNumber("floating-setpoint", 22.0);
     // Controller.onPress(manipulatorController.X, new MoveToPos(
@@ -132,6 +143,11 @@ public class RobotContainer {
     autoChooser.addOption("Top Auto High Cube", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
     autoChooser.addOption("Mid Auto High Cube", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
     autoChooser.addOption("Bottom Auto High Cube", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
+
+
+    // ! For Testing Only
+    // run balance
+    // Controller.onPress(driverController.B, new Balance(drivetrain, gyro, 0));
   }
 
   public Command getAutonomousCommand() {

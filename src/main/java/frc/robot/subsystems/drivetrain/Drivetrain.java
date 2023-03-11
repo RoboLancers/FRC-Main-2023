@@ -25,6 +25,7 @@ import frc.robot.util.DriveFollower;
 import frc.robot.util.Encoder;
 import frc.robot.util.DriveFollower.Voltage;
 import frc.robot.util.DriverController.Mode;
+import frc.robot.util.enums.Displacement;
 import frc.robot.util.limelight.LimelightAPI;
 import edu.wpi.first.wpilibj.SPI;
 
@@ -225,7 +226,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void drive(double throttle, double turn, Mode mode) {
-        Pose2d pose = LimelightAPI.adjustCamPose(); 
+        Pose2d pose = LimelightAPI.adjustCamPose(Displacement.kCenter); 
 
         if (isAutoSteer && pose != null) {
             autoSteerCurvatureDrive(throttle, mode, pose);

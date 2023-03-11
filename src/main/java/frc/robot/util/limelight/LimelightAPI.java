@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants;
 import frc.robot.util.enums.CamMode;
+import frc.robot.util.enums.Displacement;
 import frc.robot.util.enums.LedMode;
 import frc.robot.util.enums.Snapshot;
 import frc.robot.util.enums.StreamMode;
@@ -101,17 +102,15 @@ public class LimelightAPI {
     }
 
     /** Returns an adjusted Pose3D based on camera pose */
-    public static Pose2d adjustCamPose() {
-
-        var camPose = LimelightAPI.camPose();
+    public static Pose2d adjustCamPose(Displacement displacement) {
+        Pose2d camPose = LimelightAPI.camPose();
 
         if (camPose == null) {
             return new Pose2d();
         }
-        
-        // TODO: offset or do so from pipeline
-        double dZ = camPose.getY() + 0.69 * 0.420 + 0.420 / 0.69;
-        double dX = camPose.getX();
+
+        double dZ = camPose.getY() + 0.69 * 0.420;
+        double dX = camPose.getX() + displacement.getOffset();
 
         double actualRot = (Math.signum(dX)) * camPose.getRotation().getRadians();
 
@@ -130,10 +129,7 @@ public class LimelightAPI {
         double adjustedX = (distance * Math.cos(theta)) - Constants.GridAlign.kAdjustZ * Math.cos(actualRot);
         double adjustedZ = (-(distance * Math.sin(theta)) - Constants.GridAlign.kAdjustZ * Math.sin(actualRot));
 
-        // return new Pose2d(camPose2.getY(), -camPose2.getX(), new Rotation2d(Math.signum(-camPose2.getX()) * Math.abs(camPose2.getRotation().getDegrees())));
-        // return new Pose2d(adjustedCamPoseX, pose3d.getY(), adjustedCamPoseZ,
-        // pose3d.getRotation());
-        return new Pose2d(adjustedZ, adjustedX, Rotation2d.fromRadians(actualRot)); 
+        return new Pose2d(adjustedX, adjustedZ, new Rotation2d(actualRot));
     }
 
     public static boolean validTargets() {
@@ -188,13 +184,6 @@ public class LimelightAPI {
         var raw = LimelightAPI.limelightNT.getEntry("json").getValue().getValue();
         return raw;
     }
-
-    // ! TODO find some way to type the raw json data
-    // public static void getJSONTargets() {
-
-    // var mapper = new ObjectMapper();
-
-    // }
 
     public static void setPipeline(int pipeline) {
         if (pipeline > 9 || pipeline < 0) {

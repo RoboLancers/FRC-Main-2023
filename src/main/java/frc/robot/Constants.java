@@ -160,11 +160,9 @@ public final class Constants {
         public static final double kInitialWeight = 1;
         public static final double kGridWeight = 1.0; 
 
-        // Measure these constants, BS values for now
-        public static final double kDispRight = 0.35;
-        public static final double kDispLeft = -0.35;
+        public static final double kRightOffset = 0.35;
+        public static final double kLeftOffset = -0.35;
       
-
         public static final double kAdjustZ = 0.32;
 
         public static final double kCamSanityXMax = 4;

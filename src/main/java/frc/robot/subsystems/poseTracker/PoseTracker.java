@@ -3,6 +3,7 @@ package frc.robot.subsystems.poseTracker;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bananasamirite.robotmotionprofile.ParametricSpline;
 import org.bananasamirite.robotmotionprofile.Waypoint;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -14,6 +15,7 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.PipelineIndex;
 import frc.robot.util.PoseUtil;
 import frc.robot.util.SizedQueue;
+import frc.robot.util.enums.Displacement;
 import frc.robot.util.limelight.LimelightAPI;
 
 public class PoseTracker extends SubsystemBase {
@@ -23,31 +25,27 @@ public class PoseTracker extends SubsystemBase {
         // Getting last 3 bot pose values
         private SizedQueue<Pose2d> botPoseQueue = new SizedQueue<Pose2d>(3);
 
-        private Drivetrain drivetrain;
-
-        private Pose2d avgPythonCamPose;
+    private Pose2d avgPythonCamPose;
 
         private Pose2d avgAprilTagCamPose;
 
-        public PoseTracker(Drivetrain drivetrain) {
-                this.drivetrain = drivetrain;
-        }
+    public Displacement displacement = Displacement.kCenter;
 
-        @Override
-        public void periodic() {
-                // setting the last 3
-                this.camPoseQueue.add(LimelightAPI.adjustCamPose());
-                SmartDashboard.putNumber("latest queue num x", LimelightAPI.adjustCamPose().getX());
+    public PoseTracker() {}
 
-                this.botPoseQueue.add(LimelightAPI.adjustCamPose());
+    @Override
+    public void periodic() {
+        // setting the last 3
+        this.camPoseQueue.add(LimelightAPI.adjustCamPose(this.displacement));
 
-                this.avgAprilTagCamPose =  getAverageAprilPose();
+        this.botPoseQueue.add(LimelightAPI.adjustCamPose(this.displacement));
 
-                SmartDashboard.putNumber("avg campose forward", avgAprilTagCamPose.getX());
-                SmartDashboard.putNumber("avg campose sideways", -avgAprilTagCamPose.getY());
-                SmartDashboard.putNumber("avg rotation", -avgAprilTagCamPose.getRotation().getDegrees());
+        this.avgAprilTagCamPose =  getAverageAprilPose();
 
-        }
+        SmartDashboard.putNumber("avg campose x", avgAprilTagCamPose.getX());
+        SmartDashboard.putNumber("avg campose z", avgAprilTagCamPose.getY());
+        SmartDashboard.putNumber("avg rotation", avgAprilTagCamPose.getRotation().getDegrees());
+    }
 
         // TODO: are we scrapping this? definitely something to discuss
         public Pose2d getSensorFusionAverage() {
@@ -66,16 +64,18 @@ public class PoseTracker extends SubsystemBase {
                 return PoseUtil.averagePoses(this.camPoseQueue);
         }
 
-        public Waypoint[] generateWaypoints() {
-                Pose2d pose = this.getAverageAprilPose();
+    public Waypoint[] generateWaypoints() {
+        Pose2d pose = this.getAverageAprilPose();
 
-                double relativeDistance = Math.hypot(pose.getX(), pose.getY());
+        double relativeDistance = Math.hypot(pose.getX(), pose.getY());
 
-                double weight = Constants.GridAlign.kGridWeight * relativeDistance;
+        double weight = Constants.GridAlign.kGridWeight * relativeDistance;
 
-                return new Waypoint[] {
-                        new Waypoint(0, 0, 0, weight, 1),
-                        new Waypoint(pose.getX(), pose.getY(), pose.getRotation().getRadians(), weight, 1)
-                };
-        }
+        Waypoint[] waypoints = {
+            new Waypoint(0, 0, 0, weight, 1),
+            new Waypoint(pose.getX(), pose.getY(), pose.getRotation().getRadians(), weight, 1)
+        };
+
+        return waypoints; 
+    }
 }

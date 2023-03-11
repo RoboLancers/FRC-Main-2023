@@ -5,6 +5,7 @@ import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -51,11 +52,13 @@ public class Arm extends SubsystemBase {
       this.anchorMotor.setSoftLimit(SoftLimitDirection.kForward, (float) Constants.Arm.Anchor.kMaxAngle);
       this.anchorMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
       this.anchorMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
+      this.anchorMotor.setIdleMode(IdleMode.kBrake); 
    
       this.floatingMotor.setSoftLimit(SoftLimitDirection.kReverse, (float) Constants.Arm.Floating.kMinAngle);
       this.floatingMotor.setSoftLimit(SoftLimitDirection.kForward, (float) Constants.Arm.Floating.kMaxAngle);
       this.floatingMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
       this.floatingMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
+      this.anchorMotor.setIdleMode(IdleMode.kBrake); 
    }
 
    public void configureEncoders(){

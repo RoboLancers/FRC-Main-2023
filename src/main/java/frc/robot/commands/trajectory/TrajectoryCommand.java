@@ -1,8 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands.trajectory;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -19,10 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.util.MotionProfileUtils;
-import org.bananasamirite.robotmotionprofile.TankMotionProfile;
 
-/** An example command that uses an example subsystem. */
 public class TrajectoryCommand extends CommandBase
 {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
@@ -46,11 +38,6 @@ public class TrajectoryCommand extends CommandBase
     private final NetworkTableEntry velocity;
     private final NetworkTableEntry robotVelocity;
 
-    /**
-     * Creates a new ExampleCommand.
-     *
-     * @param drivetrain The subsystem used by this command.
-     */
     public TrajectoryCommand(Drivetrain drivetrain, Trajectory trajectory)
     {
         this.subsystem = drivetrain;
@@ -75,7 +62,6 @@ public class TrajectoryCommand extends CommandBase
         subsystem.getField().getObject("robot").setTrajectory(trajectory);
     }
 
-    // Called when the command is initially scheduled.
     @Override
     public void initialize() {
         prevTime = -1;
@@ -95,7 +81,6 @@ public class TrajectoryCommand extends CommandBase
         subsystem.resetOdometry(initialState.poseMeters);
     }
 
-    // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
         double curTime = timer.get();
@@ -151,11 +136,9 @@ public class TrajectoryCommand extends CommandBase
         prevTime = curTime;
     }
 
-    // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {}
 
-    // Returns true when the command should end.
     @Override
     public boolean isFinished()
     {

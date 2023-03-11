@@ -4,9 +4,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.Intake.ScoreSpeed;
-import frc.robot.commands.Score;
 import frc.robot.trajectory.TrajectoryCreator;
-import frc.robot.util.DriveFollower;
 
 public final class Constants {
     public static final class Arm {
@@ -82,7 +80,6 @@ public final class Constants {
             HIGH_CONE(Position.HIGH_CONE, ScoreSpeed.SLOW), 
             MID_CONE(Position.HIGH_CONE, ScoreSpeed.SLOW); 
 
-            // TODO: finish
             private final Position position; 
             private final ScoreSpeed speed; 
 

@@ -3,7 +3,6 @@ package frc.robot.subsystems.poseTracker;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bananasamirite.robotmotionprofile.ParametricSpline;
 import org.bananasamirite.robotmotionprofile.Waypoint;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -11,7 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
-import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.PipelineIndex;
 import frc.robot.util.PoseUtil;
 import frc.robot.util.SizedQueue;

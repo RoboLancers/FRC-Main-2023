@@ -60,6 +60,12 @@ public class Controller {
         Controller.bindEvent(capturer::cancelWhenActive, response);
     }
 
+    public static void onBothPress(Trigger capturer1, Trigger capturer2, Command response){
+        Trigger dualCapturer = new Trigger(() -> capturer1.getAsBoolean() && capturer2.getAsBoolean());
+
+        Controller.bindEvent(dualCapturer::whenActive, response);
+    }
+
     public double getLeftStickX() {
         return this._controller.getLeftX();
     }

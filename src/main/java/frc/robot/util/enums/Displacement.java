@@ -3,15 +3,15 @@ package frc.robot.util.enums;
 import frc.robot.Constants;
 
 public enum Displacement {
-    LEFT(Constants.GridAlign.kDispLeft), RIGHT(Constants.GridAlign.kDispRight), CENTER(0);
+    kLeft(Constants.GridAlign.kLeftOffset), kRight(Constants.GridAlign.kRightOffset), kCenter(0);
 
-    private double value;
+    private double offset;
 
-    private Displacement(double value) {
-        this.value = value;
+    private Displacement(double offset) {
+        this.offset = offset;
     }
 
-    public double getValue() {
-        return value;
+    public double getOffset() {
+        return offset;
     }
 }

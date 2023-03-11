@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.util.DriverController.Mode;
 
 public class TurnToAngle extends PIDCommand {
         private Drivetrain drivetrain;  
@@ -25,8 +26,7 @@ public class TurnToAngle extends PIDCommand {
                     return setpointValue;
                 },
                 (outputPower) -> {
-                    drivetrain.leftMotors.set(-outputPower);
-                    drivetrain.rightMotors.set(outputPower);
+                    drivetrain.curvatureDrive(0, outputPower, Mode.NORMAL);
                 },
                 drivetrain
             );
@@ -45,12 +45,12 @@ public class TurnToAngle extends PIDCommand {
         @Override
         public void execute() {
             // System.out.println(SmartDashboard.getNumber("Angular kP", 0.0));
-            // super.execute();
-            // this.getController().setPID(
-            //     SmartDashboard.getNumber("Angular kP", 0.0),
-            //     SmartDashboard.getNumber("Angular kI", 0.0),
-            //     SmartDashboard.getNumber("Angular kD", 0.0)
-            // );
+            super.execute();
+            this.getController().setPID(
+                SmartDashboard.getNumber("Angular kP", 0.0),
+                SmartDashboard.getNumber("Angular kI", 0.0),
+                SmartDashboard.getNumber("Angular kD", 0.0)
+            );
 
             // this.m_useOutput.accept(output);
         }
@@ -63,7 +63,7 @@ public class TurnToAngle extends PIDCommand {
         }
     
         @Override
-        public boolean isFinished(){
+        public boolean isFinished() {
             return this.getController().atSetpoint();
         }
 }

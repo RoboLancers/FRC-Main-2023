@@ -1,5 +1,8 @@
 package frc.robot.subsystems.drivetrain;
 
+import org.bananasamirite.robotmotionprofile.ParametricSpline;
+import org.bananasamirite.robotmotionprofile.Waypoint;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
@@ -12,12 +15,15 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.drive.RobotDriveBase;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.util.DriveFollower;
 import frc.robot.util.Encoder;
+import frc.robot.util.DriveFollower.Voltage;
 import frc.robot.util.DriverController.Mode;
 import frc.robot.util.limelight.LimelightAPI;
 import edu.wpi.first.wpilibj.SPI;
@@ -54,6 +60,8 @@ public class Drivetrain extends SubsystemBase {
     private final SlewRateLimiter throttleForwardFilter = new SlewRateLimiter(Constants.Drivetrain.kForwardThrottleAccelFilter, -Constants.Drivetrain.kForwardThrottleDecelFilter, 0);
     private final SlewRateLimiter throttleBackwardFilter = new SlewRateLimiter(Constants.Drivetrain.kBackwardThrottleAccelFilter, -Constants.Drivetrain.kBackwardThrottleDecelFilter,0);
     private final SlewRateLimiter turnFilter = new SlewRateLimiter(Constants.Drivetrain.kTurnFilter);
+
+    private final DriveFollower driveFollower; 
 
     public boolean isAutoSteer = false; 
 
@@ -104,6 +112,8 @@ public class Drivetrain extends SubsystemBase {
         resetEncoders();
 
         odometry = new DifferentialDriveOdometry(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
+
+        this.driveFollower = new DriveFollower(this); 
 
         //initDefaultCommand(driverController);
     }
@@ -198,13 +208,24 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void autoSteerCurvatureDrive(double throttle, Mode mode, Pose2d aprilTagPose) { // aprilTagPose = pose relative to robot
-        double turnPower = aprilTagPose.getRotation().getDegrees() * Constants.GridAlign.kSteer * (throttle != 0 ? throttle : 0.25);
+        double turnPower = aprilTagPose.getY() * Constants.GridAlign.kSteer * (throttle != 0 ? throttle : 0.25);
 
         curvatureDrive(throttle, turnPower, mode);
+
+        // double curvature = ParametricSpline.fromWaypoints(new Waypoint[] {
+        //     new Waypoint(0, 0, 0, 1, 1), 
+        //     new Waypoint(aprilTagPose.getX(), aprilTagPose.getY(), aprilTagPose.getRotation().getDegrees(), 1, 1)
+        // }).signedCurvatureAt(0); 
+
+        // double velocity = throttle * RobotDriveBase.kDefaultMaxOutput / Constants.Trajectory.ksVoltSecondsPerMeter; 
+        
+        // ChassisSpeeds newSpeeds = new ChassisSpeeds(velocity, 0, velocity * curvature); 
+        // Voltage voltages = driveFollower.calculate(newSpeeds); 
+        // tankDriveVolts(voltages.getLeft(), voltages.getRight());
     }
 
     public void drive(double throttle, double turn, Mode mode) {
-        Pose2d pose = LimelightAPI.targetPoseBotSpace(); 
+        Pose2d pose = LimelightAPI.adjustCamPose(); 
 
         if (isAutoSteer && pose != null) {
             autoSteerCurvatureDrive(throttle, mode, pose);
@@ -274,4 +295,7 @@ public class Drivetrain extends SubsystemBase {
         return this.m_field; 
     }
     
+    public DriveFollower getDriveFollower() {
+        return driveFollower; 
+    }
 }

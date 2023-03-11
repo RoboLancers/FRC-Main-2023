@@ -3,7 +3,10 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.math.util.Units;
+import frc.robot.Constants.Intake.ScoreSpeed;
+import frc.robot.commands.Score;
 import frc.robot.trajectory.TrajectoryCreator;
+import frc.robot.util.DriveFollower;
 
 public final class Constants {
     public static final class Arm {
@@ -50,7 +53,7 @@ public final class Constants {
             GROUND(13.0, 92.0), 
             SHELF(87.0, 111.0), 
 
-            HIGH_CUBE(85.0, 115.0),
+            HIGH_CUBE(25.0, 40.0),
 
             HIGH_CONE(95.0, 110.0), 
             MID_CONE(58.0, 69.0); 
@@ -70,7 +73,31 @@ public final class Constants {
             public double getFloating() {
                 return floating; 
             }
+        }
 
+        public enum ScoringPosition {
+            HIGH_CUBE(Position.HIGH_CUBE, ScoreSpeed.FAST), 
+            MID_CUBE(Position.CONTRACTED, ScoreSpeed.SLOW), 
+
+            HIGH_CONE(Position.HIGH_CONE, ScoreSpeed.SLOW), 
+            MID_CONE(Position.HIGH_CONE, ScoreSpeed.SLOW); 
+
+            // TODO: finish
+            private final Position position; 
+            private final ScoreSpeed speed; 
+
+            ScoringPosition(Position pos, ScoreSpeed speed) {
+                this.speed = speed; 
+                this.position = pos; 
+            } 
+
+            public Position getPosition() {
+                return position; 
+            }
+
+            public ScoreSpeed getSpeed() {
+                return speed; 
+            }
         }
         
         public static final class Misc {
@@ -86,6 +113,11 @@ public final class Constants {
         public static final double kHighPower = 0.2;
         public static final double kAutoIntakeSeconds = 1; 
         public static final double kAutoOuttakeSeconds = 1; 
+
+        public enum ScoreSpeed {
+            FAST, 
+            SLOW; 
+        }
     }
 
 
@@ -144,6 +176,14 @@ public final class Constants {
         // TODO: tune next week
         public static final double kSteer = 0.0; 
     }
+
+    /* (x-x1)^2+(y-y1)^2=r^2
+    dy/dx, x=xf, y=yf  =  0
+    dy/dx, x=0, y=0  =  theta
+    y(0) = 0
+    y(xf) = yf
+    */
+
 
     public static class Drivetrain {
         public static class LeftMotors {

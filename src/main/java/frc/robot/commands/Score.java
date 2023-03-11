@@ -8,7 +8,7 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.commands.OuttakeElement;
 
 public class Score extends SequentialCommandGroup {
-    public Score(Arm arm, Intake intake, Constants.Arm.Position position) {
-        addCommands(new MoveToPos(arm, position), new OuttakeElement(intake));
+    public Score(Arm arm, Intake intake, Constants.Arm.ScoringPosition position) {
+        addCommands(new MoveToPos(arm, position.getPosition()), new OuttakeElement(intake, position.getSpeed()));
     }
 }

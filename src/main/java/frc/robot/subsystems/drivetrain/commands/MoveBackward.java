@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.bananasamirite.robotmotionprofile.Waypoint;
 
-import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import frc.robot.Constants;
 import frc.robot.commands.trajectory.TrajectoryCommand;

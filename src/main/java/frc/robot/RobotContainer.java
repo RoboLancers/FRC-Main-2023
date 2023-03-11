@@ -13,6 +13,9 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.commands.MoveBackward;
 import frc.robot.subsystems.drivetrain.commands.MoveForward;
 import frc.robot.subsystems.poseTracker.PoseTracker;
+import frc.robot.commands.BottomLaneAuto;
+import frc.robot.commands.MidLaneAuto;
+import frc.robot.commands.TopLaneAuto;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.commands.MoveToPos;
 import frc.robot.util.Controller;
@@ -52,7 +55,7 @@ public class RobotContainer {
     //                 //   2, 1, Math.toRadians(45), 1.85, 1
     //                 // )
     //         }, new TrajectoryConfig(1, 0.2));
-    SmartDashboard.putNumber("Angular Setpoint", 0);
+    // SmartDashboard.putNumber("Angular Setpoint", 0);
     // command = new TurnToAngle(drivetrain, () -> SmartDashboard.getNumber("Angular Setpoint", 0));
 
             configureButtonBindings();
@@ -124,8 +127,11 @@ public class RobotContainer {
   }
 
   public void configureAutos() {
-    autoChooser.addOption("Move Forward", new MoveForward(drivetrain, 3));
-    autoChooser.addOption("Move Backward", new MoveBackward(drivetrain, 3));
+    autoChooser.addOption("Move Forward", new MoveForward(drivetrain, 3, 1, 0.5));
+    autoChooser.addOption("Move Backward", new MoveBackward(drivetrain, 3, 1, 0.5));
+    autoChooser.addOption("Top Auto High Cube", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
+    autoChooser.addOption("Mid Auto High Cube", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
+    autoChooser.addOption("Bottom Auto High Cube", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
   }
 
   public Command getAutonomousCommand() {

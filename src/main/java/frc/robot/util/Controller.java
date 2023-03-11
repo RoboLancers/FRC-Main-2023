@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants;
 
 public class Controller {
     private XboxController _controller;
@@ -16,14 +17,13 @@ public class Controller {
     public Trigger Y;
     public Trigger LeftBumper;
     public Trigger RightBumper;
+    public Trigger LeftTrigger; 
+    public Trigger RightTrigger; 
 
-    private double deadzone; 
+    double throttleMultiplier = Constants.Drivetrain.kThrottleMultiplier;
+    double turnMultiplier = Constants.Drivetrain.kTurnMultiplier;
 
     public Controller(int port) {
-        this(port, 0.15); 
-    }
-
-    public Controller(int port, double deadzone){
         this._controller = new XboxController(port);
 
         this.A = new Trigger(this._controller::getAButton);
@@ -32,7 +32,8 @@ public class Controller {
         this.Y = new Trigger(this._controller::getYButton);
         this.LeftBumper = new Trigger(this._controller::getLeftBumper);
         this.RightBumper = new Trigger(this._controller::getRightBumper);
-        this.deadzone = deadzone; 
+        this.LeftTrigger = new Trigger(() -> this._controller.getLeftTriggerAxis() >= 0.5); 
+        this.RightTrigger = new Trigger(() -> this._controller.getRightTriggerAxis() >= 0.5); 
     }
  
     private static void bindEvent(Consumer<Command> responder, Command response){
@@ -59,28 +60,27 @@ public class Controller {
         Controller.bindEvent(capturer::cancelWhenActive, response);
     }
 
-    // TODO: may be bad to do it this way
-    public double getLeftStickX(){
-        return ControllerUtils.applyDeadband(this._controller.getLeftX(), deadzone);
+    public double getLeftStickX() {
+        return this._controller.getLeftX();
     }
 
-    public double getLeftStickY(){
-        return ControllerUtils.applyDeadband(this._controller.getLeftY(), deadzone);
+    public double getLeftStickY() {
+        return this._controller.getLeftY();
     }
 
-    public double getRightStickX(){
-        return ControllerUtils.applyDeadband(this._controller.getRightX(), deadzone); 
+    public double getRightStickX() {
+        return this._controller.getRightX(); 
     }
 
-    public double getRightStickY(){
-        return ControllerUtils.applyDeadband(this._controller.getRightY(), deadzone);
+    public double getRightStickY() {
+        return this._controller.getRightY();
     }
 
-    public double getLeftTrigger(){
+    public double getLeftTrigger() {
         return this._controller.getLeftTriggerAxis();
     }
 
-    public double getRightTrigger(){
+    public double getRightTrigger() {
         return this._controller.getRightTriggerAxis();
     }
 

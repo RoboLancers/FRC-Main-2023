@@ -1,11 +1,16 @@
 package frc.robot;
 
+import java.time.Instant;
+
 import edu.wpi.first.math.geometry.Pose2d;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.gyro.Balance;
 import frc.robot.subsystems.gyro.Gyro;
@@ -14,82 +19,114 @@ import frc.robot.commands.Rumble;
 import frc.robot.commands.TeleopGRR;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.poseTracker.PoseTracker;
+import frc.robot.commands.GridAlign;
+import frc.robot.commands.Rumble;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.commands.MoveAnchorJoint;
+import frc.robot.subsystems.arm.commands.MoveFloatingJoint;
 import frc.robot.subsystems.drivetrain.commands.TeleopDrive;
 import frc.robot.util.Controller;
+import frc.robot.util.DriverController;
 import frc.robot.util.InstantiatorCommand;
+import frc.robot.util.DriverController.Mode;
 import frc.robot.util.enums.Displacement;
-import frc.robot.util.limelight.LimelightAPI;
-import frc.robot.subsystems.grabber.Grabber;
-import frc.robot.subsystems.arm.Arm;
-
 public class RobotContainer {
   /* Controllers */
-  private final Controller driverController = new Controller(0);
+  private final DriverController driverController = new DriverController(0);
   private final Controller manipulatorController = new Controller(1);
 
+ 
   /* Subsystems */
   private Drivetrain drivetrain = new Drivetrain();
   private Arm arm = new Arm();
   private Grabber grabber = new Grabber();
   private Gyro gyro = new Gyro();
-  private PoseTracker poseTracker = new PoseTracker(drivetrain);
+  private PoseTracker poseTracker = new PoseTracker(drivetrain, () -> {
+    switch (manipulatorController.dPadAngle()) {
+      case 0:
+        return Displacement.RIGHT;
+      case 90:
+        return Displacement.CENTER;
+
+      case 180:
+        return Displacement.LEFT;
+      default:
+        return Displacement.NONE;
+    }
+
+  });
     
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+  // TODO: Raf is rly dumb for this shit
+  // private final SmartDashboardDB db = new SmartDashboardDB();
 
   public RobotContainer() {
-    this.drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, driverController));
+    // this.drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, driverController));
+    this.drivetrain.setDefaultCommand(new RunCommand(() -> {
+      drivetrain.arcadeDrive(this.driverController.getThrottle(), this.driverController.getTurn());
+    }, drivetrain));
+
+    
+
+    // this.poseTracker.setDefaultCommand(new PrintCommand("Matt likes balls idk, Raf too"));
 
     configureButtonBindings();
   }
 
-  private void configureButtonBindings(){
+  private void configureButtonBindings() {
+
     // Grabber
-    Controller.onPress(driverController.A, new InstantCommand(grabber::toggleDeploy));
+    // Controller.onPress(driverController.A, new InstantCommand(grabber::toggleDeploy));
 
-    // Balance
-    Controller.onPress(driverController.B, new Balance(drivetrain, gyro, 0));
+    // // Balance
+    // Controller.onPress(driverController.B, new Balance(drivetrain, gyro, 0));
 
-    // Grid Align
-    Controller.onPress(driverController.Y, new ConditionalCommand(
-      // on true, instantiate and schedule align command
-      new InstantiatorCommand(() -> new GridAlign(drivetrain, poseTracker)),
-      // on false rumble for 1 second
-      new Rumble(driverController, Constants.GridAlign.kRumbleTime),
-      // conditional upon a valid april tag
-      LimelightAPI::validTargets
-    ));
+    //slow mode
+    Controller.onHold(driverController.RightTrigger, new InstantCommand(() -> driverController.setSlowMode(Mode.SLOW)));
+    Controller.onRelease(driverController.RightTrigger, new InstantCommand(() -> driverController.setSlowMode(Mode.NORMAL)));
+  
+    // // Grid Align
+    // Controller.onPress(driverController.Y, new ConditionalCommand(
+    //   // on true, instantiate and schedule align command
+    //   new InstantiatorCommand(() -> new GridAlign(drivetrain, poseTracker)),
+    //   // on false rumble for 1 second
+    //   new Rumble(driverController, Constants.GridAlign.kRumbleTime),
+    //   // conditional upon a valid april tag
+    //   LimelightAPI::validTargets
+    // ));
+
+
+    // SmartDashboard.putNumber("target anchor  angle", 30);
+    // SmartDashboard.putNumber("target floating   angle", 0);
 
     // Arm
-    // TODO: choose our desired angle more carefully when we actually test so we don't break anything
-    Controller.onHold(driverController.X, new MoveAnchorJoint(0, arm));
+    // Controller.onHold(driverController.X, new MoveAnchorJoint(() -> {
+    //   double desired = SmartDashboard.getNumber("target anchor  angle", 30);
+    //   if(desired < 13) return 13;
 
-    Controller.onPress(driverController.Y, new ConditionalCommand(
-      // on true, instantiate and schedule align command
-      new InstantiatorCommand(() -> new GridAlign(drivetrain, poseTracker)),
-      // on false rumble for 1 second
-      new Rumble(driverController, Constants.GridAlign.kRumbleTime),
-      // conditional upon a valid april tag
-      LimelightAPI::validTargets)
-    );
+    //   if(desired > 90) return 90;
 
-    // TODO: this lowkey not really gonna work rn, need to implement displacement properly
-    // Controller.onPress(driverController.Y, new ConditionalCommand(
-    //     // on true, instantiate and schedule align command
-    //     new TeleopGRR(drivetrain, poseTracker, arm, grabber, () -> {
-    //       if (driverController.dPadAngle() == 90) {
-    //         return Displacement.RIGHT;
-    //       } else if (driverController.dPadAngle() == 270) {
-    //         return Displacement.LEFT;
-    //       } else {
-    //         return Displacement.CENTER;
-    //       };
-    //     }),
-    //     // on false rumble for 1 second
-    //     new Rumble(driverController, Constants.GridAlign.kRumbleTime),
-    //     // conditional upon a valid april tag
-    //     LimelightAPI::validTargets));
+    //   return desired;
+    // }, arm));
+
+    // Controller.onHold(driverController.Y, new MoveFloatingJoint(() -> {
+    //   double desired = SmartDashboard.getNumber("target floating   angle", 0);
+    //   if(desired < 0) return 0;
+
+    //   if(desired > 90) return 90;
+
+    //   return desired;
+    // }, arm));
+
+
+   // TODO: this lowkey not really gonna work rn, need to implement displacement properly
+  //   Controller.onPress(driverController.LeftBumper, new ConditionalCommand(
+  //       // on true, instantiate and schedule align command
+  //       new TeleopGRR(drivetrain, poseTracker, arm, grabber),
+  //       // on false rumble for 1 second
+  //       new Rumble(driverController, Constants.GridAlign.kRumbleTime),
+  //       // conditional upon a valid april tag
+  //       LimelightAPI::validTargets));
   }
 
   // Complete arm controls, for now use testing

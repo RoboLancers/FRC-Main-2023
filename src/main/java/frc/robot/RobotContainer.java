@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.gyro.Gyro;
+import frc.robot.subsystems.gyro.commands.Balance;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.commands.MoveBackward;
@@ -19,6 +20,7 @@ import frc.robot.commands.TopLaneAuto;
 import frc.robot.commands.ScanAndAlign;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.commands.MoveToPos;
+import frc.robot.subsystems.arm.commands.RunToSetpoints;
 import frc.robot.util.Controller;
 import frc.robot.util.DriverController; 
 import frc.robot.util.ManipulatorController;
@@ -45,6 +47,10 @@ public class RobotContainer {
     this.drivetrain.setDefaultCommand(new RunCommand(() -> {
       drivetrain.curvatureDrive(this.driverController.getThrottle(), this.driverController.getTurn(), this.driverController.getSlowMode());
     }, drivetrain));
+
+    this.arm.setDefaultCommand(new RunToSetpoints(arm));
+
+    this.intake.setDefaultCommand(new RunCommand(intake::off, intake));
 
     CameraServer.startAutomaticCapture(); 
 
@@ -79,7 +85,7 @@ public class RobotContainer {
     Controller.onRelease(driverController.RightBumper, new InstantCommand(() -> driverController.setSlowMode(Mode.NORMAL)));
 
     // manipulator grid align
-    Controller.onBothPress(manipulatorController.LeftBumper, manipulatorController.RightBumper, new ScanAndAlign(drivetrain, arm, poseTracker, manipulatorController));
+    // Controller.onBothPress(manipulatorController.LeftBumper, manipulatorController.RightBumper, new ScanAndAlign(drivetrain, arm, poseTracker, manipulatorController));
 
     // driver intake
     Controller.onHold(driverController.RightTrigger, new RunCommand(intake::intakeFast, intake));
@@ -135,14 +141,19 @@ public class RobotContainer {
     // Controller.onPressCancel(driverController.A, new InstantCommand(() -> {
     //   drivetrain.isAutoSteer = false; 
     // }));
+
+
+    Controller.onPress(driverController.A, new Balance(drivetrain, gyro, 0));
   }
 
   public void configureAutos() {
     autoChooser.addOption("Move Forward", new MoveForward(drivetrain, 3, 1, 0.5));
     autoChooser.addOption("Move Backward", new MoveBackward(drivetrain, 3, 1, 0.5));
     autoChooser.addOption("Top Auto High Cube", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
+    autoChooser.addOption("Top Auto High Cone", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
     autoChooser.addOption("Mid Auto High Cube", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
     autoChooser.addOption("Bottom Auto High Cube", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
+    autoChooser.addOption("Bottom Auto High Cone", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
 
 
     // ! For Testing Only

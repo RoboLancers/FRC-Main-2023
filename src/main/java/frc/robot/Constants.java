@@ -53,7 +53,7 @@ public final class Constants {
 
             HIGH_CUBE(25.0, 40.0),
 
-            HIGH_CONE(95.0, 110.0), 
+            HIGH_CONE(95.0, 112.5), 
             MID_CONE(58.0, 69.0); 
 
             private final double anchor; 
@@ -76,9 +76,11 @@ public final class Constants {
         public enum ScoringPosition {
             HIGH_CUBE(Position.HIGH_CUBE, ScoreSpeed.FAST), 
             MID_CUBE(Position.CONTRACTED, ScoreSpeed.SLOW), 
+            LOW_CUBE(Position.GROUND, ScoreSpeed.SLOW), 
 
             HIGH_CONE(Position.HIGH_CONE, ScoreSpeed.SLOW), 
-            MID_CONE(Position.HIGH_CONE, ScoreSpeed.SLOW); 
+            MID_CONE(Position.MID_CONE, ScoreSpeed.SLOW),
+            LOW_CONE(Position.GROUND, ScoreSpeed.SLOW); 
 
             private final Position position; 
             private final ScoreSpeed speed; 
@@ -106,8 +108,8 @@ public final class Constants {
 
     public static class Intake {
         public static final int kPort = 24;
-        public static final double kLowPower = 0.9;
-        public static final double kHighPower = 0.2;
+        public static final double kLowPower = 0.2;
+        public static final double kHighPower = 0.9;
         public static final double kAutoIntakeSeconds = 1; 
         public static final double kAutoOuttakeSeconds = 1; 
 
@@ -116,7 +118,6 @@ public final class Constants {
             SLOW; 
         }
     }
-
 
     public static class Trajectory {
         public static final double ksVolts = 0.24855;
@@ -212,9 +213,9 @@ public final class Constants {
     }
 
     public static class Balance {
-        public static final double kP = 0.008;
+        public static final double kP = 0.009;
         public static final double kI = 0;
-        public static final double kD = 0;
+        public static final double kD = 0.0003;
         public static final double kPositionTolerance = 2.0; // TODO: tune this, also keep in mind gyro alignment is trash
         public static final double kVelocityTolerance = 1.0; // TODO: tune this, 1 degree per second seems pretty reasonable for stopped state
     }

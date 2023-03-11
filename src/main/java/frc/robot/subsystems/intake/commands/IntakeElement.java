@@ -1,5 +1,6 @@
 package frc.robot.subsystems.intake.commands;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -15,7 +16,7 @@ public class IntakeElement extends ParallelRaceGroup {
             } else {
                 intake.outtakeSlow();
             }
-        }), new WaitCommand(Constants.Intake.kAutoIntakeSeconds));
+        }), new WaitCommand(Constants.Intake.kAutoIntakeSeconds), new InstantCommand(intake::off, intake));
 
         addRequirements(intake);
     }

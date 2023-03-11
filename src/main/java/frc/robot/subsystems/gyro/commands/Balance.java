@@ -33,6 +33,9 @@ public class Balance extends PIDCommand {
 
     @Override
     public void execute(){
+        SmartDashboard.putNumber("pitch-error", Math.abs(this.m_measurement.getAsDouble()));
+        SmartDashboard.putNumber("pitch-velocity", Math.abs(this.gyro.getPitchVelocity()));
+
         this.m_controller.setP(SmartDashboard.getNumber("balance-kP", 0));
         this.m_controller.setD(SmartDashboard.getNumber("balance-kD", 0));
 
@@ -52,9 +55,10 @@ public class Balance extends PIDCommand {
 
     @Override
     public boolean isFinished(){
-        return (
-            Math.abs(this.m_measurement.getAsDouble()) < Constants.Balance.kPositionTolerance &&
-            Math.abs(this.gyro.getPitchVelocity()) < Constants.Balance.kVelocityTolerance
-        );
+        return false;
+        // return (
+        //     Math.abs(this.m_measurement.getAsDouble()) < Constants.Balance.kPositionTolerance &&
+        //     Math.abs(this.gyro.getPitchVelocity()) < Constants.Balance.kVelocityTolerance
+        // );
     }
 }

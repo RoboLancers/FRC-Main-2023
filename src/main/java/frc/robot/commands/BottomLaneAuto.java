@@ -9,6 +9,6 @@ import frc.robot.subsystems.intake.Intake;
 
 public class BottomLaneAuto extends SequentialCommandGroup {
     public BottomLaneAuto(Drivetrain drivetrain, Arm arm, Intake intake, Constants.Arm.ScoringPosition position) {
-        addCommands(new Score(arm, intake, position), new MoveBackward(drivetrain, 3));
+        addCommands(new Score(arm, intake, position), new MoveBackward(drivetrain, 4));
     }
 }

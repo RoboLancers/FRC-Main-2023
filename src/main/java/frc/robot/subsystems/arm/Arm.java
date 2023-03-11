@@ -5,8 +5,8 @@ import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants;
@@ -43,23 +43,46 @@ public class Arm extends SubsystemBase {
       // this.initTuneControllers();
    }
 
-   public void configureMotors(){
+   public void toggleSoftLimits(boolean shouldLimit) {
+      this.anchorMotor.enableSoftLimit(SoftLimitDirection.kReverse, shouldLimit);
+      this.anchorMotor.enableSoftLimit(SoftLimitDirection.kForward, shouldLimit);
+
+      this.floatingMotor.enableSoftLimit(SoftLimitDirection.kReverse, shouldLimit);
+      this.floatingMotor.enableSoftLimit(SoftLimitDirection.kForward, shouldLimit);
+   }
+
+
+   public void configureMotors() {
       this.anchorMotor.setInverted(Constants.Arm.Anchor.kInverted);
       this.floatingMotor.setInverted(Constants.Arm.Anchor.kInverted);
+      this.anchorMotor.setIdleMode(IdleMode.kBrake);
+      this.floatingMotor.setIdleMode(IdleMode.kBrake);
+
+      // this.anchorMotor.setSmartCurrentLimit(60); 
+      // this.floatingMotor.setSmartCurrentLimit(60); 
 
       // TODO: test these
       this.anchorMotor.setSoftLimit(SoftLimitDirection.kReverse, (float) Constants.Arm.Anchor.kMinAngle);
       this.anchorMotor.setSoftLimit(SoftLimitDirection.kForward, (float) Constants.Arm.Anchor.kMaxAngle);
       this.anchorMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
       this.anchorMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
+      this.anchorMotor.setIdleMode(IdleMode.kBrake); 
    
       this.floatingMotor.setSoftLimit(SoftLimitDirection.kReverse, (float) Constants.Arm.Floating.kMinAngle);
       this.floatingMotor.setSoftLimit(SoftLimitDirection.kForward, (float) Constants.Arm.Floating.kMaxAngle);
       this.floatingMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
       this.floatingMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
+      this.anchorMotor.setIdleMode(IdleMode.kBrake); 
+
+      this.toggleSoftLimits(true);
    }
 
-   public void configureEncoders(){
+   public void zeroEncoders() {
+      this.anchorEncoder.setPosition(Constants.Arm.Anchor.kContracted);
+      this.floatingEncoder.setPosition(Constants.Arm.Floating.kContracted);
+   }
+
+   public void configureEncoders() {
       // TODO: find these conversion rates
       this.anchorEncoder.setPositionConversionFactor(Constants.Arm.Anchor.kRatio);
       this.floatingEncoder.setPositionConversionFactor(Constants.Arm.Floating.kRatio);
@@ -68,7 +91,7 @@ public class Arm extends SubsystemBase {
       this.floatingEncoder.setPosition(Constants.Arm.Floating.kContracted);
    }
 
-   public void configureControllers(){
+   public void configureControllers() {
       this.anchorPIDController.setP(Constants.Arm.Anchor.kP);
       this.anchorPIDController.setI(Constants.Arm.Anchor.kI);
       this.anchorPIDController.setD(Constants.Arm.Anchor.kD);
@@ -138,8 +161,9 @@ public class Arm extends SubsystemBase {
       return this.floatingEncoder.getPosition();
    }
 
-   public void setFloatingAngle(double floatingAngle){
+   public void setFloatingAngle(double floatingAngle) {
       this.floatingPIDController.setReference(floatingAngle, CANSparkMax.ControlType.kPosition);
+      // this.desiredFloating = floatingAngle; 
    }
 
    public void setAnchorAngle(double anchorAngle) {

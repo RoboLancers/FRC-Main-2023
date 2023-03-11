@@ -17,7 +17,7 @@ public class ScanAndAlign extends SequentialCommandGroup {
             new InstantCommand(() -> {
                 poseTracker.displacement = controller.dPadAngle() == 270 ? Displacement.kLeft : controller.dPadAngle() == 90 ? Displacement.kRight : Displacement.kCenter;
             }),
-            new MoveToPos(arm, Constants.Arm.Positions.Ground.kAnchor, Constants.Arm.Positions.Ground.kFloating),
+            new MoveToPos(arm, Constants.Arm.Position.GROUND),
             new WaitCommand(0.3),
             new GridAlign(drivetrain, poseTracker)
         );

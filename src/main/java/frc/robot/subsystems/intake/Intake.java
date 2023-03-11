@@ -12,33 +12,34 @@ public class Intake extends SubsystemBase {
 
     public double power = 0;
     
-    public Intake(){
+    public Intake() {
         this.motor = new CANSparkMax(Constants.Intake.kPort, MotorType.kBrushless);
         this.motor.setIdleMode(IdleMode.kBrake);
+        this.motor.setSmartCurrentLimit(30);
     }
 
     @Override
-    public void periodic(){
+    public void periodic() {
         this.motor.set(power);
     }
 
-    public void off(){
+    public void off() {
         this.power = 0;
     }
 
-    public void forwardFast(){
+    public void outtakeFast() {
         this.power = Constants.Intake.kHighPower;
     }
 
-    public void forwardSlow(){
+    public void outtakeSlow() {
         this.power = Constants.Intake.kLowPower;
     }
 
-    public void backwardFast(){
+    public void intakeFast() {
         this.power = -Constants.Intake.kHighPower;
     }
 
-    public void backwardSlow(){
+    public void intakeSlow() {
         this.power = -Constants.Intake.kLowPower;
     }
 }

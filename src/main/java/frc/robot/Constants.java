@@ -1,6 +1,10 @@
 package frc.robot;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.math.util.Units;
+import frc.robot.Constants.Intake.ScoreSpeed;
+import frc.robot.trajectory.TrajectoryCreator;
 
 public final class Constants {
     public static final class Arm {
@@ -14,6 +18,7 @@ public final class Constants {
             public static final double kFF = 0.042;
             public static double kErrorThreshold = 5.0;
             public static double kMaxDownwardOutput = -0.5;
+            public static double kMaxUpwardOutput = 0.7;
 
             public static final double kContracted = 13.0;
             public static final double kMinAngle = 13.0;
@@ -41,42 +46,58 @@ public final class Constants {
             public static final int kAnchorLimitSwitchPort = 9;
             public static final int kFloatingLimitSwitchPort = 0;
         }
-        
-        public static final class Positions {
-            public static final class Contracted {
-                public static final double kAnchor = 13.0;
-                public static final double kFloating = 22.0;
+
+        public enum Position {
+            CONTRACTED(13.0, 22.0), 
+            GROUND(13.0, 92.0), 
+            SHELF(87.0, 111.0), 
+            STATION(13.0, 14.0), 
+
+            HIGH_CUBE(25.0, 40.0),
+
+            HIGH_CONE(95.0, 112.5), 
+            MID_CONE(58.0, 69.0); 
+
+            private final double anchor; 
+            private final double floating; 
+
+            Position(double anchor, double floating) {
+                this.anchor = anchor; 
+                this.floating = floating; 
             }
 
-            public static final class Ground {
-                public static final double kAnchor = 13.0;
-                public static final double kFloating = 92.0;
+            public double getAnchor() {
+                return anchor; 
             }
 
-            // TODO: all of the below positions
+            public double getFloating() {
+                return floating; 
+            }
+        }
 
-            // human player station
-            public static final class Shelf {
-                public static final double kAnchor = 95.0;
-                public static final double kFloating = 133.0;
+        public enum ScoringPosition {
+            HIGH_CUBE(Position.HIGH_CUBE, ScoreSpeed.FAST), 
+            MID_CUBE(Position.CONTRACTED, ScoreSpeed.SLOW), 
+            LOW_CUBE(Position.GROUND, ScoreSpeed.SLOW), 
+
+            HIGH_CONE(Position.HIGH_CONE, ScoreSpeed.SLOW), 
+            MID_CONE(Position.MID_CONE, ScoreSpeed.SLOW),
+            LOW_CONE(Position.GROUND, ScoreSpeed.SLOW); 
+
+            private final Position position; 
+            private final ScoreSpeed speed; 
+
+            ScoringPosition(Position pos, ScoreSpeed speed) {
+                this.speed = speed; 
+                this.position = pos; 
+            } 
+
+            public Position getPosition() {
+                return position; 
             }
 
-            // cube upper shelf
-            public static final class Cube {
-                public static final double kAnchor = 25.0; // 85.0;
-                public static final double kFloating = 40.0; // 115.0;
-            }
-
-            // cone middle shelf
-            public static final class MiddleCone {
-                public static final double kAnchor = 58.0;
-                public static final double kFloating = 69.0;
-            }
-
-            // cone high shelf
-            public static final class HighCone {
-                public static final double kAnchor = 95.0;
-                public static final double kFloating = 110.0;
+            public ScoreSpeed getSpeed() {
+                return speed; 
             }
         }
         
@@ -88,27 +109,44 @@ public final class Constants {
     }
 
     public static class Intake {
-        public static int kPort = 24;
-        public static double kLowPower = 0.9;
-        public static double kHighPower = 0.2;
+        public static final int kPort = 24;
+        public static final double kLowPower = 0.2;
+        public static final double kHighPower = 0.9;
+        public static final double kAutoIntakeSeconds = 1; 
+        public static final double kAutoOuttakeSeconds = 1; 
+
+        public enum ScoreSpeed {
+            FAST, 
+            SLOW; 
+        }
     }
 
     public static class Trajectory {
-        public static final double ksVolts = 0.23636;
-        public static final double ksVoltSecondsPerMeter = 1.7953;
-        public static final double kaVoltSecondsSquaredPerMeter = 0.35086;
-
-        // TODO: redo drivetrain angular characterization
-        public static final double kTrackWidthMeters = Units.inchesToMeters(23); 
-        public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidthMeters);
+        public static final double ksVolts = 0.24855;
+        public static final double ksVoltSecondsPerMeter = 1.7848;
+        public static final double kaVoltSecondsSquaredPerMeter = 0.47551;
 
         public static final double kMaxSpeedMetersPerSecond = 2.5;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 2;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 0.8;
+
+        public static final double kMaxVoltage = 10;
+
+        // TODO: redo drivetrain angular characterization
+        public static final double kTrackWidthMeters = 1.2546; // Units.inchesToMeters(23);   
+        public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidthMeters);
+
+        public static final TrajectoryCreator trajectoryCreator = new TrajectoryCreator(
+                kDriveKinematics,
+                new DifferentialDriveVoltageConstraint(
+                        new SimpleMotorFeedforward(ksVolts, ksVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter),
+                        kDriveKinematics, kMaxVoltage
+                )
+        );
 
         public static final double kRamseteB = 2;
         public static final double kRamseteZeta = 0.7;
 
-        public static final double kPDriveVel = 0;
+        public static final double kPDriveVel = 0; // 2.5614;
 
         public static final double kGearRatio = 6.8027597438; 
         public static final double kWheelRadiusInches = 3; 
@@ -132,7 +170,18 @@ public final class Constants {
 
         public static final double kCamSanityZMax = 0;
         public static final double kCamSanityZMin = -10;
+
+        // TODO: tune next week
+        public static final double kSteer = 0.0; 
     }
+
+    /* (x-x1)^2+(y-y1)^2=r^2
+    dy/dx, x=xf, y=yf  =  0
+    dy/dx, x=0, y=0  =  theta
+    y(0) = 0
+    y(xf) = yf
+    */
+
 
     public static class Drivetrain {
         public static class LeftMotors {
@@ -147,22 +196,28 @@ public final class Constants {
         }
 
         public static final int kMaxAmps = 40; 
-        public static final double kThrottleMultiplier = 0.75;
-        public static final double kTurnMultiplier = 0.3;
-        public static final double kThrottleMultiplierSM = 0.2;
+        public static final double kThrottleMultiplier = 0.70;
+        public static final double kTurnMultiplier = 0.23;
+        public static final double kThrottleMultiplierSM = 0.18;
         public static final double kTurnMultiplierSM = 0.15;
 
         public static final double kForwardThrottleAccelFilter = 0.85;
-        public static final double kForwardThrottleDecelFilter = 0.80;
+        public static final double kForwardThrottleDecelFilter = 0.8;
         public static final double kBackwardThrottleAccelFilter = 0.85;
-        public static final double kBackwardThrottleDecelFilter = 0.80;
-        public static final double kTurnFilter = 1.5;
+        public static final double kBackwardThrottleDecelFilter = 0.8;
+        public static final double kTurnFilter = 3;
+
+        // TODO: tune these
+        public static final double kTurnP = 0.005; 
+        public static final double kTurnI = 0; 
+        public static final double kTurnD = 0; 
+        public static final double kTurnErrorThreshold = 5; 
     }
 
     public static class Balance {
-        public static final double kP = 0.008;
+        public static final double kP = 0.009;
         public static final double kI = 0;
-        public static final double kD = 0;
+        public static final double kD = 0.0003;
         public static final double kPositionTolerance = 2.0; // TODO: tune this, also keep in mind gyro alignment is trash
         public static final double kVelocityTolerance = 1.0; // TODO: tune this, 1 degree per second seems pretty reasonable for stopped state
     }

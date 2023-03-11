@@ -11,7 +11,9 @@ public class DriverController extends Controller {
     public enum Mode {
         NORMAL,
         SLOW
-        }
+    }
+    
+    private Mode mode;
 
     public DriverController(int port) {
         this(port, 0.15); 
@@ -51,6 +53,7 @@ public class DriverController extends Controller {
     public boolean getQuickTurn() {
         return Math.abs(getLeftStickY()) < 0.05;
     }
+    
     public void setSlowMode(Mode m) {
         if (m == Mode.NORMAL) {
             throttleMultiplier = Constants.Drivetrain.kThrottleMultiplier;
@@ -59,5 +62,10 @@ public class DriverController extends Controller {
             throttleMultiplier = Constants.Drivetrain.kThrottleMultiplierSM;
             turnMultiplier = Constants.Drivetrain.kTurnMultiplierSM;
         }
+        this.mode = m; 
+    }
+    
+    public Mode getSlowMode() {
+        return this.mode; 
     }
 }

@@ -30,7 +30,9 @@ public class Drivetrain extends SubsystemBase {
     private final CANSparkMax leftMotor3 = new CANSparkMax(Constants.Drivetrain.LeftMotors.kLeftMotor3_Port, CANSparkMaxLowLevel.MotorType.kBrushless);
 
     public final MotorControllerGroup leftMotors = new MotorControllerGroup(
-            leftMotor1, leftMotor2, leftMotor3
+            leftMotor1, 
+            // leftMotor2, 
+            leftMotor3
     );
 
     private final CANSparkMax rightMotor1 = new CANSparkMax(Constants.Drivetrain.RightMotors.kRightMotor1_Port, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -38,7 +40,9 @@ public class Drivetrain extends SubsystemBase {
     private final CANSparkMax rightMotor3 = new CANSparkMax(Constants.Drivetrain.RightMotors.kRightMotor3_Port, CANSparkMaxLowLevel.MotorType.kBrushless);
 
     public final MotorControllerGroup rightMotors = new MotorControllerGroup(
-            rightMotor1, rightMotor2, rightMotor3
+            rightMotor1, 
+            // rightMotor2, 
+            rightMotor3
     );
 
     private final DifferentialDrive difDrive = new DifferentialDrive(leftMotors, rightMotors);
@@ -75,11 +79,11 @@ public class Drivetrain extends SubsystemBase {
         leftMotor3.setInverted(false);
 
         leftMotor1.setIdleMode(IdleMode.kBrake);
-        leftMotor2.setIdleMode(IdleMode.kBrake);
+        leftMotor2.setIdleMode(IdleMode.kCoast);
         leftMotor3.setIdleMode(IdleMode.kBrake);
 
         rightMotor1.setIdleMode(IdleMode.kBrake);
-        rightMotor2.setIdleMode(IdleMode.kBrake);
+        rightMotor2.setIdleMode(IdleMode.kCoast);
         rightMotor3.setIdleMode(IdleMode.kBrake);
 
 

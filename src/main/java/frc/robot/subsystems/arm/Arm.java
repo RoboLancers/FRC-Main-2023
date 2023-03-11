@@ -43,9 +43,23 @@ public class Arm extends SubsystemBase {
       // this.initTuneControllers();
    }
 
+   public void toggleSoftLimits(boolean shouldLimit) {
+      this.anchorMotor.enableSoftLimit(SoftLimitDirection.kReverse, shouldLimit);
+      this.anchorMotor.enableSoftLimit(SoftLimitDirection.kForward, shouldLimit);
+
+      this.floatingMotor.enableSoftLimit(SoftLimitDirection.kReverse, shouldLimit);
+      this.floatingMotor.enableSoftLimit(SoftLimitDirection.kForward, shouldLimit);
+   }
+
+
    public void configureMotors() {
       this.anchorMotor.setInverted(Constants.Arm.Anchor.kInverted);
       this.floatingMotor.setInverted(Constants.Arm.Anchor.kInverted);
+      this.anchorMotor.setIdleMode(IdleMode.kBrake);
+      this.floatingMotor.setIdleMode(IdleMode.kBrake);
+
+      // this.anchorMotor.setSmartCurrentLimit(60); 
+      // this.floatingMotor.setSmartCurrentLimit(60); 
 
       // TODO: test these
       this.anchorMotor.setSoftLimit(SoftLimitDirection.kReverse, (float) Constants.Arm.Anchor.kMinAngle);
@@ -59,9 +73,16 @@ public class Arm extends SubsystemBase {
       this.floatingMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
       this.floatingMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
       this.anchorMotor.setIdleMode(IdleMode.kBrake); 
+
+      this.toggleSoftLimits(true);
    }
 
-   public void configureEncoders(){
+   public void zeroEncoders() {
+      this.anchorEncoder.setPosition(Constants.Arm.Anchor.kContracted);
+      this.floatingEncoder.setPosition(Constants.Arm.Floating.kContracted);
+   }
+
+   public void configureEncoders() {
       // TODO: find these conversion rates
       this.anchorEncoder.setPositionConversionFactor(Constants.Arm.Anchor.kRatio);
       this.floatingEncoder.setPositionConversionFactor(Constants.Arm.Floating.kRatio);
@@ -70,7 +91,7 @@ public class Arm extends SubsystemBase {
       this.floatingEncoder.setPosition(Constants.Arm.Floating.kContracted);
    }
 
-   public void configureControllers(){
+   public void configureControllers() {
       this.anchorPIDController.setP(Constants.Arm.Anchor.kP);
       this.anchorPIDController.setI(Constants.Arm.Anchor.kI);
       this.anchorPIDController.setD(Constants.Arm.Anchor.kD);

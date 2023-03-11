@@ -10,6 +10,7 @@ public class ManipulatorController extends Controller {
     public Trigger intakeElementTriggerSlow; 
     public Trigger outtakeElementTriggerSlow;
 
+    public Trigger dPadUp;
     public Trigger dPadDown;
 
     public ManipulatorController(int port) {
@@ -21,6 +22,7 @@ public class ManipulatorController extends Controller {
         this.outtakeElementTriggerSlow = new Trigger(() -> -getRightStickY() > 0.2);
         this.intakeElementTriggerSlow = new Trigger(() -> -getRightStickY() < -0.2);
 
+        this.dPadUp = new Trigger(() -> this.dPadAngle() == 0);
         this.dPadDown = new Trigger(() -> this.dPadAngle() == 180);
     }
 }

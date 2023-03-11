@@ -18,6 +18,7 @@ public final class Constants {
             public static final double kFF = 0.042;
             public static double kErrorThreshold = 5.0;
             public static double kMaxDownwardOutput = -0.5;
+            public static double kMaxUpwardOutput = 0.7;
 
             public static final double kContracted = 13.0;
             public static final double kMinAngle = 13.0;
@@ -50,6 +51,7 @@ public final class Constants {
             CONTRACTED(13.0, 22.0), 
             GROUND(13.0, 92.0), 
             SHELF(87.0, 111.0), 
+            STATION(13.0, 14.0), 
 
             HIGH_CUBE(25.0, 40.0),
 
@@ -195,7 +197,7 @@ public final class Constants {
 
         public static final int kMaxAmps = 40; 
         public static final double kThrottleMultiplier = 0.70;
-        public static final double kTurnMultiplier = 0.3;
+        public static final double kTurnMultiplier = 0.23;
         public static final double kThrottleMultiplierSM = 0.18;
         public static final double kTurnMultiplierSM = 0.15;
 

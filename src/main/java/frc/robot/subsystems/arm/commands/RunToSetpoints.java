@@ -25,6 +25,11 @@ public class RunToSetpoints extends CommandBase {
             output = Constants.Arm.Anchor.kMaxDownwardOutput;
         }
 
+        if(output > Constants.Arm.Anchor.kMaxUpwardOutput){
+            output = Constants.Arm.Anchor.kMaxUpwardOutput;
+        }
+
+
         arm.anchorMotor.set(output);
 
         // standard onboard pid control for floating

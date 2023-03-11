@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.gyro.Gyro;
-import frc.robot.subsystems.gyro.commands.Balance;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.commands.MoveBackward;
@@ -17,7 +16,6 @@ import frc.robot.subsystems.poseTracker.PoseTracker;
 import frc.robot.commands.BottomLaneAuto;
 import frc.robot.commands.MidLaneAuto;
 import frc.robot.commands.TopLaneAuto;
-import frc.robot.commands.ScanAndAlign;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.commands.MoveToPos;
 import frc.robot.subsystems.arm.commands.RunToSetpoints;
@@ -43,41 +41,21 @@ public class RobotContainer {
   // private final SmartDashboardDB db = new SmartDashboardDB();
 
   public RobotContainer() {
-    // this.drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, driverController));
-    this.drivetrain.setDefaultCommand(new RunCommand(() -> {
-      drivetrain.curvatureDrive(this.driverController.getThrottle(), this.driverController.getTurn(), this.driverController.getSlowMode());
-    }, drivetrain));
+      // this.drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, driverController));
+      this.drivetrain.setDefaultCommand(new RunCommand(() -> {
+        drivetrain.curvatureDrive(this.driverController.getThrottle(), this.driverController.getTurn(), this.driverController.getSlowMode());
+      }, drivetrain));
 
-    this.arm.setDefaultCommand(new RunToSetpoints(arm));
+      this.arm.setDefaultCommand(new RunToSetpoints(arm));
 
-    this.intake.setDefaultCommand(new RunCommand(intake::off, intake));
+      this.intake.setDefaultCommand(new RunCommand(intake::off, intake));
 
-    CameraServer.startAutomaticCapture(); 
+      CameraServer.startAutomaticCapture(); 
 
-    // command = Constants.Trajectory.trajectoryCreator.createCommand(drivetrain,
-    //         new Waypoint[] {
-    //                 new Waypoint(0, 0, 0, 2.734564202601426, 1),
-    //                 new Waypoint(1.594, 0.798, Math.toRadians(1.145), 2.4, 1), 
-    //                 // new Waypoint(
-    //                 //   2, 1, Math.toRadians(45), 1.85, 1
-    //                 // )
-    //         }, new TrajectoryConfig(1, 0.2));
-    // SmartDashboard.putNumber("Angular Setpoint", 0);
-    // command = new TurnToAngle(drivetrain, () -> SmartDashboard.getNumber("Angular Setpoint", 0));
-
-            configureButtonBindings();
-            configureAutos(); 
-            doSendables();
-        }
-    // command = new TurnTuner(drivetrain);
-    // try {
-    //   command = RobotTrajectoryCommand.fromFile(drivetrain, Filesystem.getDeployDirectory().toPath().resolve("auto6.json").toFile());
-    // } catch (IOException e) {
-    //   // TODO Auto-generated catch block
-    //   e.printStackTrace();
-    // }
-
-    // this.poseTracker.setDefaultCommand(new PrintCommand("Matt likes balls idk, Raf too"));
+      configureButtonBindings();
+      configureAutos(); 
+      doSendables();
+    }
 
   private void configureButtonBindings() {
     // driver slow mode
@@ -86,6 +64,9 @@ public class RobotContainer {
 
     // manipulator grid align
     // Controller.onBothPress(manipulatorController.LeftBumper, manipulatorController.RightBumper, new ScanAndAlign(drivetrain, arm, poseTracker, manipulatorController));
+
+    // TODO: fix this jawn
+    // Controller.onPress(manipulatorController.RightTrigger, new Zero(arm));
 
     // driver intake
     Controller.onHold(driverController.RightTrigger, new RunCommand(intake::intakeFast, intake));
@@ -109,30 +90,36 @@ public class RobotContainer {
     // contract
     Controller.onPress(manipulatorController.B, new MoveToPos(arm, Constants.Arm.Position.CONTRACTED));
     // mid
-    Controller.onPress(manipulatorController.X, new MoveToPos(arm, Constants.Arm.Position.MID_CONE));
+    Controller.onPress(manipulatorController.X, new ConditionalCommand(
+      new MoveToPos(arm, Constants.Arm.Position.MID_CONE.getAnchor(), Constants.Arm.Position.CONTRACTED.getFloating()), 
+      new MoveToPos(arm, Constants.Arm.Position.MID_CONE),
+      () -> arm.isAnchorAtAngle(Constants.Arm.Position.MID_CONE.getAnchor()) && arm.isFloatingAtAngle(Constants.Arm.Position.MID_CONE.getFloating())
+    ));
     // high
     Controller.onPress(manipulatorController.Y, new ConditionalCommand(
       // cube (high)
       new MoveToPos(arm, Constants.Arm.Position.HIGH_CUBE),
       // cone (high)
-      new MoveToPos(arm, Constants.Arm.Position.HIGH_CONE),
+      new ConditionalCommand(
+        new MoveToPos(arm, Constants.Arm.Position.HIGH_CONE.getAnchor(), Constants.Arm.Position.CONTRACTED.getFloating()), 
+        new MoveToPos(arm, Constants.Arm.Position.HIGH_CONE),
+        () -> arm.isAnchorAtAngle(Constants.Arm.Position.HIGH_CONE.getAnchor()) && arm.isFloatingAtAngle(Constants.Arm.Position.HIGH_CONE.getFloating())
+      ),
       () -> this.arm.armMode
     ));
+    // station
+    Controller.onPress(manipulatorController.dPadUp, new MoveToPos(arm, Constants.Arm.Position.STATION));
     // shelf
     Controller.onPress(manipulatorController.dPadDown, new MoveToPos(arm, Constants.Arm.Position.SHELF));
 
     // dynamic
     // SmartDashboard.putNumber("anchor-setpoint", 13.0);
-    // SmartDashboard.putNumber("floating-setpoint", 22.0);
+    // SmartDashboard.putNumber("floating-setpoint", 45.0);
     // Controller.onPress(manipulatorController.X, new MoveToPos(
     //   arm,
     //   () -> ControllerUtils.clamp(SmartDashboard.getNumber("anchor-setpoint", 0.0), 13.0, 95.0),
     //   () -> ControllerUtils.clamp(SmartDashboard.getNumber("floating-setpoint", 0.0), 22.0, 180.0)
     // ));
-
-    // slow mode
-    Controller.onHold(driverController.RightBumper, new InstantCommand(() -> driverController.setSlowMode(Mode.SLOW)));
-    Controller.onRelease(driverController.RightBumper, new InstantCommand(() -> driverController.setSlowMode(Mode.NORMAL)));
 
     // auto steer
     // Controller.onPress(driverController.A, new InstantCommand(() -> {
@@ -143,7 +130,8 @@ public class RobotContainer {
     // }));
 
 
-    Controller.onPress(driverController.A, new Balance(drivetrain, gyro, 0));
+    // balance
+    // Controller.onPress(driverController.A, new Balance(drivetrain, gyro, 0));
   }
 
   public void configureAutos() {

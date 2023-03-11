@@ -8,10 +8,14 @@ import frc.robot.subsystems.arm.Arm;
 
 public class MoveToPos extends SequentialCommandGroup {
     public MoveToPos(Arm arm, Constants.Arm.Position position) {
+        this(arm, position.getAnchor(), position.getFloating()); 
+    }
+
+    public MoveToPos(Arm arm, double anchor, double floating) {
         addCommands(
             new MoveFloating(arm, Constants.Arm.Floating.kContracted),
-            new MoveAnchor(arm, position.getAnchor()),
-            new MoveFloating(arm, position.getFloating())
+            new MoveAnchor(arm, anchor),
+            new MoveFloating(arm, floating)
         );
     }
 

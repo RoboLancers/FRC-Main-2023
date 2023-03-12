@@ -55,8 +55,10 @@ public final class Constants {
 
             HIGH_CUBE(25.0, 40.0),
 
-            HIGH_CONE(95.0, 112.5), 
-            MID_CONE(58.0, 69.0); 
+            HIGH_CONE(95.0, 112.5),
+            HIGH_CONE_AIMING(95.0, 22.0),
+            MID_CONE(58.0, 69.0),
+            MID_CONE_AIMING(58.0, 22.0);
 
             private final double anchor; 
             private final double floating; 

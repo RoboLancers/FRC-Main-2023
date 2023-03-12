@@ -4,7 +4,6 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.gyro.Gyro;
@@ -12,6 +11,7 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.commands.MoveBackward;
 import frc.robot.subsystems.drivetrain.commands.MoveForward;
+import frc.robot.subsystems.drivetrain.commands.TeleopDrive;
 import frc.robot.subsystems.poseTracker.PoseTracker;
 import frc.robot.commands.BottomLaneAuto;
 import frc.robot.commands.MidLaneAuto;
@@ -19,6 +19,7 @@ import frc.robot.commands.TopLaneAuto;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.commands.MoveToPos;
 import frc.robot.subsystems.arm.commands.RunToSetpoints;
+import frc.robot.subsystems.arm.commands.Zero;
 import frc.robot.util.Controller;
 import frc.robot.util.DriverController; 
 import frc.robot.util.ManipulatorController;
@@ -37,14 +38,9 @@ public class RobotContainer {
   private PoseTracker poseTracker = new PoseTracker();
     
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
-  // TODO: Raf is rly dumb for this shit
-  // private final SmartDashboardDB db = new SmartDashboardDB();
 
   public RobotContainer() {
-      // this.drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, driverController));
-      this.drivetrain.setDefaultCommand(new RunCommand(() -> {
-        drivetrain.curvatureDrive(this.driverController.getThrottle(), this.driverController.getTurn(), this.driverController.getSlowMode());
-      }, drivetrain));
+      this.drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, driverController));
 
       this.arm.setDefaultCommand(new RunToSetpoints(arm));
 
@@ -65,8 +61,8 @@ public class RobotContainer {
     // manipulator grid align
     // Controller.onBothPress(manipulatorController.LeftBumper, manipulatorController.RightBumper, new ScanAndAlign(drivetrain, arm, poseTracker, manipulatorController));
 
-    // TODO: fix this jawn
-    // Controller.onPress(manipulatorController.RightTrigger, new Zero(arm));
+    // TODO: test this jawn
+    Controller.onPress(manipulatorController.RightTrigger, new Zero(arm));
 
     // driver intake
     Controller.onHold(driverController.RightTrigger, new RunCommand(intake::intakeFast, intake));
@@ -90,23 +86,9 @@ public class RobotContainer {
     // contract
     Controller.onPress(manipulatorController.B, new MoveToPos(arm, Constants.Arm.Position.CONTRACTED));
     // mid
-    Controller.onPress(manipulatorController.X, new ConditionalCommand(
-      new MoveToPos(arm, Constants.Arm.Position.MID_CONE.getAnchor(), Constants.Arm.Position.CONTRACTED.getFloating()), 
-      new MoveToPos(arm, Constants.Arm.Position.MID_CONE),
-      () -> arm.isAnchorAtAngle(Constants.Arm.Position.MID_CONE.getAnchor()) && arm.isFloatingAtAngle(Constants.Arm.Position.MID_CONE.getFloating())
-    ));
+    Controller.onPress(manipulatorController.X, new MoveToPos(arm, () -> arm.isAt(Constants.Arm.Position.MID_CONE) ? Constants.Arm.Position.MID_CONE_AIMING : Constants.Arm.Position.MID_CONE));
     // high
-    Controller.onPress(manipulatorController.Y, new ConditionalCommand(
-      // cube (high)
-      new MoveToPos(arm, Constants.Arm.Position.HIGH_CUBE),
-      // cone (high)
-      new ConditionalCommand(
-        new MoveToPos(arm, Constants.Arm.Position.HIGH_CONE.getAnchor(), Constants.Arm.Position.CONTRACTED.getFloating()), 
-        new MoveToPos(arm, Constants.Arm.Position.HIGH_CONE),
-        () -> arm.isAnchorAtAngle(Constants.Arm.Position.HIGH_CONE.getAnchor()) && arm.isFloatingAtAngle(Constants.Arm.Position.HIGH_CONE.getFloating())
-      ),
-      () -> this.arm.armMode
-    ));
+    Controller.onPress(manipulatorController.Y, new MoveToPos(arm, () -> arm.armMode ? Constants.Arm.Position.HIGH_CUBE : arm.isAt(Constants.Arm.Position.HIGH_CONE) ? Constants.Arm.Position.HIGH_CONE_AIMING : Constants.Arm.Position.HIGH_CONE));
     // station
     Controller.onPress(manipulatorController.dPadUp, new MoveToPos(arm, Constants.Arm.Position.STATION));
     // shelf
@@ -129,9 +111,8 @@ public class RobotContainer {
     //   drivetrain.isAutoSteer = false; 
     // }));
 
-
     // balance
-    // Controller.onPress(driverController.A, new Balance(drivetrain, gyro, 0));
+    // Controller.onPress(driverController.B, new Balance(drivetrain, gyro, 0));
   }
 
   public void configureAutos() {
@@ -142,11 +123,6 @@ public class RobotContainer {
     autoChooser.addOption("Mid Auto High Cube", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
     autoChooser.addOption("Bottom Auto High Cube", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
     autoChooser.addOption("Bottom Auto High Cone", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
-
-
-    // ! For Testing Only
-    // run balance
-    // Controller.onPress(driverController.B, new Balance(drivetrain, gyro, 0));
   }
 
   public Command getAutonomousCommand() {

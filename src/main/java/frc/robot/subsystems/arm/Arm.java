@@ -7,9 +7,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants;
+import frc.robot.Constants.Arm.Position;
 
 public class Arm extends SubsystemBase {
    public CANSparkMax anchorMotor, floatingMotor;
@@ -21,24 +24,23 @@ public class Arm extends SubsystemBase {
 
    public boolean armMode = true; // true: cube, false: cone
 
-   // TODO: port error, uncomment when limit switches actually exist
-   // public DigitalInput anchorLimitSwitch, floatingLimitSwitch;
+   // TODO: port
+   public DigitalInput anchorLimitSwitch;
 
    public Arm() {
       this.anchorMotor = new CANSparkMax(Constants.Arm.Ports.kAnchorPort, CANSparkMax.MotorType.kBrushless);
       this.floatingMotor = new CANSparkMax(Constants.Arm.Ports.kFloatingPort, CANSparkMax.MotorType.kBrushless);
-
       this.configureMotors();
 
       this.anchorEncoder = this.anchorMotor.getEncoder();
       this.floatingEncoder = this.floatingMotor.getEncoder();
-
       this.configureEncoders();
 
       this.anchorPIDController = this.anchorMotor.getPIDController();
       this.floatingPIDController = this.floatingMotor.getPIDController();
-
       this.configureControllers();
+
+      this.anchorLimitSwitch = new DigitalInput(Constants.Arm.Ports.kAnchorLimitSwitchPort);
 
       // this.initTuneControllers();
    }
@@ -57,9 +59,6 @@ public class Arm extends SubsystemBase {
       this.floatingMotor.setInverted(Constants.Arm.Anchor.kInverted);
       this.anchorMotor.setIdleMode(IdleMode.kBrake);
       this.floatingMotor.setIdleMode(IdleMode.kBrake);
-
-      // this.anchorMotor.setSmartCurrentLimit(60); 
-      // this.floatingMotor.setSmartCurrentLimit(60); 
 
       // TODO: test these
       this.anchorMotor.setSoftLimit(SoftLimitDirection.kReverse, (float) Constants.Arm.Anchor.kMinAngle);
@@ -83,7 +82,6 @@ public class Arm extends SubsystemBase {
    }
 
    public void configureEncoders() {
-      // TODO: find these conversion rates
       this.anchorEncoder.setPositionConversionFactor(Constants.Arm.Anchor.kRatio);
       this.floatingEncoder.setPositionConversionFactor(Constants.Arm.Floating.kRatio);
 
@@ -135,23 +133,6 @@ public class Arm extends SubsystemBase {
       this.anchorPIDController.setD(anchorKD);
       this.anchorPIDController.setFF(anchorKFF);
    }
-   
-   // TODO: double check formula transcription and maybe try to break it up
-   //finds the two angles for the arm - will be above the line from joint to obj
-   //angle calculated from joint so maybe change to arm 2 horizontal
-   // public double[] calculateAngles(double dy, double dz) {
-   //    double adjustedY = dy - Constants.Arm.Misc.distanceBetweenPivotLimelight;
-
-   //    double distanceToObj = Math.sqrt(adjustedY * adjustedY + dz * dz);
-   //    double alpha = Math.acos((Constants.Arm.Floating.kLength * Constants.Arm.Floating.kLength + distanceToObj * distanceToObj - Constants.Arm.Anchor.kLength * Constants.Arm.Anchor.kLength) / (2 * Constants.Arm.Anchor.kLength * distanceToObj));
-   //    double gamma = Math.atan2(adjustedY, dz);
-
-   //    double[] angles = new double[2];
-   //    angles[0] = alpha + gamma;
-   //    angles[1] = Math.PI - Math.acos((Constants.Arm.Anchor.kLength * Constants.Arm.Anchor.kLength + Constants.Arm.Floating.kLength * Constants.Arm.Floating.kLength - distanceToObj * distanceToObj) / (2 * Constants.Arm.Anchor.kLength * Constants.Arm.Floating.kLength));
-      
-   //    return angles;
-   // }
 
    public double getAnchorAngle() {
       return this.anchorEncoder.getPosition();
@@ -163,7 +144,6 @@ public class Arm extends SubsystemBase {
 
    public void setFloatingAngle(double floatingAngle) {
       this.floatingPIDController.setReference(floatingAngle, CANSparkMax.ControlType.kPosition);
-      // this.desiredFloating = floatingAngle; 
    }
 
    public void setAnchorAngle(double anchorAngle) {
@@ -178,10 +158,18 @@ public class Arm extends SubsystemBase {
       return Math.abs(this.getFloatingAngle() - floatingAngleTarget ) < Constants.Arm.Floating.kErrorThreshold;
    }
 
+   public boolean isAt(Position position){
+      return this.isAnchorAtAngle(position.getAnchor()) && this.isFloatingAtAngle(position.getFloating());
+   }
+
    @Override
    public void periodic(){
       // TODO: comment out tuneControllers() at comp
       // tuneControllers();
+
+      if(this.anchorLimitSwitch.get()){
+         this.anchorEncoder.setPosition(Constants.Arm.Anchor.kContracted);
+      }
 
       SmartDashboard.putBoolean("on cube", this.armMode);
 

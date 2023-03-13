@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
+import com.revrobotics.SparkMaxAlternateEncoder.Type;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,7 +18,7 @@ import frc.robot.Constants.Arm.Position;
 public class Arm extends SubsystemBase {
    public CANSparkMax anchorMotor, floatingMotor;
    public RelativeEncoder anchorEncoder, floatingEncoder;
-   public SparkMaxPIDController anchorPIDController, floatingPIDController;
+   public SparkMaxPIDController floatingPIDController;
 
    public double anchorSetpoint = Constants.Arm.Anchor.kContracted;
    public double floatingSetpoint = Constants.Arm.Floating.kContracted;
@@ -32,11 +33,10 @@ public class Arm extends SubsystemBase {
       this.floatingMotor = new CANSparkMax(Constants.Arm.Ports.kFloatingPort, CANSparkMax.MotorType.kBrushless);
       this.configureMotors();
 
-      this.anchorEncoder = this.anchorMotor.getEncoder();
-      this.floatingEncoder = this.floatingMotor.getEncoder();
+      this.anchorEncoder = this.anchorMotor.getAlternateEncoder(Type.kQuadrature, 8192); // this.anchorMotor.getEncoder();
+      this.floatingEncoder = this.anchorMotor.getAlternateEncoder(Type.kQuadrature, 8192); ; // this.floatingMotor.getEncoder();
       this.configureEncoders();
 
-      this.anchorPIDController = this.anchorMotor.getPIDController();
       this.floatingPIDController = this.floatingMotor.getPIDController();
       this.configureControllers();
 
@@ -56,12 +56,15 @@ public class Arm extends SubsystemBase {
 
    public void configureMotors() {
       this.anchorMotor.setInverted(Constants.Arm.Anchor.kInverted);
-      this.floatingMotor.setInverted(Constants.Arm.Anchor.kInverted);
+      this.floatingMotor.setInverted(Constants.Arm.Floating.kInverted);
       this.anchorMotor.setIdleMode(IdleMode.kBrake);
       this.floatingMotor.setIdleMode(IdleMode.kBrake);
 
+      this.anchorMotor.setSmartCurrentLimit(60); 
+      this.floatingMotor.setSmartCurrentLimit(60); 
+
       // TODO: test these
-      this.anchorMotor.setSoftLimit(SoftLimitDirection.kReverse, (float) Constants.Arm.Anchor.kMinAngle);
+      this.anchorMotor.setSoftLimit(SoftLimitDirection.kReverse, (float) Constants.Arm.Anchor.kMinAngle); 
       this.anchorMotor.setSoftLimit(SoftLimitDirection.kForward, (float) Constants.Arm.Anchor.kMaxAngle);
       this.anchorMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
       this.anchorMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
@@ -84,22 +87,19 @@ public class Arm extends SubsystemBase {
    public void configureEncoders() {
       this.anchorEncoder.setPositionConversionFactor(Constants.Arm.Anchor.kRatio);
       this.floatingEncoder.setPositionConversionFactor(Constants.Arm.Floating.kRatio);
+      this.anchorEncoder.setInverted(true); 
 
       this.anchorEncoder.setPosition(Constants.Arm.Anchor.kContracted);
       this.floatingEncoder.setPosition(Constants.Arm.Floating.kContracted);
    }
 
    public void configureControllers() {
-      this.anchorPIDController.setP(Constants.Arm.Anchor.kP);
-      this.anchorPIDController.setI(Constants.Arm.Anchor.kI);
-      this.anchorPIDController.setD(Constants.Arm.Anchor.kD);
-      this.anchorPIDController.setFF(Constants.Arm.Anchor.kFF);
-      // this.anchorPIDController.set 
-
       this.floatingPIDController.setP(Constants.Arm.Floating.kP);
       this.floatingPIDController.setI(Constants.Arm.Floating.kI);
       this.floatingPIDController.setD(Constants.Arm.Floating.kD);
       this.floatingPIDController.setFF(Constants.Arm.Floating.kFF);
+
+      this.floatingPIDController.setFeedbackDevice(floatingEncoder); 
    }
 
    public void initTuneControllers(){
@@ -114,7 +114,7 @@ public class Arm extends SubsystemBase {
       SmartDashboard.putNumber("floatingKFF", SmartDashboard.getNumber("floatingKFF", Constants.Arm.Floating.kFF));
    }
 
-   public void tuneControllers(){
+   public void tuneControllers() {
       double floatingKP = SmartDashboard.getEntry("floating KP").getDouble(0);
       double floatingKI = SmartDashboard.getEntry("floatingKI").getDouble(0);
       double floatingKD = SmartDashboard.getEntry("floatingKD").getDouble(0);
@@ -128,10 +128,6 @@ public class Arm extends SubsystemBase {
       this.floatingPIDController.setI(floatingKI);
       this.floatingPIDController.setD(floatingKD);
       this.floatingPIDController.setFF(floatingKFF);
-      this.anchorPIDController.setP(anchorKP);
-      this.anchorPIDController.setI(anchorKI);
-      this.anchorPIDController.setD(anchorKD);
-      this.anchorPIDController.setFF(anchorKFF);
    }
 
    public double getAnchorAngle() {
@@ -146,28 +142,24 @@ public class Arm extends SubsystemBase {
       this.floatingPIDController.setReference(floatingAngle, CANSparkMax.ControlType.kPosition);
    }
 
-   public void setAnchorAngle(double anchorAngle) {
-      this.anchorPIDController.setReference(anchorAngle, CANSparkMax.ControlType.kPosition);
-   }
-
    public boolean isAnchorAtAngle(double anchorAngleTarget){
       return Math.abs(this.getAnchorAngle() - anchorAngleTarget ) < Constants.Arm.Anchor.kErrorThreshold;
    }
 
-   public boolean isFloatingAtAngle(double floatingAngleTarget){
+   public boolean isFloatingAtAngle(double floatingAngleTarget) {
       return Math.abs(this.getFloatingAngle() - floatingAngleTarget ) < Constants.Arm.Floating.kErrorThreshold;
    }
 
-   public boolean isAt(Position position){
+   public boolean isAt(Position position) {
       return this.isAnchorAtAngle(position.getAnchor()) && this.isFloatingAtAngle(position.getFloating());
    }
 
    @Override
-   public void periodic(){
+   public void periodic() {
       // TODO: comment out tuneControllers() at comp
       // tuneControllers();
 
-      if(this.anchorLimitSwitch.get()){
+      if(this.anchorLimitSwitch.get()) {
          this.anchorEncoder.setPosition(Constants.Arm.Anchor.kContracted);
       }
 

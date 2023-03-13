@@ -65,11 +65,8 @@ public class Drivetrain extends SubsystemBase {
 
     public boolean isAutoSteer = false; 
 
-    // private final PIDController throttlePID = new PIDController(.15, 0.00, 0.0);
-    // private final PIDController throttlePID2 = new PIDController(.25, 0.00, 0.0);
-    // private final PIDController steeringPID = new PIDController(.3, 0.00, 0.03);
-
-    public Drivetrain(){
+    public Drivetrain() {
+        // inversions
         rightMotor1.setInverted(true);
         rightMotor2.setInverted(true);
         rightMotor3.setInverted(true);
@@ -78,6 +75,7 @@ public class Drivetrain extends SubsystemBase {
         leftMotor2.setInverted(false);
         leftMotor3.setInverted(false);
 
+        // brake/coast
         leftMotor1.setIdleMode(IdleMode.kBrake);
         leftMotor2.setIdleMode(IdleMode.kCoast);
         leftMotor3.setIdleMode(IdleMode.kBrake);
@@ -87,7 +85,7 @@ public class Drivetrain extends SubsystemBase {
         rightMotor3.setIdleMode(IdleMode.kBrake);
 
 
-        // TODO: increase & decrease max throttle this so turning doesnt get stuck
+        // current & voltage limits
         leftMotor1.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
         leftMotor2.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
         leftMotor3.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
@@ -102,7 +100,6 @@ public class Drivetrain extends SubsystemBase {
         rightMotor2.enableVoltageCompensation(12);
         rightMotor3.enableVoltageCompensation(12);
 
-        // Sets the distance per pulse to the pre-defined constant we calculated for both encoders.
         rightEncoder.getEncoder().setPositionConversionFactor(Constants.Trajectory.kMetersPerRot);
         leftEncoder.getEncoder().setPositionConversionFactor(Constants.Trajectory.kMetersPerRot);
 

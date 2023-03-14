@@ -42,7 +42,7 @@ public class RobotContainer {
   public RobotContainer() {
       this.drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, driverController));
 
-      this.arm.setDefaultCommand(new RunToSetpoints(arm));
+      // this.arm.setDefaultCommand(new RunToSetpoints(arm));
 
       this.intake.setDefaultCommand(new RunCommand(intake::off, intake));
 

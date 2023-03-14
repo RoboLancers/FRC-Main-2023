@@ -10,7 +10,7 @@ public final class Constants {
     public static final class Arm {
         public static final class Anchor {
             public static final boolean kInverted = true;
-            public static final double kRatio = (90.0 - 13.0) / (27.0);
+            public static final double kRatio = 360; // (90.0 - 13.0) / (27.0);
 
             public static final double kP = 0.016;
             public static final double kI = 0.0;
@@ -27,7 +27,7 @@ public final class Constants {
         
         public static final class Floating {
             public static final boolean kInverted = true;
-            public static final double kRatio = 360.0/72;
+            public static final double kRatio = 360; // 360.0/72;
 
             public static final double kP = 0.01;
             public static final double kI = 0.0;

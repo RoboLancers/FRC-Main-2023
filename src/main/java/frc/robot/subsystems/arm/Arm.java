@@ -34,7 +34,7 @@ public class Arm extends SubsystemBase {
       this.configureMotors();
 
       this.anchorEncoder = this.anchorMotor.getAlternateEncoder(Type.kQuadrature, 8192); // this.anchorMotor.getEncoder();
-      this.floatingEncoder = this.anchorMotor.getAlternateEncoder(Type.kQuadrature, 8192); ; // this.floatingMotor.getEncoder();
+      this.floatingEncoder = this.floatingMotor.getAlternateEncoder(Type.kQuadrature, 8192); // this.floatingMotor.getEncoder();
       this.configureEncoders();
 
       this.floatingPIDController = this.floatingMotor.getPIDController();

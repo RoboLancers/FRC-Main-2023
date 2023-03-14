@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants;
 
 public class Controller {
     private XboxController _controller;
@@ -19,9 +18,6 @@ public class Controller {
     public Trigger RightBumper;
     public Trigger LeftTrigger; 
     public Trigger RightTrigger; 
-
-    double throttleMultiplier = Constants.Drivetrain.kThrottleMultiplier;
-    double turnMultiplier = Constants.Drivetrain.kTurnMultiplier;
 
     public Controller(int port) {
         this._controller = new XboxController(port);
@@ -60,6 +56,12 @@ public class Controller {
         Controller.bindEvent(capturer::cancelWhenActive, response);
     }
 
+    public static void onBothPress(Trigger capturer1, Trigger capturer2, Command response){
+        Trigger dualCapturer = new Trigger(() -> capturer1.getAsBoolean() && capturer2.getAsBoolean());
+
+        Controller.bindEvent(dualCapturer::whenActive, response);
+    }
+
     public double getLeftStickX() {
         return this._controller.getLeftX();
     }
@@ -90,5 +92,9 @@ public class Controller {
 
     public void setRumble(boolean rumble){
         this._controller.setRumble(RumbleType.kBothRumble, rumble ? 1 : 0);
+    }
+
+    protected XboxController getController() {
+        return this._controller; 
     }
 }

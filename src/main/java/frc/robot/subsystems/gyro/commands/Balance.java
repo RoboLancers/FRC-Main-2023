@@ -1,6 +1,7 @@
 package frc.robot.subsystems.gyro.commands;
 
 import edu.wpi.first.wpilibj2.command.PIDCommand;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
@@ -17,7 +18,7 @@ public class Balance extends PIDCommand {
             // Set reference to target
             () -> setpoint,
             // Pipe output to turn robot
-            (outputPower) -> drivetrain.arcadeDrive(outputPower, 0),
+            (outputPower) -> drivetrain.curvatureDrive(outputPower, 0, frc.robot.util.DriverController.Mode.NORMAL), // TODO: was this negative?
             drivetrain
         );
 
@@ -32,6 +33,9 @@ public class Balance extends PIDCommand {
 
     @Override
     public void execute(){
+        SmartDashboard.putNumber("pitch-error", Math.abs(this.m_measurement.getAsDouble()));
+        SmartDashboard.putNumber("pitch-velocity", Math.abs(this.gyro.getPitchVelocity()));
+
         this.m_controller.setP(SmartDashboard.getNumber("balance-kP", 0));
         this.m_controller.setD(SmartDashboard.getNumber("balance-kD", 0));
 
@@ -51,9 +55,10 @@ public class Balance extends PIDCommand {
 
     @Override
     public boolean isFinished(){
-        return (
-            Math.abs(this.m_measurement.getAsDouble()) < Constants.Balance.kPositionTolerance &&
-            Math.abs(this.gyro.getPitchVelocity()) < Constants.Balance.kVelocityTolerance
-        );
+        return false;
+        // return (
+        //     Math.abs(this.m_measurement.getAsDouble()) < Constants.Balance.kPositionTolerance &&
+        //     Math.abs(this.gyro.getPitchVelocity()) < Constants.Balance.kVelocityTolerance
+        // );
     }
 }

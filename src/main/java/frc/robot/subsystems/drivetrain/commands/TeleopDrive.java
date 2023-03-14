@@ -7,7 +7,7 @@ import frc.robot.util.DriverController;
 public class TeleopDrive extends RunCommand {
     public TeleopDrive(Drivetrain drivetrain, DriverController driverController){
         super(() -> {
-            drivetrain.arcadeDrive(driverController.getThrottle(), driverController.getTurn());
+            drivetrain.curvatureDrive(driverController.getThrottle(), driverController.getTurn(), driverController.getSlowMode());
         }, drivetrain);
     }
 }

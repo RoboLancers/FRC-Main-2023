@@ -5,11 +5,14 @@ import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants;
+import frc.robot.Constants.Arm.Position;
 
 public class Arm extends SubsystemBase {
    public CANSparkMax anchorMotor, floatingMotor;
@@ -21,46 +24,64 @@ public class Arm extends SubsystemBase {
 
    public boolean armMode = true; // true: cube, false: cone
 
-   // TODO: port error, uncomment when limit switches actually exist
-   // public DigitalInput anchorLimitSwitch, floatingLimitSwitch;
+   // TODO: port
+   public DigitalInput anchorLimitSwitch;
 
    public Arm() {
       this.anchorMotor = new CANSparkMax(Constants.Arm.Ports.kAnchorPort, CANSparkMax.MotorType.kBrushless);
       this.floatingMotor = new CANSparkMax(Constants.Arm.Ports.kFloatingPort, CANSparkMax.MotorType.kBrushless);
-
       this.configureMotors();
 
       this.anchorEncoder = this.anchorMotor.getEncoder();
       this.floatingEncoder = this.floatingMotor.getEncoder();
-
       this.configureEncoders();
 
       this.anchorPIDController = this.anchorMotor.getPIDController();
       this.floatingPIDController = this.floatingMotor.getPIDController();
-
       this.configureControllers();
+
+      this.anchorLimitSwitch = new DigitalInput(Constants.Arm.Ports.kAnchorLimitSwitchPort);
 
       // this.initTuneControllers();
    }
 
-   public void configureMotors(){
+   public void toggleSoftLimits(boolean shouldLimit) {
+      this.anchorMotor.enableSoftLimit(SoftLimitDirection.kReverse, shouldLimit);
+      this.anchorMotor.enableSoftLimit(SoftLimitDirection.kForward, shouldLimit);
+
+      this.floatingMotor.enableSoftLimit(SoftLimitDirection.kReverse, shouldLimit);
+      this.floatingMotor.enableSoftLimit(SoftLimitDirection.kForward, shouldLimit);
+   }
+
+
+   public void configureMotors() {
       this.anchorMotor.setInverted(Constants.Arm.Anchor.kInverted);
       this.floatingMotor.setInverted(Constants.Arm.Anchor.kInverted);
+      this.anchorMotor.setIdleMode(IdleMode.kBrake);
+      this.floatingMotor.setIdleMode(IdleMode.kBrake);
 
       // TODO: test these
       this.anchorMotor.setSoftLimit(SoftLimitDirection.kReverse, (float) Constants.Arm.Anchor.kMinAngle);
       this.anchorMotor.setSoftLimit(SoftLimitDirection.kForward, (float) Constants.Arm.Anchor.kMaxAngle);
       this.anchorMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
       this.anchorMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
+      this.anchorMotor.setIdleMode(IdleMode.kBrake); 
    
       this.floatingMotor.setSoftLimit(SoftLimitDirection.kReverse, (float) Constants.Arm.Floating.kMinAngle);
       this.floatingMotor.setSoftLimit(SoftLimitDirection.kForward, (float) Constants.Arm.Floating.kMaxAngle);
       this.floatingMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
       this.floatingMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
+      this.anchorMotor.setIdleMode(IdleMode.kBrake); 
+
+      this.toggleSoftLimits(true);
    }
 
-   public void configureEncoders(){
-      // TODO: find these conversion rates
+   public void zeroEncoders() {
+      this.anchorEncoder.setPosition(Constants.Arm.Anchor.kContracted);
+      this.floatingEncoder.setPosition(Constants.Arm.Floating.kContracted);
+   }
+
+   public void configureEncoders() {
       this.anchorEncoder.setPositionConversionFactor(Constants.Arm.Anchor.kRatio);
       this.floatingEncoder.setPositionConversionFactor(Constants.Arm.Floating.kRatio);
 
@@ -68,7 +89,7 @@ public class Arm extends SubsystemBase {
       this.floatingEncoder.setPosition(Constants.Arm.Floating.kContracted);
    }
 
-   public void configureControllers(){
+   public void configureControllers() {
       this.anchorPIDController.setP(Constants.Arm.Anchor.kP);
       this.anchorPIDController.setI(Constants.Arm.Anchor.kI);
       this.anchorPIDController.setD(Constants.Arm.Anchor.kD);
@@ -112,23 +133,6 @@ public class Arm extends SubsystemBase {
       this.anchorPIDController.setD(anchorKD);
       this.anchorPIDController.setFF(anchorKFF);
    }
-   
-   // TODO: double check formula transcription and maybe try to break it up
-   //finds the two angles for the arm - will be above the line from joint to obj
-   //angle calculated from joint so maybe change to arm 2 horizontal
-   // public double[] calculateAngles(double dy, double dz) {
-   //    double adjustedY = dy - Constants.Arm.Misc.distanceBetweenPivotLimelight;
-
-   //    double distanceToObj = Math.sqrt(adjustedY * adjustedY + dz * dz);
-   //    double alpha = Math.acos((Constants.Arm.Floating.kLength * Constants.Arm.Floating.kLength + distanceToObj * distanceToObj - Constants.Arm.Anchor.kLength * Constants.Arm.Anchor.kLength) / (2 * Constants.Arm.Anchor.kLength * distanceToObj));
-   //    double gamma = Math.atan2(adjustedY, dz);
-
-   //    double[] angles = new double[2];
-   //    angles[0] = alpha + gamma;
-   //    angles[1] = Math.PI - Math.acos((Constants.Arm.Anchor.kLength * Constants.Arm.Anchor.kLength + Constants.Arm.Floating.kLength * Constants.Arm.Floating.kLength - distanceToObj * distanceToObj) / (2 * Constants.Arm.Anchor.kLength * Constants.Arm.Floating.kLength));
-      
-   //    return angles;
-   // }
 
    public double getAnchorAngle() {
       return this.anchorEncoder.getPosition();
@@ -138,7 +142,7 @@ public class Arm extends SubsystemBase {
       return this.floatingEncoder.getPosition();
    }
 
-   public void setFloatingAngle(double floatingAngle){
+   public void setFloatingAngle(double floatingAngle) {
       this.floatingPIDController.setReference(floatingAngle, CANSparkMax.ControlType.kPosition);
    }
 
@@ -154,10 +158,18 @@ public class Arm extends SubsystemBase {
       return Math.abs(this.getFloatingAngle() - floatingAngleTarget ) < Constants.Arm.Floating.kErrorThreshold;
    }
 
+   public boolean isAt(Position position){
+      return this.isAnchorAtAngle(position.getAnchor()) && this.isFloatingAtAngle(position.getFloating());
+   }
+
    @Override
    public void periodic(){
       // TODO: comment out tuneControllers() at comp
       // tuneControllers();
+
+      if(this.anchorLimitSwitch.get()){
+         this.anchorEncoder.setPosition(Constants.Arm.Anchor.kContracted);
+      }
 
       SmartDashboard.putBoolean("on cube", this.armMode);
 

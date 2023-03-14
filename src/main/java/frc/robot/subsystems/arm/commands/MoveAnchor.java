@@ -4,29 +4,28 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.arm.Arm;
-import java.time.chrono.ThaiBuddhistDate;
 
 public class MoveAnchor extends CommandBase {
     Arm arm;
     DoubleSupplier setpoint;
 
-    public MoveAnchor(Arm arm, double setpoint){
+    public MoveAnchor(Arm arm, double setpoint) {
         this.arm = arm;
         this.setpoint = () -> setpoint;
     }
 
-    public MoveAnchor(Arm arm, DoubleSupplier setpoint){
+    public MoveAnchor(Arm arm, DoubleSupplier setpoint) {
         this.arm = arm;
         this.setpoint = setpoint;
     }
 
     @Override
-    public void initialize(){
+    public void initialize() {
         this.arm.anchorSetpoint = setpoint.getAsDouble();
     }
 
     @Override
-    public boolean isFinished(){
+    public boolean isFinished() {
         return arm.isAnchorAtAngle(arm.anchorSetpoint);
     }
 }

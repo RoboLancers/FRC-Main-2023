@@ -1,9 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
-
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
-package frc.robot.commands;
+package frc.robot.commands.trajectory;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
@@ -12,7 +7,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
@@ -20,10 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.util.MotionProfileUtils;
-import org.bananasamirite.robotmotionprofile.TankMotionProfile;
 
-/** An example command that uses an example subsystem. */
 public class TrajectoryCommand extends CommandBase
 {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
@@ -47,11 +38,6 @@ public class TrajectoryCommand extends CommandBase
     private final NetworkTableEntry velocity;
     private final NetworkTableEntry robotVelocity;
 
-    /**
-     * Creates a new ExampleCommand.
-     *
-     * @param drivetrain The subsystem used by this command.
-     */
     public TrajectoryCommand(Drivetrain drivetrain, Trajectory trajectory)
     {
         this.subsystem = drivetrain;
@@ -76,7 +62,6 @@ public class TrajectoryCommand extends CommandBase
         subsystem.getField().getObject("robot").setTrajectory(trajectory);
     }
 
-    // Called when the command is initially scheduled.
     @Override
     public void initialize() {
         prevTime = -1;
@@ -94,11 +79,8 @@ public class TrajectoryCommand extends CommandBase
         );
 
         subsystem.resetOdometry(initialState.poseMeters);
-
-        System.out.println("starting motion profile");
     }
 
-    // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
         double curTime = timer.get();
@@ -132,11 +114,21 @@ public class TrajectoryCommand extends CommandBase
         double leftSpeedSetpoint = wheelSpeeds.leftMetersPerSecond;
         double rightSpeedSetpoint = wheelSpeeds.rightMetersPerSecond;
 
+        SmartDashboard.putNumber("expectedLeftSpeed", leftSpeedSetpoint); 
+        SmartDashboard.putNumber("robotLeftSpeed", subsystem.getWheelSpeeds().leftMetersPerSecond); 
+        SmartDashboard.putNumber("expectedRightSpeed", rightSpeedSetpoint); 
+        SmartDashboard.putNumber("robotRightSpeed", subsystem.getWheelSpeeds().leftMetersPerSecond); 
+
         double leftFeedforward = feedforward.calculate(leftSpeedSetpoint, (leftSpeedSetpoint - prevSpeeds.leftMetersPerSecond) / dt);
         double rightFeedforward = feedforward.calculate(rightSpeedSetpoint, (rightSpeedSetpoint - prevSpeeds.rightMetersPerSecond) / dt);
 
         double leftOutput = leftFeedforward + ctrlLeft.calculate(subsystem.getWheelSpeeds().leftMetersPerSecond, leftSpeedSetpoint);
         double rightOutput = rightFeedforward + ctrlRight.calculate(subsystem.getWheelSpeeds().rightMetersPerSecond, rightSpeedSetpoint);
+
+        SmartDashboard.putNumber("expectedLeftVoltage", leftOutput); 
+        SmartDashboard.putNumber("robotLeftVoltage", subsystem.getLeftVoltage()); 
+        SmartDashboard.putNumber("expectedRightVoltage", rightOutput); 
+        SmartDashboard.putNumber("robotRightVoltage", subsystem.getRightVoltage()); 
 
         this.subsystem.tankDriveVolts(leftOutput, rightOutput);
 
@@ -144,11 +136,9 @@ public class TrajectoryCommand extends CommandBase
         prevTime = curTime;
     }
 
-    // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {}
 
-    // Returns true when the command should end.
     @Override
     public boolean isFinished()
     {

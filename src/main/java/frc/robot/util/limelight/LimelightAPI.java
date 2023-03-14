@@ -1,5 +1,7 @@
 package frc.robot.util.limelight;
 
+import java.net.URISyntaxException;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -11,21 +13,65 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants;
-import frc.robot.util.PoseUtil;
 import frc.robot.util.enums.CamMode;
+import frc.robot.util.enums.Displacement;
 import frc.robot.util.enums.LedMode;
 import frc.robot.util.enums.Snapshot;
 import frc.robot.util.enums.StreamMode;
 
 public class LimelightAPI {
 
-    private static final NetworkTable limelightNT = NetworkTableInstance.getDefault().getTable("limelight");
+    private static NetworkTable limelightNT = NetworkTableInstance.getDefault().getTable("limelight");
 
+    // public Websocket wsClient;
 
     public static boolean logging;
 
-    public LimelightAPI(boolean logging) {
+    public LimelightAPI(boolean logging) throws URISyntaxException {
+        // this.wsClient = new Websocket(new URI(Constants.Limelight.kLimelightURLString));
+        // this.logging = logging;
+        // LimelightAPI.limelightNT =
+        // NetworkTableInstance.getDefault().getTable("limelight");
+
+        // if (LimelightAPI.limelightNT == null) {
+        // SmartDashboard.putString("Limelight table", "null");
+        // }
+
+        // SmartDashboard.putString("Limelight table", "not null");
     }
+
+    // public Pose2d getActualPose2d() {
+    //     var rawJson = this.wsClient.getMessage();
+
+    //     if (rawJson == null) {
+    //         System.out.println("rawJson is null");
+    //         return new Pose2d();
+    //     }
+
+    //     try {
+
+    //         ObjectMapper mapper = new ObjectMapper();
+    //         JsonNode node = mapper.readTree(rawJson);
+    //         System.out.println("node" + node);
+
+    //         return new Pose2d();
+
+    //         // double tx = node.get("transform").get("tx").asDouble();
+    //         // double tz = node.get("transform").get("tz").asDouble();
+    //         // double ry = node.get("transform").get("ry").asDouble();
+
+    //         // return new Pose2d(tx, tz, new Rotation2d(ry * Math.PI / 180));
+
+    //     } catch (JsonMappingException e) {
+    //         System.out.println("fuck1");
+    //         System.out.println(e);
+    //     } catch (JsonProcessingException e) {
+    //         System.out.println("fuck2");
+    //         System.out.println(e);
+    //     }
+    //     return new Pose2d();
+
+    // }
 
     public static void logPoses(Pose3d camPose, Pose3d botPose) {
 
@@ -56,23 +102,23 @@ public class LimelightAPI {
     }
 
     /** Returns an adjusted Pose3D based on camera pose */
-    public static Pose2d adjustCamPose() {
-
+    public static Pose2d adjustCamPose(Displacement displacement) {
         Pose2d camPose = LimelightAPI.camPose();
 
         if (camPose == null) {
             return new Pose2d();
         }
 
-        // TODO: offset or do so from pipeline
         double dZ = camPose.getY() + 0.69 * 0.420;
-        double dX = camPose.getX();
+        double dX = camPose.getX() + displacement.getOffset();
 
-        double actualRot = (Math.signum(-dX)) * camPose.getRotation().getRadians();
+        double actualRot = (Math.signum(dX)) * camPose.getRotation().getRadians();
 
-        SmartDashboard.putNumber("frfr rot", actualRot * 180 / Math.PI);
-        SmartDashboard.putNumber("frfr x", dX);
-        SmartDashboard.putNumber("frfr z", dZ);
+        var camPose2 = LimelightAPI.targetPoseBotSpace(); 
+
+        SmartDashboard.putNumber("frfr rot", Math.signum(-camPose2.getX()) * Math.abs(camPose2.getRotation().getDegrees()));
+        SmartDashboard.putNumber("frfr sideways", -camPose2.getX());
+        SmartDashboard.putNumber("frfr forward", camPose2.getY());
 
         double adjustedRot = Math.atan2(-dX, -dZ);
 
@@ -84,8 +130,6 @@ public class LimelightAPI {
         double adjustedZ = (-(distance * Math.sin(theta)) - Constants.GridAlign.kAdjustZ * Math.sin(actualRot));
 
         return new Pose2d(adjustedX, adjustedZ, new Rotation2d(actualRot));
-        // return new Pose2d(adjustedCamPoseX, pose3d.getY(), adjustedCamPoseZ,
-        // pose3d.getRotation());
     }
 
     public static boolean validTargets() {
@@ -137,15 +181,9 @@ public class LimelightAPI {
     }
 
     public static Object rawJSONTargets() {
-        return LimelightAPI.limelightNT.getEntry("json").getValue().getValue();
+        var raw = LimelightAPI.limelightNT.getEntry("json").getValue().getValue();
+        return raw;
     }
-
-    // ! TODO find some way to type the raw json data
-    // public static void getJSONTargets() {
-
-    // var mapper = new ObjectMapper();
-
-    // }
 
     public static void setPipeline(int pipeline) {
         if (pipeline > 9 || pipeline < 0) {
@@ -155,8 +193,6 @@ public class LimelightAPI {
             SmartDashboard.putString("Limelight pipeline", "pipeline set to" + pipeline);
         }
     }
-
-    // ! TODO: import/create these enums
 
     public static void setLEDMode(LedMode mode) {
         LimelightAPI.limelightNT.getEntry("ledMode").setNumber(mode.getValue());
@@ -204,12 +240,19 @@ public class LimelightAPI {
         return new Pose3d(poseRaw[0], poseRaw[1], poseRaw[2], rotationPose);
     }
 
+    public static Pose2d flattenPose(Pose3d raw) {
+        return new Pose2d(raw.getX(), raw.getZ(), new Rotation2d(raw.getRotation().getY())); // TODO: see if this works
+    }
+
+    public static Pose2d targetPoseBotSpace() {
+        return flattenPose(LimelightAPI.getPose("targetpose_robotspace")); 
+    }
+
     public static Pose2d botPose() {
-        return PoseUtil.flattenPose(LimelightAPI.getPose("botpose_targetspace"));
+        return flattenPose(LimelightAPI.getPose("botpose_targetspace"));
     }
 
     public static Pose2d camPose() {
-        return PoseUtil.flattenPose(LimelightAPI.getPose("camerapose_targetspace"));
+        return flattenPose(LimelightAPI.getPose("camerapose_targetspace"));
     }
-
 }

@@ -89,7 +89,7 @@ public class RobotContainer {
     // contract
     Controller.onPress(manipulatorController.B, new MoveToPos(arm, Constants.Arm.Position.CONTRACTED));
     // mid
-    // Controller.onPress(manipulatorController.X, new MoveToPos(arm, () -> arm.isAt(Constants.Arm.Position.MID_CONE) ? Constants.Arm.Position.MID_CONE_AIMING : Constants.Arm.Position.MID_CONE));
+    Controller.onPress(manipulatorController.X, new MoveToPos(arm, () -> arm.isAt(Constants.Arm.Position.MID_CONE) ? Constants.Arm.Position.MID_CONE_AIMING : Constants.Arm.Position.MID_CONE));
     // high
     Controller.onPress(manipulatorController.Y, new MoveToPos(arm, () -> arm.armMode ? Constants.Arm.Position.HIGH_CUBE : arm.isAt(Constants.Arm.Position.HIGH_CONE) ? Constants.Arm.Position.HIGH_CONE_AIMING : Constants.Arm.Position.HIGH_CONE));
     // station
@@ -98,13 +98,13 @@ public class RobotContainer {
     Controller.onPress(manipulatorController.dPadDown, new MoveToPos(arm, Constants.Arm.Position.SHELF));
 
     // dynamic
-    SmartDashboard.putNumber("anchor-setpoint", 16.0);
-    SmartDashboard.putNumber("floating-setpoint", 45.0);
-    Controller.onPress(manipulatorController.X, new MoveToPos(
-      arm,
-      () -> ControllerUtils.clamp(SmartDashboard.getNumber("anchor-setpoint", 0.0), 16.0, 95.0),
-      () -> ControllerUtils.clamp(SmartDashboard.getNumber("floating-setpoint", 0.0), 22.0, 180.0)
-    ));
+    // SmartDashboard.putNumber("anchor-setpoint", 16.0);
+    // SmartDashboard.putNumber("floating-setpoint", 45.0);
+    // Controller.onPress(manipulatorController.X, new MoveToPos(
+    //   arm,
+    //   () -> ControllerUtils.clamp(SmartDashboard.getNumber("anchor-setpoint", 0.0), 16.0, 95.0),
+    //   () -> ControllerUtils.clamp(SmartDashboard.getNumber("floating-setpoint", 0.0), 22.0, 180.0)
+    // ));
 
     // SmartDashboard.putNumber("motor speed", 0); 
     // Controller.onHold(manipulatorController.X, new RunCommand(() -> {

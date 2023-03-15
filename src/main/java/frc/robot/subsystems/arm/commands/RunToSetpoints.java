@@ -17,14 +17,8 @@ public class RunToSetpoints extends CommandBase {
     public void execute(){
         // custom pid control for anchor
 
-        double maintainTerm =
-        // Constants.Arm.Anchor.kFF
-        SmartDashboard.getNumber("anchorKFF", 0)
-         * Math.sin(arm.getAnchorAngle() * Math.PI / 180);
-        double correctionTerm = 
-        // Constants.Arm.Anchor.kP 
-        SmartDashboard.getNumber("anchorKP", 0)
-        * (this.arm.anchorSetpoint - arm.getAnchorAngle());
+        double maintainTerm = Constants.Arm.Anchor.kFF * Math.sin(arm.getAnchorAngle() * Math.PI / 180);
+        double correctionTerm = Constants.Arm.Anchor.kP * (this.arm.anchorSetpoint - arm.getAnchorAngle());
 
         double output = maintainTerm + correctionTerm;
 

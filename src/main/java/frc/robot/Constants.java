@@ -17,7 +17,7 @@ public final class Constants {
             public static final double kD = 0.0;
             public static final double kFF = 0.042;
             public static double kErrorThreshold = 5.0;
-            public static double kMaxDownwardOutput = -0.9;
+            public static double kMaxDownwardOutput = -0.5;
             public static double kMaxUpwardOutput = 0.7;
 
             public static final double kContracted = 16; // 13.0;
@@ -48,17 +48,19 @@ public final class Constants {
         }
 
         public enum Position {
-            CONTRACTED(13.0, 22.0), 
-            GROUND(13.0, 92.0), 
-            SHELF(87.0, 111.0), 
-            STATION(13.0, 14.0), 
+            // TODO: added 3 to all anchor setpoints because of change from 13 to 16, look into the validity of setpoints after this change
+            
+            CONTRACTED(16.0, 22.0), 
+            GROUND(16.0, 92.0), 
+            SHELF(90.0, 111.0), 
+            STATION(16.0, 14.0), 
 
-            HIGH_CUBE(25.0, 40.0),
+            HIGH_CUBE(28.0, 40.0),
 
-            HIGH_CONE(95.0, 112.5),
-            HIGH_CONE_AIMING(95.0, 22.0),
-            MID_CONE(58.0, 69.0),
-            MID_CONE_AIMING(58.0, 22.0);
+            HIGH_CONE(98.0, 112.5),
+            HIGH_CONE_AIMING(98.0, 22.0),
+            MID_CONE(61.0, 69.0),
+            MID_CONE_AIMING(61.0, 22.0);
 
             private final double anchor; 
             private final double floating; 

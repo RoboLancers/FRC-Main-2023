@@ -43,7 +43,7 @@ public class Arm extends SubsystemBase {
 
       this.anchorLimitSwitch = new DigitalInput(Constants.Arm.Ports.kAnchorLimitSwitchPort);
 
-      this.initTuneControllers();
+      // this.initTuneControllers();
    }
 
    public void toggleSoftLimits(boolean shouldLimit) {
@@ -77,7 +77,7 @@ public class Arm extends SubsystemBase {
       this.floatingMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
       this.anchorMotor.setIdleMode(IdleMode.kBrake); 
 
-      this.toggleSoftLimits(false);
+      this.toggleSoftLimits(true);
    }
 
    public void zeroEncoders() {
@@ -171,7 +171,7 @@ public class Arm extends SubsystemBase {
    @Override
    public void periodic() {
       // TODO: comment out tuneControllers() at comp
-      tuneControllers();
+      // tuneControllers();
 
       // if(this.anchorLimitSwitch.get()) {
       //    this.anchorEncoder.setPosition(Constants.Arm.Anchor.kContracted);

@@ -2,6 +2,7 @@ package frc.robot.subsystems.drivetrain.commands;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
@@ -26,7 +27,7 @@ public class TurnToAngle extends PIDCommand {
                     return setpointValue;
                 },
                 (outputPower) -> {
-                    drivetrain.arcadeDrive(0, outputPower, Mode.NORMAL);
+                    drivetrain.arcadeDrive(0, MathUtil.clamp(outputPower, -1, 1) * Constants.Drivetrain.kQuickTurnMultiplier, Mode.NORMAL);
                 },
                 drivetrain
             );

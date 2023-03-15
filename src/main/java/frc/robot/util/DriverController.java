@@ -1,5 +1,6 @@
 package frc.robot.util;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import frc.robot.Constants;
 
@@ -76,7 +77,7 @@ public class DriverController extends Controller {
     }
 
     public double getTurn() {
-        if (turnMultiplier != Constants.Drivetrain.kTurnMultiplierSM) turnMultiplier = getQuickTurn() ? Constants.Drivetrain.kQuickTurnMultiplier : ((Constants.Drivetrain.kFastThrottleTurnMultiplier - Constants.Drivetrain.kSlowThrottleTurnMultiplier) * (Math.abs(lastEffThrottle / throttleMultiplier) - 1) + Constants.Drivetrain.kFastThrottleTurnMultiplier); 
+        if (turnMultiplier != Constants.Drivetrain.kTurnMultiplierSM) turnMultiplier = getQuickTurn() ? Constants.Drivetrain.kQuickTurnMultiplier : MathUtil.clamp(((Constants.Drivetrain.kFastThrottleTurnMultiplier - Constants.Drivetrain.kSlowThrottleTurnMultiplier) * (Math.abs(lastEffThrottle / throttleMultiplier) - 1) + Constants.Drivetrain.kFastThrottleTurnMultiplier), Constants.Drivetrain.kFastThrottleTurnMultiplier, Constants.Drivetrain.kSlowThrottleTurnMultiplier); 
         return turnFilter.calculate(-getRightStickX() * turnMultiplier); 
     }
 

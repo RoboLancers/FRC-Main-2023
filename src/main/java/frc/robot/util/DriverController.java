@@ -76,7 +76,7 @@ public class DriverController extends Controller {
     }
 
     public double getTurn() {
-        if (turnMultiplier != Constants.Drivetrain.kTurnMultiplierSM) turnMultiplier = getQuickTurn() ? Constants.Drivetrain.kQuickTurnMultiplier : ((Constants.Drivetrain.kFastThrottleTurnMultiplier - Constants.Drivetrain.kSlowThrottleTurnMultiplier) * (Math.abs(lastEffThrottle) - 1) + Constants.Drivetrain.kFastThrottleTurnMultiplier); 
+        if (turnMultiplier != Constants.Drivetrain.kTurnMultiplierSM) turnMultiplier = getQuickTurn() ? Constants.Drivetrain.kQuickTurnMultiplier : ((Constants.Drivetrain.kFastThrottleTurnMultiplier - Constants.Drivetrain.kSlowThrottleTurnMultiplier) * (Math.abs(lastEffThrottle / throttleMultiplier) - 1) + Constants.Drivetrain.kFastThrottleTurnMultiplier); 
         return turnFilter.calculate(-getRightStickX() * turnMultiplier); 
     }
 

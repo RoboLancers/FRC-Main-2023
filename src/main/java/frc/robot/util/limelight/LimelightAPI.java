@@ -109,7 +109,7 @@ public class LimelightAPI {
             return new Pose2d();
         }
 
-        double dZ = camPose.getY() + 0.69 * 0.420;
+        double dZ = camPose.getY() + 0.69 * 0.420; //nice.
         double dX = camPose.getX() + displacement.getOffset();
 
         double actualRot = (Math.signum(dX)) * camPose.getRotation().getRadians();

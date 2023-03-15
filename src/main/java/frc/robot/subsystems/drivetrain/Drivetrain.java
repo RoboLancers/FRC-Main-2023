@@ -8,7 +8,6 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -19,10 +18,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.util.ControllerUtils;
 import frc.robot.util.DriveFollower;
 import frc.robot.util.Encoder;
-import frc.robot.util.DriverController.Mode;
 import frc.robot.util.enums.Displacement;
 import frc.robot.util.limelight.LimelightAPI;
 import edu.wpi.first.wpilibj.SPI;
@@ -84,10 +81,10 @@ public class Drivetrain extends SubsystemBase {
         rightMotor3.setIdleMode(IdleMode.kBrake);
 
         // current & voltage limits
-        configureMotors((m) -> {
-            // m.setSmartCurrentLimit(Constants.Drivetrain.kMaxStallAmps); 
-            m.enableVoltageCompensation(12); 
-        });
+        // configureMotors((m) -> {
+        //     // m.setSmartCurrentLimit(Constants.Drivetrain.kMaxStallAmps); 
+        //     m.enableVoltageCompensation(12); 
+        // });
 
         leftMotor1.setSmartCurrentLimit(Constants.Drivetrain.kMaxStallAmps); 
         leftMotor2.setSmartCurrentLimit(Constants.Drivetrain.kMaxStallAmps); 
@@ -138,6 +135,8 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putNumber("rotation", odometry.getPoseMeters().getRotation().getDegrees());
         SmartDashboard.putNumber("encoderLeft", leftEncoder.getPosition());
         SmartDashboard.putNumber("encoderRight", rightEncoder.getPosition());
+        SmartDashboard.putNumber("leftSpeed", leftMotor1.get());
+        SmartDashboard.putNumber("rightSpeed", rightMotor1.get()); 
     }
 
     // Returns the pose of the robot.
@@ -171,17 +170,17 @@ public class Drivetrain extends SubsystemBase {
     }
 
     // Drives the robot with arcade controls.
-    public void arcadeDrive(double throttle, double turn, Mode mode) {
+    public void arcadeDrive(double throttle, double turn) {
         SmartDashboard.putBoolean("is quickturning", Math.abs(throttle) < 0.05);
         SmartDashboard.putNumber("turn", turn); 
 
-        difDrive.arcadeDrive(throttle, turn);
+        difDrive.arcadeDrive(throttle, turn, false);
     }
 
-    public void autoSteerArcadeDrive(double throttle, Mode mode, Pose2d aprilTagPose) { // aprilTagPose = pose relative to robot
+    public void autoSteerArcadeDrive(double throttle, Pose2d aprilTagPose) { // aprilTagPose = pose relative to robot
         double turnPower = aprilTagPose.getY() * Constants.GridAlign.kSteer * (throttle != 0 ? throttle : 0.25);
 
-        arcadeDrive(throttle, turnPower, mode);
+        arcadeDrive(throttle, turnPower);
 
         // double curvature = ParametricSpline.fromWaypoints(new Waypoint[] {
         //     new Waypoint(0, 0, 0, 1, 1), 
@@ -195,13 +194,13 @@ public class Drivetrain extends SubsystemBase {
         // tankDriveVolts(voltages.getLeft(), voltages.getRight());
     }
 
-    public void drive(double throttle, double turn, Mode mode) {
+    public void drive(double throttle, double turn) {
         Pose2d pose = LimelightAPI.adjustCamPose(Displacement.kCenter); 
 
         if (isAutoSteer && pose != null) {
-            autoSteerArcadeDrive(throttle, mode, pose);
+            autoSteerArcadeDrive(throttle, pose);
         } else {
-            arcadeDrive(throttle, turn, mode);
+            arcadeDrive(throttle, turn);
         }
     }
 

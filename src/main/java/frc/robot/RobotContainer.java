@@ -13,6 +13,7 @@ import frc.robot.subsystems.drivetrain.commands.MoveBackward;
 import frc.robot.subsystems.drivetrain.commands.MoveForward;
 import frc.robot.subsystems.drivetrain.commands.TeleopDrive;
 import frc.robot.subsystems.drivetrain.commands.TestMotors;
+import frc.robot.subsystems.drivetrain.commands.TurnToAngle;
 import frc.robot.subsystems.poseTracker.PoseTracker;
 import frc.robot.commands.BottomLaneAuto;
 import frc.robot.commands.MidLaneAuto;
@@ -23,6 +24,7 @@ import frc.robot.subsystems.arm.commands.RunToSetpoints;
 import frc.robot.subsystems.arm.commands.Zero;
 import frc.robot.util.Controller;
 import frc.robot.util.DriverController; 
+import frc.robot.util.ControllerUtils;
 import frc.robot.util.ManipulatorController;
 import frc.robot.util.DriverController.Mode;
 
@@ -87,7 +89,7 @@ public class RobotContainer {
     // contract
     Controller.onPress(manipulatorController.B, new MoveToPos(arm, Constants.Arm.Position.CONTRACTED));
     // mid
-    Controller.onPress(manipulatorController.X, new MoveToPos(arm, () -> arm.isAt(Constants.Arm.Position.MID_CONE) ? Constants.Arm.Position.MID_CONE_AIMING : Constants.Arm.Position.MID_CONE));
+    // Controller.onPress(manipulatorController.X, new MoveToPos(arm, () -> arm.isAt(Constants.Arm.Position.MID_CONE) ? Constants.Arm.Position.MID_CONE_AIMING : Constants.Arm.Position.MID_CONE));
     // high
     Controller.onPress(manipulatorController.Y, new MoveToPos(arm, () -> arm.armMode ? Constants.Arm.Position.HIGH_CUBE : arm.isAt(Constants.Arm.Position.HIGH_CONE) ? Constants.Arm.Position.HIGH_CONE_AIMING : Constants.Arm.Position.HIGH_CONE));
     // station
@@ -96,13 +98,18 @@ public class RobotContainer {
     Controller.onPress(manipulatorController.dPadDown, new MoveToPos(arm, Constants.Arm.Position.SHELF));
 
     // dynamic
-    // SmartDashboard.putNumber("anchor-setpoint", 13.0);
-    // SmartDashboard.putNumber("floating-setpoint", 45.0);
-    // Controller.onPress(manipulatorController.X, new MoveToPos(
-    //   arm,
-    //   () -> ControllerUtils.clamp(SmartDashboard.getNumber("anchor-setpoint", 0.0), 13.0, 95.0),
-    //   () -> ControllerUtils.clamp(SmartDashboard.getNumber("floating-setpoint", 0.0), 22.0, 180.0)
-    // ));
+    SmartDashboard.putNumber("anchor-setpoint", 16.0);
+    SmartDashboard.putNumber("floating-setpoint", 45.0);
+    Controller.onPress(manipulatorController.X, new MoveToPos(
+      arm,
+      () -> ControllerUtils.clamp(SmartDashboard.getNumber("anchor-setpoint", 0.0), 16.0, 95.0),
+      () -> ControllerUtils.clamp(SmartDashboard.getNumber("floating-setpoint", 0.0), 22.0, 180.0)
+    ));
+
+    // SmartDashboard.putNumber("motor speed", 0); 
+    // Controller.onHold(manipulatorController.X, new RunCommand(() -> {
+    //   arm.anchorMotor.set(SmartDashboard.getNumber("motor speed", 0));
+    // }));
 
     // auto steer
     // Controller.onPress(driverController.A, new InstantCommand(() -> {
@@ -117,14 +124,14 @@ public class RobotContainer {
   }
 
   public void configureAutos() {
-    // autoChooser.addOption("Move Forward", new MoveForward(drivetrain, 3, 1, 0.5));
-    // autoChooser.addOption("Move Backward", new MoveBackward(drivetrain, 3, 1, 0.5));
-    // autoChooser.addOption("Top Auto High Cube", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
-    // autoChooser.addOption("Top Auto High Cone", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
-    // autoChooser.addOption("Mid Auto High Cube", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
-    // autoChooser.addOption("Bottom Auto High Cube", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
-    // autoChooser.addOption("Bottom Auto High Cone", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
-    // autoChooser.addOption("test drivetrain", new TestMotors());
+    autoChooser.addOption("Move Forward", new MoveForward(drivetrain, 3, 1, 0.5));
+    autoChooser.addOption("Move Backward", new MoveBackward(drivetrain, 3, 1, 0.5));
+    autoChooser.addOption("Top Auto High Cube", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
+    autoChooser.addOption("Top Auto High Cone", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
+    autoChooser.addOption("Mid Auto High Cube", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
+    autoChooser.addOption("Bottom Auto High Cube", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
+    autoChooser.addOption("Bottom Auto High Cone", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
+    autoChooser.addOption("test drivetrain", new TurnToAngle(drivetrain, () -> 90));
   }
 
   public Command getAutonomousCommand() {

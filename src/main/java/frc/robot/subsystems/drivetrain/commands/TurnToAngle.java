@@ -27,7 +27,7 @@ public class TurnToAngle extends PIDCommand {
                     return setpointValue;
                 },
                 (outputPower) -> {
-                    drivetrain.arcadeDrive(0, MathUtil.clamp(outputPower, -1, 1) * Constants.Drivetrain.kQuickTurnMultiplier, Mode.NORMAL);
+                    drivetrain.arcadeDrive(0, MathUtil.clamp(outputPower, -1, 1) * Constants.Drivetrain.kQuickTurnMultiplier);
                 },
                 drivetrain
             );

@@ -17,11 +17,11 @@ public final class Constants {
             public static final double kD = 0.0;
             public static final double kFF = 0.042;
             public static double kErrorThreshold = 5.0;
-            public static double kMaxDownwardOutput = -0.5;
+            public static double kMaxDownwardOutput = -0.9;
             public static double kMaxUpwardOutput = 0.7;
 
-            public static final double kContracted = 13.0;
-            public static final double kMinAngle = 13.0;
+            public static final double kContracted = 16; // 13.0;
+            public static final double kMinAngle = 16; // 13.0;
             public static final double kMaxAngle = 95.0; // TODO: idk about this one
         }
         
@@ -193,9 +193,9 @@ public final class Constants {
         public static final int kMaxFreeAmps = 35;
         public static final int kMaxStallAmps = 45;  
         public static final double kThrottleMultiplier = 0.70;
-        public static final double kQuickTurnMultiplier = 0.25;
-        public static final double kSlowThrottleTurnMultiplier = 0.65; 
-        public static final double kFastThrottleTurnMultiplier = 0.35; 
+        public static final double kQuickTurnMultiplier = 0.23;
+        public static final double kSlowThrottleTurnMultiplier = 0.55; 
+        public static final double kFastThrottleTurnMultiplier = 0.23; 
         public static final double kThrottleMultiplierSM = 0.18;
         public static final double kTurnMultiplierSM = 0.15;
 

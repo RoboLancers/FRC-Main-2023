@@ -18,7 +18,7 @@ public class Balance extends PIDCommand {
             // Set reference to target
             () -> setpoint,
             // Pipe output to turn robot
-            (outputPower) -> drivetrain.curvatureDrive(outputPower, 0, frc.robot.util.DriverController.Mode.NORMAL), // TODO: was this negative?
+            (outputPower) -> drivetrain.arcadeDrive(outputPower, 0, frc.robot.util.DriverController.Mode.NORMAL), // TODO: was this negative?
             drivetrain
         );
 

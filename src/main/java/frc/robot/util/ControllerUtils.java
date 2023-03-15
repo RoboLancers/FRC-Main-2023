@@ -32,4 +32,8 @@ public class ControllerUtils {
 
         return value;
     }
+
+    public static double lerp(double min, double max, double t) {
+        return Math.signum(t) * (min + (max-min) * Math.abs(t)); 
+    }
 }

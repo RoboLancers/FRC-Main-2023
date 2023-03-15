@@ -177,13 +177,6 @@ public final class Constants {
         public static final double kSteer = 0.0; 
     }
 
-    /* (x-x1)^2+(y-y1)^2=r^2
-    dy/dx, x=xf, y=yf  =  0
-    dy/dx, x=0, y=0  =  theta
-    y(0) = 0
-    y(xf) = yf
-    */
-
 
     public static class Drivetrain {
         public static class LeftMotors {
@@ -197,9 +190,12 @@ public final class Constants {
             public static final int kRightMotor3_Port = 17;
         }
 
-        public static final int kMaxAmps = 40; 
+        public static final int kMaxFreeAmps = 35;
+        public static final int kMaxStallAmps = 45;  
         public static final double kThrottleMultiplier = 0.70;
-        public static final double kTurnMultiplier = 0.23;
+        public static final double kQuickTurnMultiplier = 0.25;
+        public static final double kSlowThrottleTurnMultiplier = 0.65; 
+        public static final double kFastThrottleTurnMultiplier = 0.35; 
         public static final double kThrottleMultiplierSM = 0.18;
         public static final double kTurnMultiplierSM = 0.15;
 

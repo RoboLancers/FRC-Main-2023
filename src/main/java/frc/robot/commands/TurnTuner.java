@@ -15,7 +15,7 @@ public class TurnTuner extends CommandBase {
 
     @Override
     public void execute() {
-        drivetrain.rawCurvatureDrive(0, turnThrottle, true);
+        drivetrain.rawArcadeDrive(0, turnThrottle, true);
         turnThrottle += 0.001; 
         SmartDashboard.putNumber("turn throttle", turnThrottle);
     }

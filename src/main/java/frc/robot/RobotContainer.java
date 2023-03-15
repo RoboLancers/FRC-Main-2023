@@ -12,6 +12,7 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.commands.MoveBackward;
 import frc.robot.subsystems.drivetrain.commands.MoveForward;
 import frc.robot.subsystems.drivetrain.commands.TeleopDrive;
+import frc.robot.subsystems.drivetrain.commands.TestMotors;
 import frc.robot.subsystems.poseTracker.PoseTracker;
 import frc.robot.commands.BottomLaneAuto;
 import frc.robot.commands.MidLaneAuto;
@@ -116,13 +117,14 @@ public class RobotContainer {
   }
 
   public void configureAutos() {
-    autoChooser.addOption("Move Forward", new MoveForward(drivetrain, 3, 1, 0.5));
-    autoChooser.addOption("Move Backward", new MoveBackward(drivetrain, 3, 1, 0.5));
-    autoChooser.addOption("Top Auto High Cube", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
-    autoChooser.addOption("Top Auto High Cone", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
-    autoChooser.addOption("Mid Auto High Cube", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
-    autoChooser.addOption("Bottom Auto High Cube", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
-    autoChooser.addOption("Bottom Auto High Cone", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
+    // autoChooser.addOption("Move Forward", new MoveForward(drivetrain, 3, 1, 0.5));
+    // autoChooser.addOption("Move Backward", new MoveBackward(drivetrain, 3, 1, 0.5));
+    // autoChooser.addOption("Top Auto High Cube", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
+    // autoChooser.addOption("Top Auto High Cone", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
+    // autoChooser.addOption("Mid Auto High Cube", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
+    // autoChooser.addOption("Bottom Auto High Cube", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
+    // autoChooser.addOption("Bottom Auto High Cone", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
+    // autoChooser.addOption("test drivetrain", new TestMotors());
   }
 
   public Command getAutonomousCommand() {

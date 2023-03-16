@@ -30,8 +30,11 @@ public class RunToSetpoints extends CommandBase {
             output = Constants.Arm.Anchor.kMaxUpwardOutput;
         }
 
-        SmartDashboard.putNumber("arm-anchor-output", output);
+        if(Math.abs(output) < 0.03){
+            output = 0;
+        }
 
+        SmartDashboard.putNumber("arm-anchor-output", output);
 
         arm.anchorMotor.set(output);
 

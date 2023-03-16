@@ -10,18 +10,18 @@ public final class Constants {
     public static final class Arm {
         public static final class Anchor {
             public static final boolean kInverted = true;
-            public static final double kRatio = (90.0 - 13.0) / (27.0);
+            public static final double kRatio = (90.0 - 13.0) / (27.0); // sigh, do this right later
 
             public static final double kP = 0.016;
             public static final double kI = 0.0;
             public static final double kD = 0.0;
             public static final double kFF = 0.042;
             public static double kErrorThreshold = 5.0;
-            public static double kMaxDownwardOutput = -0.5;
-            public static double kMaxUpwardOutput = 0.7;
+            public static double kMaxDownwardOutput = -0.4;
+            public static double kMaxUpwardOutput = 0.5;
 
-            public static final double kContracted = 13.0;
-            public static final double kMinAngle = 13.0;
+            public static final double kContracted = 16.0;
+            public static final double kMinAngle = 16.0;
             public static final double kMaxAngle = 95.0; // TODO: idk about this one
         }
         
@@ -51,16 +51,19 @@ public final class Constants {
             // TODO: added 3 to all anchor setpoints because of change from 13 to 16, look into the validity of setpoints after this change
             
             CONTRACTED(16.0, 22.0), 
-            GROUND(21.0, 120.0), 
+            GROUND(16.0, 113.0), 
+
+            MID_CUBE(16.0, 40.0),
+            HIGH_CUBE(55.0, 82.0),
+
+            HIGH_CONE(96.0, 134.0),
+            HIGH_CONE_AIMING(96.0, 22.0),
+
+            MID_CONE(55.0, 95.0),
+            MID_CONE_AIMING(55.0, 22.0),
+
             SHELF(87.0, 111.0), 
-            STATION(16.0, 14.0), 
-
-            HIGH_CUBE(25.0, 40.0),
-
-            HIGH_CONE(87.0, 112.5),
-            HIGH_CONE_AIMING(87.0, 22.0),
-            MID_CONE(58.0, 69.0),
-            MID_CONE_AIMING(58.0, 22.0);
+            STATION(16.0, 14.0);
 
             private final double anchor; 
             private final double floating; 
@@ -126,9 +129,9 @@ public final class Constants {
     }
 
     public static class Trajectory {
-        public static final double ksVolts = 0.24855;
-        public static final double ksVoltSecondsPerMeter = 1.7848;
-        public static final double kaVoltSecondsSquaredPerMeter = 0.47551;
+        public static final double ksVolts = 0.28433; // 0.24855;
+        public static final double ksVoltSecondsPerMeter = 1.8493; // 1.7848;
+        public static final double kaVoltSecondsSquaredPerMeter = 0.4429; // 0.47551;
 
         public static final double kMaxSpeedMetersPerSecond = 2.5;
         public static final double kMaxAccelerationMetersPerSecondSquared = 0.8;
@@ -136,7 +139,7 @@ public final class Constants {
         public static final double kMaxVoltage = 10;
 
         // TODO: redo drivetrain angular characterization
-        public static final double kTrackWidthMeters = 1.2546; // Units.inchesToMeters(23);   
+        public static final double kTrackWidthMeters = 0.59261; // 1.2546; // Units.inchesToMeters(23);   
         public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidthMeters);
 
         public static final TrajectoryCreator trajectoryCreator = new TrajectoryCreator(
@@ -150,7 +153,7 @@ public final class Constants {
         public static final double kRamseteB = 2;
         public static final double kRamseteZeta = 0.7;
 
-        public static final double kPDriveVel = 0; // 2.5614;
+        public static final double kPDriveVel = 2.6346; // 0; // 2.5614;
 
         public static final double kGearRatio = 6.8027597438; 
         public static final double kWheelRadiusInches = 3; 
@@ -208,10 +211,10 @@ public final class Constants {
         public static final double kTurnFilter = 3;
 
         // TODO: tune these
-        public static final double kTurnP = 0.005; 
+        public static final double kTurnP = 0.048; 
         public static final double kTurnI = 0; 
         public static final double kTurnD = 0; 
-        public static final double kTurnErrorThreshold = 5; 
+        public static final double kTurnErrorThreshold = 2; 
     }
 
     public static class Balance {

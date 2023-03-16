@@ -80,10 +80,10 @@ public class Arm extends SubsystemBase {
       this.toggleSoftLimits(true);
    }
 
-   // public void zeroEncoders() {
-   //    this.anchorEncoder.setPosition(Constants.Arm.Anchor.kContracted);
-   //    this.floatingEncoder.setPosition(Constants.Arm.Floating.kContracted);
-   // }
+   public void zeroEncoders() {
+      this.anchorEncoder.setPosition(Constants.Arm.Anchor.kContracted);
+      this.floatingEncoder.setPosition(Constants.Arm.Floating.kContracted);
+   }
 
    public void configureEncoders() {
       this.anchorEncoder.setPositionConversionFactor(Constants.Arm.Anchor.kRatio);
@@ -103,6 +103,8 @@ public class Arm extends SubsystemBase {
       this.floatingPIDController.setI(Constants.Arm.Floating.kI);
       this.floatingPIDController.setD(Constants.Arm.Floating.kD);
       this.floatingPIDController.setFF(Constants.Arm.Floating.kFF);
+
+      this.floatingPIDController.setOutputRange(-0.3, 0.4);
 
       // this.anchorPIDController.setFeedbackDevice(anchorEncoder);
       this.floatingPIDController.setFeedbackDevice(floatingEncoder); 

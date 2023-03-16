@@ -17,7 +17,7 @@ public class Zero extends SequentialCommandGroup {
             ),
             new InstantCommand(() -> {
                 arm.toggleSoftLimits(true);
-                arm.zeroEncoders();
+                // arm.zeroEncoders();
                 arm.anchorMotor.set(0);
             })
         );

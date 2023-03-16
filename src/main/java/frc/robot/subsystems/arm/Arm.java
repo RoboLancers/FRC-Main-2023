@@ -33,7 +33,7 @@ public class Arm extends SubsystemBase {
       this.floatingMotor = new CANSparkMax(Constants.Arm.Ports.kFloatingPort, CANSparkMax.MotorType.kBrushless);
       this.configureMotors();
 
-      this.anchorEncoder = this.anchorMotor.getAlternateEncoder(Type.kQuadrature, 8192);  ; // this.anchorMotor.getEncoder(); 
+      this.anchorEncoder = this.anchorMotor.getEncoder(); ; // this.anchorMotor.getAlternateEncoder(Type.kQuadrature, 8192); 
       this.floatingEncoder = this.floatingMotor.getAlternateEncoder(Type.kQuadrature, 8192); // this.floatingMotor.getEncoder();
       this.configureEncoders();
 
@@ -80,15 +80,15 @@ public class Arm extends SubsystemBase {
       this.toggleSoftLimits(true);
    }
 
-   public void zeroEncoders() {
-      this.anchorEncoder.setPosition(Constants.Arm.Anchor.kContracted);
-      this.floatingEncoder.setPosition(Constants.Arm.Floating.kContracted);
-   }
+   // public void zeroEncoders() {
+   //    this.anchorEncoder.setPosition(Constants.Arm.Anchor.kContracted);
+   //    this.floatingEncoder.setPosition(Constants.Arm.Floating.kContracted);
+   // }
 
    public void configureEncoders() {
       this.anchorEncoder.setPositionConversionFactor(Constants.Arm.Anchor.kRatio);
       this.floatingEncoder.setPositionConversionFactor(Constants.Arm.Floating.kRatio);
-      this.anchorEncoder.setInverted(true); 
+      // this.anchorEncoder.setInverted(true); 
 
       this.anchorEncoder.setPosition(Constants.Arm.Anchor.kContracted);
       this.floatingEncoder.setPosition(Constants.Arm.Floating.kContracted);

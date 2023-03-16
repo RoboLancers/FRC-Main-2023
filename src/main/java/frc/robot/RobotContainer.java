@@ -45,7 +45,7 @@ public class RobotContainer {
   public RobotContainer() {
       this.drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, driverController));
 
-      // this.arm.setDefaultCommand(new RunToSetpoints(arm));
+      this.arm.setDefaultCommand(new RunToSetpoints(arm));
 
       this.intake.setDefaultCommand(new RunCommand(intake::off, intake));
 
@@ -65,7 +65,7 @@ public class RobotContainer {
     // Controller.onBothPress(manipulatorController.LeftBumper, manipulatorController.RightBumper, new ScanAndAlign(drivetrain, arm, poseTracker, manipulatorController));
 
     // TODO: test this jawn
-    Controller.onPress(manipulatorController.RightTrigger, new Zero(arm));
+    // Controller.onPress(manipulatorController.RightTrigger, new Zero(arm));
 
     // driver intake
     Controller.onHold(driverController.RightTrigger, new RunCommand(intake::intakeFast, intake));
@@ -91,7 +91,7 @@ public class RobotContainer {
     // mid
     Controller.onPress(manipulatorController.X, new MoveToPos(arm, () -> arm.isAt(Constants.Arm.Position.MID_CONE) ? Constants.Arm.Position.MID_CONE_AIMING : Constants.Arm.Position.MID_CONE));
     // high
-    Controller.onPress(manipulatorController.Y, new MoveToPos(arm, () -> arm.armMode ? Constants.Arm.Position.HIGH_CUBE : arm.isAt(Constants.Arm.Position.HIGH_CONE) ? Constants.Arm.Position.HIGH_CONE_AIMING : Constants.Arm.Position.HIGH_CONE));
+    Controller.onPress(manipulatorController.Y, new MoveToPos(arm, () -> arm.armMode ? Constants.Arm.Position.HIGH_CUBE : Constants.Arm.Position.HIGH_CONE));
     // station
     Controller.onPress(manipulatorController.dPadUp, new MoveToPos(arm, Constants.Arm.Position.STATION));
     // shelf

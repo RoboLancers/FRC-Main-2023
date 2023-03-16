@@ -10,7 +10,7 @@ public final class Constants {
     public static final class Arm {
         public static final class Anchor {
             public static final boolean kInverted = true;
-            public static final double kRatio = 360; // (90.0 - 13.0) / (27.0);
+            public static final double kRatio = (90.0 - 13.0) / (27.0);
 
             public static final double kP = 0.016;
             public static final double kI = 0.0;
@@ -20,8 +20,8 @@ public final class Constants {
             public static double kMaxDownwardOutput = -0.5;
             public static double kMaxUpwardOutput = 0.7;
 
-            public static final double kContracted = 16; // 13.0;
-            public static final double kMinAngle = 16; // 13.0;
+            public static final double kContracted = 13.0;
+            public static final double kMinAngle = 13.0;
             public static final double kMaxAngle = 95.0; // TODO: idk about this one
         }
         
@@ -51,16 +51,16 @@ public final class Constants {
             // TODO: added 3 to all anchor setpoints because of change from 13 to 16, look into the validity of setpoints after this change
             
             CONTRACTED(16.0, 22.0), 
-            GROUND(16.0, 92.0), 
-            SHELF(90.0, 111.0), 
+            GROUND(21.0, 120.0), 
+            SHELF(87.0, 111.0), 
             STATION(16.0, 14.0), 
 
-            HIGH_CUBE(28.0, 40.0),
+            HIGH_CUBE(25.0, 40.0),
 
-            HIGH_CONE(98.0, 112.5),
-            HIGH_CONE_AIMING(98.0, 22.0),
-            MID_CONE(61.0, 69.0),
-            MID_CONE_AIMING(61.0, 22.0);
+            HIGH_CONE(87.0, 112.5),
+            HIGH_CONE_AIMING(87.0, 22.0),
+            MID_CONE(58.0, 69.0),
+            MID_CONE_AIMING(58.0, 22.0);
 
             private final double anchor; 
             private final double floating; 

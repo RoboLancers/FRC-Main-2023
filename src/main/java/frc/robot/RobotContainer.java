@@ -1,7 +1,5 @@
 package frc.robot;
 
-import java.util.ResourceBundle.Control;
-
 import org.bananasamirite.robotmotionprofile.Waypoint;
 
 import edu.wpi.first.cameraserver.CameraServer;
@@ -17,9 +15,7 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.commands.MoveBackward;
 import frc.robot.subsystems.drivetrain.commands.MoveForward;
 import frc.robot.subsystems.drivetrain.commands.TeleopDrive;
-import frc.robot.subsystems.drivetrain.commands.TestMotors;
 import frc.robot.subsystems.drivetrain.commands.TurnToAngle;
-import frc.robot.subsystems.poseTracker.PoseTracker;
 import frc.robot.commands.BottomLaneAuto;
 import frc.robot.commands.MidLaneAuto;
 import frc.robot.commands.TopLaneAuto;
@@ -30,21 +26,17 @@ import frc.robot.subsystems.arm.commands.Zero;
 import frc.robot.util.Controller;
 import frc.robot.util.DriverController;
 import frc.robot.util.InstantiatorCommand;
-import frc.robot.util.ControllerUtils;
 import frc.robot.util.ManipulatorController;
 import frc.robot.util.DriverController.Mode;
 
 public class RobotContainer {
-  /* Controllers */
   private final DriverController driverController = new DriverController(0);
   private final ManipulatorController manipulatorController = new ManipulatorController(1);
 
-  /* Subsystems */
   private Drivetrain drivetrain = new Drivetrain();
   private Arm arm = new Arm();
   private Intake intake = new Intake();
   private Gyro gyro = new Gyro();
-  private PoseTracker poseTracker = new PoseTracker();
     
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -67,10 +59,7 @@ public class RobotContainer {
     Controller.onHold(driverController.RightBumper, new InstantCommand(() -> driverController.setSlowMode(Mode.SLOW)));
     Controller.onRelease(driverController.RightBumper, new InstantCommand(() -> driverController.setSlowMode(Mode.NORMAL)));
 
-    // manipulator grid align
-    // Controller.onBothPress(manipulatorController.LeftBumper, manipulatorController.RightBumper, new ScanAndAlign(drivetrain, arm, poseTracker, manipulatorController));
-
-    // TODO: test this jawn
+    // zero the arm
     Controller.onPress(manipulatorController.RightTrigger, new Zero(arm));
 
     // driver intake
@@ -108,11 +97,17 @@ public class RobotContainer {
     Controller.onPress(driverController.B, new MoveToPos(arm, Constants.Arm.Position.SHELF));
 
 
-    SmartDashboard.putNumber("turn angle", 0); 
 
-    Controller.onPress(driverController.Y, new TurnToAngle(drivetrain, () -> SmartDashboard.getNumber("turn angle", 0)));
 
-    // dynamic
+
+
+    /*
+    
+      TESTING ONLY
+
+    */
+
+    //  * dynamic arm setpoint
     // SmartDashboard.putNumber("anchor-setpoint", 16.0);
     // SmartDashboard.putNumber("floating-setpoint", 45.0);
     // Controller.onPress(driverController.X, new MoveToPos(
@@ -121,24 +116,12 @@ public class RobotContainer {
     //   () -> ControllerUtils.clamp(SmartDashboard.getNumber("floating-setpoint", 0.0), 22.0, 180.0)
     // ));
 
-    // SmartDashboard.putNumber("motor speed", 0); 
-    // Controller.onHold(manipulatorController.X, new RunCommand(() -> {
-    //   arm.anchorMotor.set(SmartDashboard.getNumber("motor speed", 0));
-    // }));
-
-    // auto steer
-    // Controller.onPress(driverController.A, new InstantCommand(() -> {
-    //   drivetrain.isAutoSteer = true; 
-    // }));
-    // Controller.onPressCancel(driverController.A, new InstantCommand(() -> {
-    //   drivetrain.isAutoSteer = false; 
-    // }));
-
-    // balance
+    // * balance
     // Controller.onPress(driverController.B, new Balance(drivetrain, gyro, 0)); 
   }
 
   public void configureAutos() {
+    // ! Pick one of these in comp
     autoChooser.addOption("Move Forward", new MoveForward(drivetrain, 3, 1, 0.5));
     autoChooser.addOption("Move Backward", new MoveBackward(drivetrain, 3, 1, 0.5));
     autoChooser.addOption("Top Auto High Cube", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
@@ -147,16 +130,22 @@ public class RobotContainer {
     autoChooser.addOption("Bottom Auto High Cube", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
     autoChooser.addOption("Bottom Auto High Cone", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
     autoChooser.addOption("Bottom Auto Mid Cone", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.MID_CONE));
-    autoChooser.addOption("test pathfollowing", Constants.Trajectory.trajectoryCreator.createCommand(drivetrain, new Waypoint[] {
-      new Waypoint(0, 0, 0, 1, 1),
-      new Waypoint(1, 1, 0, 1, 1), 
-      new Waypoint(2, 0, Math.toRadians(90), 1, 1)
-    }, new TrajectoryConfig(1, 0.5)));
-    autoChooser.addOption("test drivetrain", new TurnToAngle(drivetrain, () -> SmartDashboard.getNumber("turn angle", 0)));
+
+    /*
+    
+      TESTING ONLY
+
+    */
+
+    // autoChooser.addOption("test pathfollowing", Constants.Trajectory.trajectoryCreator.createCommand(drivetrain, new Waypoint[] {
+    //   new Waypoint(0, 0, 0, 1, 1),
+    //   new Waypoint(1, 1, 0, 1, 1), 
+    //   new Waypoint(2, 0, Math.toRadians(90), 1, 1)
+    // }, new TrajectoryConfig(1, 0.5)));
+    // autoChooser.addOption("test drivetrain", new TurnToAngle(drivetrain, () -> SmartDashboard.getNumber("turn angle", 0)));
   }
 
   public Command getAutonomousCommand() {
-    // return new InstantCommand(() -> {});
     return autoChooser.getSelected(); 
   }
 

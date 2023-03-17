@@ -210,7 +210,6 @@ public final class Constants {
         public static final double kBackwardThrottleDecelFilter = 0.8;
         public static final double kTurnFilter = 3;
 
-        // TODO: tune these
         public static final double kTurnP = 0.048; 
         public static final double kTurnI = 0; 
         public static final double kTurnD = 0; 
@@ -221,7 +220,7 @@ public final class Constants {
         public static final double kP = 0.009;
         public static final double kI = 0;
         public static final double kD = 0.0003;
-        public static final double kPositionTolerance = 2.0; // TODO: tune this, also keep in mind gyro alignment is trash
-        public static final double kVelocityTolerance = 1.0; // TODO: tune this, 1 degree per second seems pretty reasonable for stopped state
+        public static final double kPositionTolerance = 4.0; // TODO: tune this, also keep in mind gyro alignment is trash
+        // public static final double kVelocityTolerance = 1.0; // TODO: tune this, 1 degree per second seems pretty reasonable for stopped state
     }
 }

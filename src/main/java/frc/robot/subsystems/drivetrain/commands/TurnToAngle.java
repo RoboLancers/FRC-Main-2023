@@ -38,12 +38,13 @@ public class TurnToAngle extends CommandBase {
     
         @Override
         public void execute() {
+            // For tuning
             // System.out.println(SmartDashboard.getNumber("Angular kP", 0.0));
-            this.pidController.setPID(
-                SmartDashboard.getNumber("Angular kP", 0.0),
-                SmartDashboard.getNumber("Angular kI", 0.0),
-                SmartDashboard.getNumber("Angular kD", 0.0)
-            );
+            // this.pidController.setPID(
+            //     SmartDashboard.getNumber("Angular kP", 0.0),
+            //     SmartDashboard.getNumber("Angular kI", 0.0),
+            //     SmartDashboard.getNumber("Angular kD", 0.0)
+            // );
 
             double output = pidController.calculate(drivetrain.getHeading(), setpoint.getAsDouble()); 
             SmartDashboard.putNumber("error", setpoint.getAsDouble() - drivetrain.getHeading()); 
@@ -61,7 +62,6 @@ public class TurnToAngle extends CommandBase {
     
         @Override
         public boolean isFinished() {
-            // return this.getController().atSetpoint();
-            return false; 
+            return this.pidController.atSetpoint();
         }
 }

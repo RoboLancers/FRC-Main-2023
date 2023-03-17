@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 
-import org.bananasamirite.robotmotionprofile.Waypoint;
 import org.bananasamirite.robotmotionprofile.data.Trajectory;
 import org.bananasamirite.robotmotionprofile.data.task.CommandTask;
 import org.bananasamirite.robotmotionprofile.data.task.WaypointTask;

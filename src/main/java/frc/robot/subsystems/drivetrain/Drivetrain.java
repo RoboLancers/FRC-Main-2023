@@ -1,12 +1,13 @@
 package frc.robot.subsystems.drivetrain;
 
+import java.util.function.Consumer;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -19,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.DriveFollower;
 import frc.robot.util.Encoder;
-import frc.robot.util.DriverController.Mode;
 import frc.robot.util.enums.Displacement;
 import frc.robot.util.limelight.LimelightAPI;
 import edu.wpi.first.wpilibj.SPI;
@@ -57,19 +57,12 @@ public class Drivetrain extends SubsystemBase {
 
     private final Field2d m_field = new Field2d();
 
-    private final SlewRateLimiter throttleForwardFilter = new SlewRateLimiter(Constants.Drivetrain.kForwardThrottleAccelFilter, -Constants.Drivetrain.kForwardThrottleDecelFilter, 0);
-    private final SlewRateLimiter throttleBackwardFilter = new SlewRateLimiter(Constants.Drivetrain.kBackwardThrottleAccelFilter, -Constants.Drivetrain.kBackwardThrottleDecelFilter,0);
-    private final SlewRateLimiter turnFilter = new SlewRateLimiter(Constants.Drivetrain.kTurnFilter);
-
     private final DriveFollower driveFollower; 
 
     public boolean isAutoSteer = false; 
 
-    // private final PIDController throttlePID = new PIDController(.15, 0.00, 0.0);
-    // private final PIDController throttlePID2 = new PIDController(.25, 0.00, 0.0);
-    // private final PIDController steeringPID = new PIDController(.3, 0.00, 0.03);
-
-    public Drivetrain(){
+    public Drivetrain() {
+        // inversions
         rightMotor1.setInverted(true);
         rightMotor2.setInverted(true);
         rightMotor3.setInverted(true);
@@ -78,6 +71,7 @@ public class Drivetrain extends SubsystemBase {
         leftMotor2.setInverted(false);
         leftMotor3.setInverted(false);
 
+        // brake/coast
         leftMotor1.setIdleMode(IdleMode.kBrake);
         leftMotor2.setIdleMode(IdleMode.kCoast);
         leftMotor3.setIdleMode(IdleMode.kBrake);
@@ -86,23 +80,26 @@ public class Drivetrain extends SubsystemBase {
         rightMotor2.setIdleMode(IdleMode.kCoast);
         rightMotor3.setIdleMode(IdleMode.kBrake);
 
+        // current & voltage limits
+        // configureMotors((m) -> {
+        //     // m.setSmartCurrentLimit(Constants.Drivetrain.kMaxStallAmps); 
+        //     m.enableVoltageCompensation(12); 
+        // });
 
-        // TODO: increase & decrease max throttle this so turning doesnt get stuck
-        leftMotor1.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
-        leftMotor2.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
-        leftMotor3.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
-        rightMotor1.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
-        rightMotor2.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
-        rightMotor3.setSmartCurrentLimit(Constants.Drivetrain.kMaxAmps);
+        leftMotor1.setSmartCurrentLimit(Constants.Drivetrain.kMaxStallAmps); 
+        leftMotor2.setSmartCurrentLimit(Constants.Drivetrain.kMaxStallAmps); 
+        leftMotor3.setSmartCurrentLimit(Constants.Drivetrain.kMaxStallAmps); 
+        rightMotor1.setSmartCurrentLimit(Constants.Drivetrain.kMaxStallAmps); 
+        rightMotor2.setSmartCurrentLimit(Constants.Drivetrain.kMaxStallAmps); 
+        rightMotor3.setSmartCurrentLimit(Constants.Drivetrain.kMaxStallAmps); 
 
-        leftMotor1.enableVoltageCompensation(12);
-        leftMotor2.enableVoltageCompensation(12);
-        leftMotor3.enableVoltageCompensation(12);
-        rightMotor1.enableVoltageCompensation(12);
-        rightMotor2.enableVoltageCompensation(12);
-        rightMotor3.enableVoltageCompensation(12);
+        leftMotor1.enableVoltageCompensation(12); 
+        leftMotor2.enableVoltageCompensation(12); 
+        leftMotor3.enableVoltageCompensation(12); 
+        rightMotor1.enableVoltageCompensation(12); 
+        rightMotor2.enableVoltageCompensation(12);  
+        rightMotor3.enableVoltageCompensation(12); 
 
-        // Sets the distance per pulse to the pre-defined constant we calculated for both encoders.
         rightEncoder.getEncoder().setPositionConversionFactor(Constants.Trajectory.kMetersPerRot);
         leftEncoder.getEncoder().setPositionConversionFactor(Constants.Trajectory.kMetersPerRot);
 
@@ -118,6 +115,15 @@ public class Drivetrain extends SubsystemBase {
         //initDefaultCommand(driverController);
     }
 
+    public void configureMotors(Consumer<CANSparkMax> func) {
+        func.accept(leftMotor1);
+        func.accept(leftMotor2);
+        func.accept(leftMotor3);
+        func.accept(rightMotor1);
+        func.accept(rightMotor2);
+        func.accept(rightMotor3);
+    }
+
     // Constantly updates the odometry of the robot with the rotation and the distance traveled.
     @Override
     public void periodic() {
@@ -129,6 +135,8 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putNumber("rotation", odometry.getPoseMeters().getRotation().getDegrees());
         SmartDashboard.putNumber("encoderLeft", leftEncoder.getPosition());
         SmartDashboard.putNumber("encoderRight", rightEncoder.getPosition());
+        SmartDashboard.putNumber("leftSpeed", leftMotor1.get());
+        SmartDashboard.putNumber("rightSpeed", rightMotor1.get()); 
     }
 
     // Returns the pose of the robot.
@@ -157,57 +165,22 @@ public class Drivetrain extends SubsystemBase {
         rightMotors.set(power);
     }
 
-    // private double lastNonzeroThrottle = 0;
-    private double lastEffThrottle = 0; 
-
-    public void rawCurvatureDrive(double throttle, double turn, boolean turnInPlace) {
-        difDrive.curvatureDrive(throttle, turn, turnInPlace);
+    public void rawArcadeDrive(double throttle, double turn, boolean turnInPlace) {
+        difDrive.arcadeDrive(throttle, turn, turnInPlace);
     }
 
     // Drives the robot with arcade controls.
-    public void curvatureDrive(double throttle, double turn, Mode mode) {
+    public void arcadeDrive(double throttle, double turn) {
+        SmartDashboard.putBoolean("is quickturning", Math.abs(throttle) < 0.05);
+        SmartDashboard.putNumber("turn", turn); 
 
-        // TODO: use this if you want deceleration to be higher when joystick is in the opp direction as the current drive direction
-        // double effThrottle = 0; 
-        // if (throttle > 0 || lastNonzeroThrottle > 0) {
-        //     effThrottle = throttleForwardFilter.calculate(throttle); 
-        //     throttleBackwardFilter.reset(0);
-        // } else if (throttle < 0 || lastNonzeroThrottle < 0) {
-        //     effThrottle = -throttleBackwardFilter.calculate(-throttle); 
-        //     throttleForwardFilter.reset(0);
-        // }
-        
-        double effThrottle = 0; 
-        if (mode == Mode.SLOW) {
-            effThrottle = throttle;
-            throttleBackwardFilter.reset(0); 
-            throttleForwardFilter.reset(0); 
-        } else {
-            if (lastEffThrottle > 0) {
-                effThrottle = throttleForwardFilter.calculate(Math.max(throttle, 0)); 
-                throttleBackwardFilter.reset(0);
-            } else if (lastEffThrottle < 0) {
-                effThrottle = -throttleBackwardFilter.calculate(-Math.min(throttle, 0)); 
-                throttleForwardFilter.reset(0);
-            } else {
-                effThrottle = throttle > 0 ? throttleForwardFilter.calculate(throttle) : throttle < 0 ? -throttleBackwardFilter.calculate(-throttle) : 0; 
-            }
-        }
-        
-        // if (lastNonzeroThrottle != 0)
-        lastEffThrottle = effThrottle; 
-
-        SmartDashboard.putBoolean("is quickturning", Math.abs(effThrottle) < 0.05); 
-
-        difDrive.curvatureDrive(effThrottle, 
-        turnFilter.calculate(turn), 
-        Math.abs(effThrottle) < 0.05);
+        difDrive.arcadeDrive(throttle, turn, false);
     }
 
-    public void autoSteerCurvatureDrive(double throttle, Mode mode, Pose2d aprilTagPose) { // aprilTagPose = pose relative to robot
+    public void autoSteerArcadeDrive(double throttle, Pose2d aprilTagPose) { // aprilTagPose = pose relative to robot
         double turnPower = aprilTagPose.getY() * Constants.GridAlign.kSteer * (throttle != 0 ? throttle : 0.25);
 
-        curvatureDrive(throttle, turnPower, mode);
+        arcadeDrive(throttle, turnPower);
 
         // double curvature = ParametricSpline.fromWaypoints(new Waypoint[] {
         //     new Waypoint(0, 0, 0, 1, 1), 
@@ -221,13 +194,13 @@ public class Drivetrain extends SubsystemBase {
         // tankDriveVolts(voltages.getLeft(), voltages.getRight());
     }
 
-    public void drive(double throttle, double turn, Mode mode) {
+    public void drive(double throttle, double turn) {
         Pose2d pose = LimelightAPI.adjustCamPose(Displacement.kCenter); 
 
         if (isAutoSteer && pose != null) {
-            autoSteerCurvatureDrive(throttle, mode, pose);
+            autoSteerArcadeDrive(throttle, pose);
         } else {
-            curvatureDrive(throttle, turn, mode);
+            arcadeDrive(throttle, turn);
         }
     }
 

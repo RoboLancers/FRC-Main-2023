@@ -1,5 +1,6 @@
 package frc.robot.subsystems.arm.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.arm.Arm;
@@ -29,11 +30,17 @@ public class RunToSetpoints extends CommandBase {
             output = Constants.Arm.Anchor.kMaxUpwardOutput;
         }
 
+        if(Math.abs(output) < 0.03){
+            output = 0;
+        }
+
+        SmartDashboard.putNumber("arm-anchor-output", output);
 
         arm.anchorMotor.set(output);
 
         // standard onboard pid control for floating
 
+        // arm.setAnchorAngle(arm.anchorSetpoint);
         arm.setFloatingAngle(arm.floatingSetpoint);
     }
 

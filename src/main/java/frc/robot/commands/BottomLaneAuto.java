@@ -7,6 +7,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.commands.MoveBackward;
+import frc.robot.subsystems.drivetrain.commands.TurnBy;
 import frc.robot.subsystems.drivetrain.commands.TurnToAngle;
 import frc.robot.subsystems.intake.Intake;
 
@@ -20,11 +21,11 @@ public class BottomLaneAuto extends SequentialCommandGroup {
             case LOW_CUBE: 
                 addCommands(
                     new Score(arm, intake, position), 
-                    new MoveBackward(drivetrain, 1), 
-                    new TurnToAngle(drivetrain, allianceMultiplier * BOTTOM_TURN_ANGLE_RED * allianceMultiplier), 
                     new MoveBackward(drivetrain, 0.5), 
-                    new TurnToAngle(drivetrain, 0), 
-                    new MoveBackward(drivetrain, 3)
+                    new TurnBy(drivetrain, BOTTOM_TURN_ANGLE_RED * allianceMultiplier), 
+                    new MoveBackward(drivetrain, 0.5), 
+                    new TurnBy(drivetrain, -BOTTOM_TURN_ANGLE_RED * allianceMultiplier), 
+                    new MoveBackward(drivetrain, 4)
                 );
                 break;
             case HIGH_CONE: 
@@ -34,6 +35,7 @@ public class BottomLaneAuto extends SequentialCommandGroup {
                     new Score(arm, intake, position), 
                     new MoveBackward(drivetrain, 5)
                 ); 
+                break; 
         }
 
     }

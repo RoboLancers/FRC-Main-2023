@@ -15,6 +15,7 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.commands.MoveBackward;
 import frc.robot.subsystems.drivetrain.commands.MoveForward;
 import frc.robot.subsystems.drivetrain.commands.TeleopDrive;
+import frc.robot.subsystems.drivetrain.commands.TurnBy;
 import frc.robot.subsystems.drivetrain.commands.TurnToAngle;
 import frc.robot.commands.BottomLaneAuto;
 import frc.robot.commands.MidLaneAuto;
@@ -119,6 +120,8 @@ public class RobotContainer {
 
     // * balance
     // Controller.onPress(driverController.B, new Balance(drivetrain, gyro, 0)); 
+    // SmartDashboard.putNumber("turn by", 30); 
+    // Controller.onPress(driverController.X, new TurnBy(drivetrain, () -> ControllerUtils.clamp(SmartDashboard.getNumber("turn by", 30), -90, 90)));
   }
 
   public void configureAutos() {

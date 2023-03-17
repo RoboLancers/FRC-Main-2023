@@ -126,12 +126,18 @@ public class RobotContainer {
 
   public void configureAutos() {
     // ! Pick one of these in comp
-    autoChooser.addOption("Move Forward", new MoveForward(drivetrain, 3, 1, 0.5));
-    autoChooser.addOption("Move Backward", new MoveBackward(drivetrain, 3, 1, 0.5));
     autoChooser.addOption("Top Auto High Cube", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
+    autoChooser.addOption("Top Auto Mid Cube", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.MID_CUBE));
     autoChooser.addOption("Top Auto High Cone", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
+    autoChooser.addOption("Top Auto Mid Cone", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.MID_CONE));
+
     autoChooser.addOption("Mid Auto High Cube", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
+    autoChooser.addOption("Mid Auto Mid Cube", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.MID_CUBE));
+    autoChooser.addOption("Mid Auto High Cone", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
+    autoChooser.addOption("Mid Auto Mid Cone", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.MID_CONE));
+
     autoChooser.addOption("Bottom Auto High Cube", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
+    autoChooser.addOption("Bottom Auto Mid Cube", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.MID_CUBE));
     autoChooser.addOption("Bottom Auto High Cone", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
     autoChooser.addOption("Bottom Auto Mid Cone", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.MID_CONE));
 
@@ -141,6 +147,8 @@ public class RobotContainer {
 
     */
 
+        // autoChooser.addOption("Move Forward", new MoveForward(drivetrain, 3, 1, 0.5));
+    // autoChooser.addOption("Move Backward", new MoveBackward(drivetrain, 3, 1, 0.5));
     // autoChooser.addOption("test pathfollowing", Constants.Trajectory.trajectoryCreator.createCommand(drivetrain, new Waypoint[] {
     //   new Waypoint(0, 0, 0, 1, 1),
     //   new Waypoint(1, 1, 0, 1, 1), 

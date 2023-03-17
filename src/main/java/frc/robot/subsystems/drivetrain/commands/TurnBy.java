@@ -11,16 +11,17 @@ import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.DriverController.Mode;
 
-public class TurnToAngle extends CommandBase {
+public class TurnBy extends CommandBase {
         private Drivetrain drivetrain;  
         private PIDController pidController; 
         private DoubleSupplier setpoint; 
+        private double initialAngle; 
 
-        public TurnToAngle(Drivetrain drivetrain, double angle) {
+        public TurnBy(Drivetrain drivetrain, double angle) {
             this(drivetrain, () -> angle); 
         }
     
-        public TurnToAngle(Drivetrain drivetrain, DoubleSupplier setpoint) {
+        public TurnBy(Drivetrain drivetrain, DoubleSupplier setpoint) {
             this.pidController = new PIDController(
                 Constants.Drivetrain.kTurnP,
                 Constants.Drivetrain.kTurnI,
@@ -37,7 +38,11 @@ public class TurnToAngle extends CommandBase {
     
             this.drivetrain = drivetrain;
             this.setpoint = setpoint; 
-            System.out.println("hi");
+        }
+
+        @Override
+        public void initialize() {
+            this.initialAngle = this.drivetrain.getHeading(); 
         }
     
         @Override
@@ -50,8 +55,8 @@ public class TurnToAngle extends CommandBase {
             //     SmartDashboard.getNumber("Angular kD", 0.0)
             // );
 
-            double output = pidController.calculate(drivetrain.getHeading(), setpoint.getAsDouble()); 
-            SmartDashboard.putNumber("error", setpoint.getAsDouble() - drivetrain.getHeading()); 
+            double output = pidController.calculate(drivetrain.getHeading() - this.initialAngle, setpoint.getAsDouble()); 
+            SmartDashboard.putNumber("error", setpoint.getAsDouble() - drivetrain.getHeading() + this.initialAngle); 
             SmartDashboard.putNumber("output", output); 
             drivetrain.arcadeDrive(0, MathUtil.clamp(output, -1, 1) * Constants.Drivetrain.kQuickTurnMultiplier);
             // this.m_useOutput.accept(output);

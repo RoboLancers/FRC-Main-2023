@@ -43,7 +43,7 @@ public final class Constants {
         public static final class Ports {
             public static final int kAnchorPort = 22;
             public static final int kFloatingPort = 23;
-            public static final int kAnchorLimitSwitchPort = 9;
+            public static final int kAnchorLimitSwitchPort = 0;
             public static final int kFloatingLimitSwitchPort = 0;
         }
 
@@ -84,7 +84,7 @@ public final class Constants {
 
         public enum ScoringPosition {
             HIGH_CUBE(Position.HIGH_CUBE, ScoreSpeed.FAST), 
-            MID_CUBE(Position.CONTRACTED, ScoreSpeed.SLOW), 
+            MID_CUBE(Position.MID_CUBE, ScoreSpeed.SLOW), 
             LOW_CUBE(Position.GROUND, ScoreSpeed.SLOW), 
 
             HIGH_CONE(Position.HIGH_CONE, ScoreSpeed.SLOW), 
@@ -199,8 +199,8 @@ public final class Constants {
         public static final int kMaxStallAmps = 45;  
         public static final double kThrottleMultiplier = 0.70;
         public static final double kQuickTurnMultiplier = 0.23;
-        public static final double kSlowThrottleTurnMultiplier = 0.55; 
-        public static final double kFastThrottleTurnMultiplier = 0.23; 
+        public static final double kSlowThrottleTurnMultiplier = 0.3; 
+        public static final double kFastThrottleTurnMultiplier = 0.20; 
         public static final double kThrottleMultiplierSM = 0.18;
         public static final double kTurnMultiplierSM = 0.15;
 

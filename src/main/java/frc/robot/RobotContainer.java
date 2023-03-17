@@ -15,6 +15,7 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.commands.MoveBackward;
 import frc.robot.subsystems.drivetrain.commands.MoveForward;
 import frc.robot.subsystems.drivetrain.commands.TeleopDrive;
+import frc.robot.subsystems.drivetrain.commands.TurnBy;
 import frc.robot.subsystems.drivetrain.commands.TurnToAngle;
 import frc.robot.commands.BottomLaneAuto;
 import frc.robot.commands.MidLaneAuto;
@@ -24,6 +25,7 @@ import frc.robot.subsystems.arm.commands.MoveToPos;
 import frc.robot.subsystems.arm.commands.RunToSetpoints;
 import frc.robot.subsystems.arm.commands.Zero;
 import frc.robot.util.Controller;
+import frc.robot.util.ControllerUtils;
 import frc.robot.util.DriverController;
 import frc.robot.util.InstantiatorCommand;
 import frc.robot.util.ManipulatorController;
@@ -118,16 +120,24 @@ public class RobotContainer {
 
     // * balance
     // Controller.onPress(driverController.B, new Balance(drivetrain, gyro, 0)); 
+    // SmartDashboard.putNumber("turn by", 30); 
+    // Controller.onPress(driverController.X, new TurnBy(drivetrain, () -> ControllerUtils.clamp(SmartDashboard.getNumber("turn by", 30), -90, 90)));
   }
 
   public void configureAutos() {
     // ! Pick one of these in comp
-    autoChooser.addOption("Move Forward", new MoveForward(drivetrain, 3, 1, 0.5));
-    autoChooser.addOption("Move Backward", new MoveBackward(drivetrain, 3, 1, 0.5));
     autoChooser.addOption("Top Auto High Cube", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
+    autoChooser.addOption("Top Auto Mid Cube", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.MID_CUBE));
     autoChooser.addOption("Top Auto High Cone", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
+    autoChooser.addOption("Top Auto Mid Cone", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.MID_CONE));
+
     autoChooser.addOption("Mid Auto High Cube", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
+    autoChooser.addOption("Mid Auto Mid Cube", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.MID_CUBE));
+    autoChooser.addOption("Mid Auto High Cone", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
+    autoChooser.addOption("Mid Auto Mid Cone", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.MID_CONE));
+
     autoChooser.addOption("Bottom Auto High Cube", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
+    autoChooser.addOption("Bottom Auto Mid Cube", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.MID_CUBE));
     autoChooser.addOption("Bottom Auto High Cone", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
     autoChooser.addOption("Bottom Auto Mid Cone", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.MID_CONE));
 
@@ -137,6 +147,8 @@ public class RobotContainer {
 
     */
 
+        // autoChooser.addOption("Move Forward", new MoveForward(drivetrain, 3, 1, 0.5));
+    // autoChooser.addOption("Move Backward", new MoveBackward(drivetrain, 3, 1, 0.5));
     // autoChooser.addOption("test pathfollowing", Constants.Trajectory.trajectoryCreator.createCommand(drivetrain, new Waypoint[] {
     //   new Waypoint(0, 0, 0, 1, 1),
     //   new Waypoint(1, 1, 0, 1, 1), 

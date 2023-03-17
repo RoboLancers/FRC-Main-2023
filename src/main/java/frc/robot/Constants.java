@@ -84,7 +84,7 @@ public final class Constants {
 
         public enum ScoringPosition {
             HIGH_CUBE(Position.HIGH_CUBE, ScoreSpeed.FAST), 
-            MID_CUBE(Position.CONTRACTED, ScoreSpeed.SLOW), 
+            MID_CUBE(Position.MID_CUBE, ScoreSpeed.SLOW), 
             LOW_CUBE(Position.GROUND, ScoreSpeed.SLOW), 
 
             HIGH_CONE(Position.HIGH_CONE, ScoreSpeed.SLOW), 

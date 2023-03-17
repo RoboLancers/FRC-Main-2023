@@ -165,8 +165,8 @@ public class Drivetrain extends SubsystemBase {
         rightMotors.set(power);
     }
 
-    public void rawArcadeDrive(double throttle, double turn, boolean turnInPlace) {
-        difDrive.arcadeDrive(throttle, turn, turnInPlace);
+    public void rawArcadeDrive(double throttle, double turn, boolean squareInputs) {
+        difDrive.arcadeDrive(throttle, turn, squareInputs);
     }
 
     // Drives the robot with arcade controls.

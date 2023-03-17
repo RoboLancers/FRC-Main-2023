@@ -15,6 +15,10 @@ public class TurnToAngle extends CommandBase {
         private Drivetrain drivetrain;  
         private PIDController pidController; 
         private DoubleSupplier setpoint; 
+
+        public TurnToAngle(Drivetrain drivetrain, double angle) {
+            this(drivetrain, () -> angle); 
+        }
     
         public TurnToAngle(Drivetrain drivetrain, DoubleSupplier setpoint) {
             this.pidController = new PIDController(

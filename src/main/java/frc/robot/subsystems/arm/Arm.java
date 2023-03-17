@@ -175,9 +175,12 @@ public class Arm extends SubsystemBase {
       // TODO: comment out tuneControllers() at comp
       // tuneControllers();
 
-      // if(this.anchorLimitSwitch.get()) {
+      // ! this will fucking break everything if our limit switch unplugs
+      // if(!this.anchorLimitSwitch.get()) {
       //    this.anchorEncoder.setPosition(Constants.Arm.Anchor.kContracted);
       // }
+
+      SmartDashboard.putBoolean("limit switch contacted", !this.anchorLimitSwitch.get()); 
 
       SmartDashboard.putBoolean("on cube", this.armMode);
 

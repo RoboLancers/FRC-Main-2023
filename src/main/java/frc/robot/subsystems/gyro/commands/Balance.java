@@ -37,10 +37,13 @@ public class Balance extends PIDCommand {
         SmartDashboard.putNumber("pitch-error", Math.abs(this.m_measurement.getAsDouble()));
         SmartDashboard.putNumber("pitch-velocity", Math.abs(this.gyro.getPitchVelocity()));
 
-        this.m_controller.setP(SmartDashboard.getNumber("balance-kP", 0));
-        this.m_controller.setD(SmartDashboard.getNumber("balance-kD", 0));
+        // TODO: comment out for comp
+        // this.m_controller.setP(SmartDashboard.getNumber("balance-kP", 0));
+        // this.m_controller.setD(SmartDashboard.getNumber("balance-kD", 0));
 
         double output = this.m_controller.calculate(this.m_measurement.getAsDouble(), this.m_setpoint.getAsDouble());
+
+        SmartDashboard.putNumber("balance-output", output);
 
         this.m_useOutput.accept(-output);
 

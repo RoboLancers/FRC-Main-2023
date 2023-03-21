@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.gyro.Gyro;
+import frc.robot.subsystems.gyro.commands.Balance;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.commands.MoveBackward;
@@ -62,7 +63,7 @@ public class RobotContainer {
     Controller.onRelease(driverController.RightBumper, new InstantCommand(() -> driverController.setSlowMode(Mode.NORMAL)));
 
     // zero the arm
-    Controller.onPress(manipulatorController.RightTrigger, new Zero(arm));
+    // Controller.onPress(manipulatorController.RightTrigger, new Zero(arm));
 
     // driver intake
     Controller.onHold(driverController.RightTrigger, new RunCommand(intake::intakeFast, intake));
@@ -119,27 +120,32 @@ public class RobotContainer {
     // ));
 
     // * balance
-    // Controller.onPress(driverController.B, new Balance(drivetrain, gyro, 0)); 
+    // Controller.onPress(driverController.Y, new Balance(drivetrain, gyro, 0)); 
+
     // SmartDashboard.putNumber("turn by", 30); 
-    // Controller.onPress(driverController.X, new TurnBy(drivetrain, () -> ControllerUtils.clamp(SmartDashboard.getNumber("turn by", 30), -90, 90)));
+    // Controller.onPress(driverController.XX, new TurnBy(drivetrain, () -> ControllerUtils.clamp(SmartDashboard.getNumber("turn by", 30), -90, 90)));
   }
 
   public void configureAutos() {
     // ! Pick one of these in comp
-    autoChooser.addOption("Top Auto High Cube", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
-    autoChooser.addOption("Top Auto Mid Cube", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.MID_CUBE));
-    autoChooser.addOption("Top Auto High Cone", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
-    autoChooser.addOption("Top Auto Mid Cone", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.MID_CONE));
+    autoChooser.addOption("No Bump Lane High Cube", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
+    autoChooser.addOption("No Bump Lane Mid Cube", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.MID_CUBE));
+    autoChooser.addOption("No Bump Lane High Cone", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
+    autoChooser.addOption("No Bump Lane Mid Cone", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.MID_CONE));
+    autoChooser.addOption("No Bump Lane Low", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.LOW_CUBE));
 
-    autoChooser.addOption("Mid Auto High Cube", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
-    autoChooser.addOption("Mid Auto Mid Cube", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.MID_CUBE));
-    autoChooser.addOption("Mid Auto High Cone", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
-    autoChooser.addOption("Mid Auto Mid Cone", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.MID_CONE));
+    autoChooser.addOption("Balance High Cube", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
+    autoChooser.addOption("Balance Mid Cube", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.MID_CUBE));
+    autoChooser.addOption("Balance High Cone", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
+    autoChooser.addOption("Balance Mid Cone", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.MID_CONE));
+    autoChooser.addOption("Balance Low", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.LOW_CUBE));
 
-    autoChooser.addOption("Bottom Auto High Cube", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
-    autoChooser.addOption("Bottom Auto Mid Cube", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.MID_CUBE));
-    autoChooser.addOption("Bottom Auto High Cone", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
-    autoChooser.addOption("Bottom Auto Mid Cone", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.MID_CONE));
+    // TODO: this is fucking stupid
+    autoChooser.addOption("Bump Lane High Cube", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
+    autoChooser.addOption("Bump Lane Mid Cube", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.MID_CUBE));
+    autoChooser.addOption("Bump Lane High Cone", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
+    autoChooser.addOption("Bump Lane Mid Cone", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.MID_CONE));
+    autoChooser.addOption("Bump Lane Low", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.LOW_CUBE));
 
     /*
     

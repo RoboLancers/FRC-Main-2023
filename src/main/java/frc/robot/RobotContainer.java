@@ -5,7 +5,11 @@ import java.util.ResourceBundle.Control;
 import org.bananasamirite.robotmotionprofile.Waypoint;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -48,6 +52,17 @@ public class RobotContainer {
     
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
+  //Camera 
+  private UsbCamera intakeCamera = new UsbCamera("Intake Camera ", 0);
+  private UsbCamera stationCamera = new UsbCamera("Station Camera ", 1);
+  private enum CameraMode{
+    INTAKE,
+    STATION,
+  }
+  private CameraMode cameraMode = CameraMode.INTAKE;
+  private final NetworkTableEntry cameraSelection = NetworkTableInstance.getDefault().getTable("").getEntry("CameraSelection");
+
+
   public RobotContainer() {
       this.drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, driverController));
 
@@ -55,7 +70,8 @@ public class RobotContainer {
 
       this.intake.setDefaultCommand(new RunCommand(intake::off, intake));
 
-      CameraServer.startAutomaticCapture(); 
+      CameraServer.startAutomaticCapture(0);
+      this.cameraSelection.setString(intakeCamera.getName());
 
       configureButtonBindings();
       configureAutos(); 
@@ -66,6 +82,9 @@ public class RobotContainer {
     // driver slow mode
     Controller.onHold(driverController.RightBumper, new InstantCommand(() -> driverController.setSlowMode(Mode.SLOW)));
     Controller.onRelease(driverController.RightBumper, new InstantCommand(() -> driverController.setSlowMode(Mode.NORMAL)));
+
+    //driver camera switch
+    Controller.onPress(driverController.LeftBumper, new InstantCommand(() -> setCamera()));
 
     // manipulator grid align
     // Controller.onBothPress(manipulatorController.LeftBumper, manipulatorController.RightBumper, new ScanAndAlign(drivetrain, arm, poseTracker, manipulatorController));
@@ -136,6 +155,21 @@ public class RobotContainer {
 
     // balance
     // Controller.onPress(driverController.B, new Balance(drivetrain, gyro, 0)); 
+  }
+
+  public void setCamera(){
+    if(cameraMode == CameraMode.INTAKE){
+      cameraMode = CameraMode.STATION;
+      intakeCamera.setConnectionStrategy(ConnectionStrategy.kForceClose);
+      CameraServer.startAutomaticCapture(1);
+      cameraSelection.setString(stationCamera.getName());
+    }
+    else if(cameraMode == CameraMode.STATION){
+      cameraMode = CameraMode.INTAKE;
+      stationCamera.setConnectionStrategy(ConnectionStrategy.kForceClose);
+      CameraServer.startAutomaticCapture(0);
+      cameraSelection.setString(intakeCamera.getName());
+    }
   }
 
   public void configureAutos() {

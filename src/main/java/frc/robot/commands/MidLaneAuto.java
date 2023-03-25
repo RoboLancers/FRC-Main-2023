@@ -17,6 +17,8 @@ import frc.robot.subsystems.intake.Intake;
 public class MidLaneAuto extends SequentialCommandGroup {
     public MidLaneAuto(Drivetrain drivetrain, Gyro gyro, Arm arm, Intake intake, Constants.Arm.ScoringPosition position) {
         addCommands(
+            // new Score(arm, intake, position)
+            
             new Score(arm, intake, position),
             // TODO: tune this first such that it goes over charging, then find how much to go back
             new MoveBackward(drivetrain, 0.5), 
@@ -34,7 +36,7 @@ public class MidLaneAuto extends SequentialCommandGroup {
                             return Math.abs(gyro.getPitch()) > 12; 
                         }
                     ).andThen(new WaitCommand(1.0)), 
-                    new WaitCommand(2.0)
+                    new WaitCommand(2.5)
                 )
             ),
             // new MoveBackward(drivetrain, 4) // <- this

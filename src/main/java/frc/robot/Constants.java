@@ -53,7 +53,7 @@ public final class Constants {
             // TODO: added 3 to all anchor setpoints because of change from 13 to 16, look into the validity of setpoints after this change
             
             CONTRACTED(16.0, 22.0), 
-            GROUND(16.0, 113.0), 
+            GROUND(16.0, 113.0), // 113
 
             MID_CUBE(16.0, 40.0),
             HIGH_CUBE(55.0, 82.0),
@@ -200,9 +200,8 @@ public final class Constants {
         public static final int kMaxFreeAmps = 35;
         public static final int kMaxStallAmps = 45;  
         public static final double kThrottleMultiplier = 0.70;
-        public static final double kQuickTurnMultiplier = 0.23;
-        public static final double kSlowThrottleTurnMultiplier = 0.3; 
-        public static final double kFastThrottleTurnMultiplier = 0.20; 
+        public static final double kQuickTurnMultiplier = 0.26; //0.23 static final double kSlowThrottleTurnMultiplier = 0.3; 
+        public static final double kFastThrottleTurnMultiplier = 0.22; //0.2
         public static final double kThrottleMultiplierSM = 0.18;
         public static final double kTurnMultiplierSM = 0.15;
 

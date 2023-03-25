@@ -114,13 +114,13 @@ public class RobotContainer {
     // ));
 
     // * balance
-    // Controller.onPress(driverController.B, new Balance(drivetrain, gyro, 0)); 
+    // Controller.onPress(driverController.Y, new Balance(drivetrain, gyro, 0)); 
+
     // SmartDashboard.putNumber("turn by", 30); 
-    // Controller.onPress(driverController.X, new TurnBy(drivetrain, () -> ControllerUtils.clamp(SmartDashboard.getNumber("turn by", 30), -90, 90)));
+    // Controller.onPress(driverController.XX, new TurnBy(drivetrain, () -> ControllerUtils.clamp(SmartDashboard.getNumber("turn by", 30), -90, 90)));
   }
 
   public void configureAutos() {
-
 
     /*
     

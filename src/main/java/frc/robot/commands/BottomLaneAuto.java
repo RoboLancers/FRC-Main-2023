@@ -18,50 +18,16 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.commands.IntakeElement;
 
 public class BottomLaneAuto extends SequentialCommandGroup {
-    public BottomLaneAuto(Drivetrain drivetrain, Arm arm, Intake intake, Constants.Arm.ScoringPosition scoreFirst) {
-        // double BOTTOM_TURN_ANGLE_RED = 30; 
-        // double allianceMultiplier = DriverStation.getAlliance() == Alliance.Red ? 1 : -1; 
-        // switch(position) {
-        //     case HIGH_CUBE: 
-        //     case MID_CUBE:
-        //     case LOW_CUBE: 
-        //         addCommands(
-        //             new Score(arm, intake, position), 
-        //             new MoveBackward(drivetrain, 5)
-        //         ); 
-        //         // addCommands(
-        //         //     new Score(arm, intake, position), 
-        //         //     new MoveBackward(drivetrain, 0.5), 
-        //         //     new TurnBy(drivetrain, BOTTOM_TURN_ANGLE_RED * allianceMultiplier), 
-        //         //     new MoveBackward(drivetrain, 0.5), 
-        //         //     new TurnBy(drivetrain, -BOTTOM_TURN_ANGLE_RED * allianceMultiplier), 
-        //         //     new MoveBackward(drivetrain, 4)
-        //         // );
-        //         break;
-        //     case HIGH_CONE: 
-        //     case MID_CONE:
-        //     case LOW_CONE:
-        //         addCommands(
-        //             new Score(arm, intake, position), 
-        //             new MoveBackward(drivetrain, 5)
-        //         ); 
-        //         break; 
-        // }
-        // addCommands(
-        //     new Score(arm, intake, position), 
-        //     new MoveBackward(drivetrain, 5), 
-        //     new TurnBy(drivetrain, 180)
+    public BottomLaneAuto(Drivetrain drivetrain, Arm arm, Intake intake, Constants.Arm.ScoringPosition position) {
 
-        // ); 
+        // addCommands(new Score(arm, intake, position), new MoveBackward(drivetrain, 5));
         
         final double allianceMultiplier = DriverStation.getAlliance() == Alliance.Red ? 1 : -1; 
 
         Waypoint startWaypoint; 
         Waypoint BOTTOM_PIECE = new Waypoint(-5.9, -7.14 * allianceMultiplier, 0, 1, 1); 
 
-
-
-        switch (scoreFirst) {
+        switch (position) {
             case HIGH_CUBE: 
             case MID_CUBE:
             case LOW_CUBE: 
@@ -75,14 +41,15 @@ public class BottomLaneAuto extends SequentialCommandGroup {
                 break; 
         }
 
-        addCommands(new Score(arm, intake, scoreFirst), 
-        Constants.Trajectory.trajectoryCreator.createCommand(drivetrain, new Waypoint[] {
-            startWaypoint, 
-            BOTTOM_PIECE
-        }, new TrajectoryConfig(Constants.Trajectory.kMaxSpeedMetersPerSecond, Constants.Trajectory.kMaxAccelerationMetersPerSecondSquared).setReversed(true)),
-        new TurnBy(drivetrain, 180), 
-        new MoveToPos(arm, Constants.Arm.Position.GROUND),
-        new ParallelCommandGroup(new MoveForward(drivetrain, 0.5), new IntakeElement(intake, ScoreSpeed.FAST))
+        addCommands(new Score(arm, intake, position), 
+            Constants.Trajectory.trajectoryCreator.createCommand(drivetrain, new Waypoint[] {
+                startWaypoint, 
+                BOTTOM_PIECE
+            }, new TrajectoryConfig(Constants.Trajectory.kMaxSpeedMetersPerSecond, Constants.Trajectory.kMaxAccelerationMetersPerSecondSquared).setReversed(true)),
+            new TurnBy(drivetrain, 180), 
+            new MoveToPos(arm, Constants.Arm.Position.GROUND),
+            new ParallelCommandGroup(new MoveForward(drivetrain, 0.5), new IntakeElement(intake, ScoreSpeed.FAST)), 
+            new MoveToPos(arm, Constants.Arm.Position.CONTRACTED)
         );
 
     }

@@ -6,10 +6,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.util.DriverController.Mode;
 
 public class TurnToAngle extends CommandBase {
         private Drivetrain drivetrain;  
@@ -26,17 +24,21 @@ public class TurnToAngle extends CommandBase {
                 Constants.Drivetrain.kTurnI,
                 Constants.Drivetrain.kTurnD
             ); 
-            this.pidController.setTolerance(Constants.Drivetrain.kTurnErrorThreshold);
+            this.pidController.setTolerance(Constants.Drivetrain.kTurnErrorThreshold, Constants.Drivetrain.kTurnVelocityThreshold);
             this.pidController.enableContinuousInput(-180.0, 180.0);
 
             SmartDashboard.putNumber("Angular kP", 0.0); 
             SmartDashboard.putNumber("Angular kI", 0.0); 
             SmartDashboard.putNumber("Angular kD", 0.0); 
 
+            SmartDashboard.putNumber("Angular FF", 0); 
+
             SmartDashboard.putBoolean("Angular Running", true);
     
             this.drivetrain = drivetrain;
             this.setpoint = setpoint; 
+
+            addRequirements(drivetrain);
             System.out.println("hi");
         }
     
@@ -50,11 +52,20 @@ public class TurnToAngle extends CommandBase {
             //     SmartDashboard.getNumber("Angular kD", 0.0)
             // );
 
-            double output = pidController.calculate(drivetrain.getHeading(), setpoint.getAsDouble()); 
-            SmartDashboard.putNumber("error", setpoint.getAsDouble() - drivetrain.getHeading()); 
+            // this.pidController.setPID(
+            //     SmartDashboard.getNumber("Angular kP", 0.0),
+            //     SmartDashboard.getNumber("Angular kI", 0.0),
+            //     SmartDashboard.getNumber("Angular kD", 0.0)
+            // );
+
+            double output = pidController.calculate(drivetrain.getYaw(), setpoint.getAsDouble()); 
+            //  + SmartDashboard.getNumber("Angular kFF", 0) * Math.signum(pidController.getPositionError());
+            if (Math.abs(output) < Constants.Drivetrain.kTurnFF) output = Math.signum(output) * SmartDashboard.getNumber("Angular kFF", 0);  
+            SmartDashboard.putNumber("setpoint", setpoint.getAsDouble()); 
+            SmartDashboard.putNumber("error", pidController.getPositionError()); 
+            // SmartDashboard.putNumber("", output); 
             SmartDashboard.putNumber("output", output); 
-            drivetrain.arcadeDrive(0, MathUtil.clamp(output, -1, 1) * Constants.Drivetrain.kQuickTurnMultiplier);
-            // this.m_useOutput.accept(output);
+            drivetrain.arcadeDrive(0, MathUtil.clamp(output, -Constants.Drivetrain.kQuickTurnMultiplier, Constants.Drivetrain.kQuickTurnMultiplier));
         }
     
         @Override

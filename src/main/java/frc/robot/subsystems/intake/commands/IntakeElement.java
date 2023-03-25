@@ -10,13 +10,13 @@ import frc.robot.subsystems.intake.Intake;
 
 public class IntakeElement extends ParallelRaceGroup {
     public IntakeElement(Intake intake, ScoreSpeed speed) {
-        addCommands(new RunCommand(() -> {
+        addCommands(new ParallelRaceGroup(new RunCommand(() -> {
             if (speed == ScoreSpeed.FAST) {
-                intake.outtakeFast();
+                intake.intakeFast();
             } else {
-                intake.outtakeSlow();
+                intake.intakeSlow();
             }
-        }), new WaitCommand(Constants.Intake.kAutoIntakeSeconds), new InstantCommand(intake::off, intake));
+        }), new WaitCommand(Constants.Intake.kAutoIntakeSeconds)), new InstantCommand(intake::off, intake));
 
         addRequirements(intake);
     }

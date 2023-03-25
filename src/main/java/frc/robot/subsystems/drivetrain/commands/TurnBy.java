@@ -6,19 +6,20 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.util.DriverController.Mode;
 
 public class TurnBy extends CommandBase {
         private Drivetrain drivetrain;  
         private PIDController pidController; 
         private DoubleSupplier setpoint; 
+
         private double initialAngle; 
 
         public TurnBy(Drivetrain drivetrain, double angle) {
-            this(drivetrain, () -> angle); 
+            this(drivetrain, () -> {
+                return angle; 
+            }); 
         }
     
         public TurnBy(Drivetrain drivetrain, DoubleSupplier setpoint) {
@@ -27,12 +28,13 @@ public class TurnBy extends CommandBase {
                 Constants.Drivetrain.kTurnI,
                 Constants.Drivetrain.kTurnD
             ); 
-            this.pidController.setTolerance(Constants.Drivetrain.kTurnErrorThreshold);
-            this.pidController.enableContinuousInput(-180.0, 180.0);
+            this.pidController.setTolerance(Constants.Drivetrain.kTurnErrorThreshold, Constants.Drivetrain.kTurnVelocityThreshold);
+            // this.pidController.enableContinuousInput(-180.0, 180.0);
 
-            SmartDashboard.putNumber("Angular kP", 0.0); 
-            SmartDashboard.putNumber("Angular kI", 0.0); 
-            SmartDashboard.putNumber("Angular kD", 0.0); 
+            SmartDashboard.putNumber("Angular kP", SmartDashboard.getNumber("Angular kP", 0)); 
+            SmartDashboard.putNumber("Angular kI", SmartDashboard.getNumber("Angular kI", 0)); 
+            SmartDashboard.putNumber("Angular kD", SmartDashboard.getNumber("Angular kD", 0)); 
+            SmartDashboard.putNumber("Angular kFF", SmartDashboard.getNumber("Angular kFF", 0)); 
 
             SmartDashboard.putBoolean("Angular Running", true);
     
@@ -55,10 +57,14 @@ public class TurnBy extends CommandBase {
             //     SmartDashboard.getNumber("Angular kD", 0.0)
             // );
 
-            double output = pidController.calculate(drivetrain.getHeading() - this.initialAngle, setpoint.getAsDouble()); 
-            SmartDashboard.putNumber("error", setpoint.getAsDouble() - drivetrain.getHeading() + this.initialAngle); 
+            double output = pidController.calculate(drivetrain.getHeading(), setpoint.getAsDouble() + this.initialAngle); 
+            //  + SmartDashboard.getNumber("Angular kFF", 0) * Math.signum(pidController.getPositionError());
+            if (Math.abs(output) < Constants.Drivetrain.kTurnFF) output = Math.signum(output) * Constants.Drivetrain.kTurnFF;  
+            SmartDashboard.putNumber("setpoint", setpoint.getAsDouble() + this.initialAngle); 
+            SmartDashboard.putNumber("error", pidController.getPositionError()); 
+            // SmartDashboard.putNumber("", output); 
             SmartDashboard.putNumber("output", output); 
-            drivetrain.arcadeDrive(0, MathUtil.clamp(output, -1, 1) * Constants.Drivetrain.kQuickTurnMultiplier);
+            drivetrain.arcadeDrive(0, MathUtil.clamp(output, -Constants.Drivetrain.kQuickTurnMultiplier, Constants.Drivetrain.kQuickTurnMultiplier));
             // this.m_useOutput.accept(output);
         }
     

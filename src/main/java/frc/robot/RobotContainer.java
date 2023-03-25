@@ -1,10 +1,5 @@
 package frc.robot;
 
-import org.bananasamirite.robotmotionprofile.Waypoint;
-
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -12,20 +7,11 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.subsystems.drivetrain.commands.MoveBackward;
-import frc.robot.subsystems.drivetrain.commands.MoveForward;
 import frc.robot.subsystems.drivetrain.commands.TeleopDrive;
-import frc.robot.subsystems.drivetrain.commands.TurnBy;
-import frc.robot.subsystems.drivetrain.commands.TurnToAngle;
-import frc.robot.commands.BottomLaneAuto;
-import frc.robot.commands.MidLaneAuto;
-import frc.robot.commands.TopLaneAuto;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.commands.MoveToPos;
 import frc.robot.subsystems.arm.commands.RunToSetpoints;
-import frc.robot.subsystems.arm.commands.Zero;
 import frc.robot.util.Controller;
-import frc.robot.util.ControllerUtils;
 import frc.robot.util.DriverController;
 import frc.robot.util.InstantiatorCommand;
 import frc.robot.util.ManipulatorController;
@@ -35,21 +21,24 @@ public class RobotContainer {
   private final DriverController driverController = new DriverController(0);
   private final ManipulatorController manipulatorController = new ManipulatorController(1);
 
-  private Drivetrain drivetrain = new Drivetrain();
+  private Gyro gyro = new Gyro();
+  private Drivetrain drivetrain = new Drivetrain(gyro);
   private Arm arm = new Arm();
   private Intake intake = new Intake();
-  private Gyro gyro = new Gyro();
+  // private PoseTracker tracker = new PoseTracker(); 
+  // private SideCamera sideCamera = new SideCamera(0, 1); 
     
-  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+  private final AutoPicker autoPicker; 
 
   public RobotContainer() {
+
+    this.autoPicker = new AutoPicker(drivetrain, arm, gyro, intake); 
+
       this.drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, driverController));
 
       this.arm.setDefaultCommand(new RunToSetpoints(arm));
 
       this.intake.setDefaultCommand(new RunCommand(intake::off, intake));
-
-      CameraServer.startAutomaticCapture(); 
 
       configureButtonBindings();
       configureAutos(); 
@@ -62,7 +51,7 @@ public class RobotContainer {
     Controller.onRelease(driverController.RightBumper, new InstantCommand(() -> driverController.setSlowMode(Mode.NORMAL)));
 
     // zero the arm
-    Controller.onPress(manipulatorController.RightTrigger, new Zero(arm));
+    // Controller.onPress(manipulatorController.RightTrigger, new Zero(arm));
 
     // driver intake
     Controller.onHold(driverController.RightTrigger, new RunCommand(intake::intakeFast, intake));
@@ -98,10 +87,16 @@ public class RobotContainer {
     // shelf
     Controller.onPress(driverController.B, new MoveToPos(arm, Constants.Arm.Position.SHELF));
 
+    // Controller.onBothPress(driverController.LeftBumper, driverController.RightBumper, new InstantiatorCommand(() -> new GridAlign(drivetrain, tracker, 1, 0.5)));
 
+    // driver turning
+    // Controller.onPress(driverController.X, new TurnToAngle(drivetrain, 0)); // align with grid
+    // Controller.onPress(driverController.Y, new TurnToAngle(drivetrain, 90 * (DriverStation.getAlliance() == Alliance.Red ? -1 : 1))); // align with park
 
+    // SmartDashboard.putNumber("turn by", 0); 
 
-
+    // Controller.onBothPress(driverController.LeftTrigger, driverController.RightTrigger, new TurnBy(drivetrain, () -> SmartDashboard.getNumber("turn by", 0)));
+    // Controller.onPress(driverController., getAutonomousCommand());
 
     /*
     
@@ -125,21 +120,7 @@ public class RobotContainer {
   }
 
   public void configureAutos() {
-    // ! Pick one of these in comp
-    autoChooser.addOption("Top Auto High Cube", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
-    autoChooser.addOption("Top Auto Mid Cube", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.MID_CUBE));
-    autoChooser.addOption("Top Auto High Cone", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
-    autoChooser.addOption("Top Auto Mid Cone", new TopLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.MID_CONE));
 
-    autoChooser.addOption("Mid Auto High Cube", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
-    autoChooser.addOption("Mid Auto Mid Cube", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.MID_CUBE));
-    autoChooser.addOption("Mid Auto High Cone", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
-    autoChooser.addOption("Mid Auto Mid Cone", new MidLaneAuto(drivetrain, gyro, arm, intake, Constants.Arm.ScoringPosition.MID_CONE));
-
-    autoChooser.addOption("Bottom Auto High Cube", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CUBE));
-    autoChooser.addOption("Bottom Auto Mid Cube", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.MID_CUBE));
-    autoChooser.addOption("Bottom Auto High Cone", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.HIGH_CONE));
-    autoChooser.addOption("Bottom Auto Mid Cone", new BottomLaneAuto(drivetrain, arm, intake, Constants.Arm.ScoringPosition.MID_CONE));
 
     /*
     
@@ -147,21 +128,21 @@ public class RobotContainer {
 
     */
 
-        // autoChooser.addOption("Move Forward", new MoveForward(drivetrain, 3, 1, 0.5));
-    // autoChooser.addOption("Move Backward", new MoveBackward(drivetrain, 3, 1, 0.5));
-    // autoChooser.addOption("test pathfollowing", Constants.Trajectory.trajectoryCreator.createCommand(drivetrain, new Waypoint[] {
+    // this.autoPicker.getAutoChooser().addOption("test pathfollowing", Constants.Trajectory.trajectoryCreator.createCommand(drivetrain, new Waypoint[] {
     //   new Waypoint(0, 0, 0, 1, 1),
-    //   new Waypoint(1, 1, 0, 1, 1), 
-    //   new Waypoint(2, 0, Math.toRadians(90), 1, 1)
-    // }, new TrajectoryConfig(1, 0.5)));
+    //   new Waypoint(1, -1, 0, 1, 1), 
+    //   new Waypoint(2, 0, Math.toRadians(180), 1, 1)
+    // }, new TrajectoryConfig(2, 0.75)));
     // autoChooser.addOption("test drivetrain", new TurnToAngle(drivetrain, () -> SmartDashboard.getNumber("turn angle", 0)));
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected(); 
+    return this.autoPicker.getAutoChooser().getSelected(); 
   }
 
   public void doSendables() {
-    SmartDashboard.putData(autoChooser);
+    SmartDashboard.putData(this.autoPicker.getAutoChooser());
+    SmartDashboard.putData(this.autoPicker.getScoringPosition1());
+    SmartDashboard.putData(this.autoPicker.getScoringPosition2());
   }
 }

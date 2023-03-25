@@ -104,7 +104,7 @@ public class Arm extends SubsystemBase {
       this.floatingPIDController.setD(Constants.Arm.Floating.kD);
       this.floatingPIDController.setFF(Constants.Arm.Floating.kFF);
 
-      this.floatingPIDController.setOutputRange(-0.3, 0.4);
+      this.floatingPIDController.setOutputRange(Constants.Arm.Floating.kMaxDownwardOutput, Constants.Arm.Floating.kMaxUpwardOutput);
 
       // this.anchorPIDController.setFeedbackDevice(anchorEncoder);
       this.floatingPIDController.setFeedbackDevice(floatingEncoder); 

@@ -1,8 +1,5 @@
 package frc.robot.subsystems.drivetrain;
 
-import java.util.function.Consumer;
-
-import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.RelativeEncoder;
@@ -18,11 +15,10 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.util.DriveFollower;
+import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.util.Encoder;
 import frc.robot.util.enums.Displacement;
 import frc.robot.util.limelight.LimelightAPI;
-import edu.wpi.first.wpilibj.SPI;
 
 public class Drivetrain extends SubsystemBase {
     private final CANSparkMax leftMotor1 = new CANSparkMax(Constants.Drivetrain.LeftMotors.kLeftMotor1_Port, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -53,15 +49,16 @@ public class Drivetrain extends SubsystemBase {
     private final Encoder rightEncoder = new Encoder(rightMotor1.getEncoder());
     private final Encoder leftEncoder = new Encoder(leftMotor1.getEncoder());
 
-    private final AHRS gyro = new AHRS(SPI.Port.kMXP);
-
     private final Field2d m_field = new Field2d();
-
-    private final DriveFollower driveFollower; 
 
     public boolean isAutoSteer = false; 
 
-    public Drivetrain() {
+    private final Gyro gyro; 
+
+    public Drivetrain(Gyro gyro) {
+
+        this.gyro = gyro; 
+
         // inversions
         rightMotor1.setInverted(true);
         rightMotor2.setInverted(true);
@@ -106,22 +103,11 @@ public class Drivetrain extends SubsystemBase {
         leftEncoder.getEncoder().setVelocityConversionFactor(Constants.Trajectory.kMetersPerSecondPerRPM);
         rightEncoder.getEncoder().setVelocityConversionFactor(Constants.Trajectory.kMetersPerSecondPerRPM);
 
+        gyro.zeroYaw();
+
         resetEncoders();
 
         odometry = new DifferentialDriveOdometry(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
-
-        this.driveFollower = new DriveFollower(this); 
-
-        //initDefaultCommand(driverController);
-    }
-
-    public void configureMotors(Consumer<CANSparkMax> func) {
-        func.accept(leftMotor1);
-        func.accept(leftMotor2);
-        func.accept(leftMotor3);
-        func.accept(rightMotor1);
-        func.accept(rightMotor2);
-        func.accept(rightMotor3);
     }
 
     // Constantly updates the odometry of the robot with the rotation and the distance traveled.
@@ -132,11 +118,12 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putData("field", m_field);
         SmartDashboard.putNumber("x", odometry.getPoseMeters().getX());
         SmartDashboard.putNumber("y", odometry.getPoseMeters().getY());
-        SmartDashboard.putNumber("rotation", odometry.getPoseMeters().getRotation().getDegrees());
+        SmartDashboard.putNumber("rotation", getPose().getRotation().getDegrees());
+        SmartDashboard.putNumber("yaw", getYaw()); 
         SmartDashboard.putNumber("encoderLeft", leftEncoder.getPosition());
         SmartDashboard.putNumber("encoderRight", rightEncoder.getPosition());
-        SmartDashboard.putNumber("leftSpeed", leftMotor1.get());
-        SmartDashboard.putNumber("rightSpeed", rightMotor1.get()); 
+        SmartDashboard.putNumber("leftSpeed", leftEncoder.getEncoder().getVelocity());
+        SmartDashboard.putNumber("rightSpeed", rightEncoder.getEncoder().getVelocity()); 
     }
 
     // Returns the pose of the robot.
@@ -155,7 +142,7 @@ public class Drivetrain extends SubsystemBase {
 
     // Resets the odometry, both rotation and distance traveled.
     public void resetOdometry(Pose2d pose) {
-        gyro.zeroYaw();
+        // gyro.zeroYaw();
         resetEncoders();
         odometry.resetPosition(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition(), pose);
     }
@@ -247,13 +234,17 @@ public class Drivetrain extends SubsystemBase {
     }
 
     // Sets the recorded heading to 0. Makes new direction the 0 heading.
-    public void zeroHeading() {
-        gyro.reset();
-    }
+    // public void zeroHeading() {
+    //     gyro.reset();
+    // }
 
     // Returns the direction the robot is facing in degrees from -180 to 180 degrees.
     public double getHeading() {
         return gyro.getRotation2d().getDegrees();
+    }
+
+    public double getYaw() {
+        return -gyro.getYaw(); 
     }
 
     // Returns the rate at which the robot is turning in degrees per second.
@@ -263,9 +254,5 @@ public class Drivetrain extends SubsystemBase {
 
     public Field2d getField() {
         return this.m_field; 
-    }
-    
-    public DriveFollower getDriveFollower() {
-        return driveFollower; 
     }
 }

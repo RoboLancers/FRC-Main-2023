@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.misc.BlinkinLED;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.commands.MoveBackward;
 import frc.robot.subsystems.drivetrain.commands.MoveForward;
@@ -45,6 +46,7 @@ public class RobotContainer {
   private Intake intake = new Intake();
   private Gyro gyro = new Gyro();
   private PoseTracker poseTracker = new PoseTracker();
+  private BlinkinLED led = new BlinkinLED(gyro);
     
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 

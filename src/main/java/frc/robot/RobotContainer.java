@@ -11,6 +11,7 @@ import frc.robot.subsystems.drivetrain.commands.TeleopDrive;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.commands.MoveToPos;
 import frc.robot.subsystems.arm.commands.RunToSetpoints;
+import frc.robot.subsystems.leds.addressable.LED;
 import frc.robot.util.Controller;
 import frc.robot.util.DriverController;
 import frc.robot.util.InstantiatorCommand;
@@ -26,7 +27,7 @@ public class RobotContainer {
   private Arm arm = new Arm();
   private Intake intake = new Intake();
   // private PoseTracker tracker = new PoseTracker(); 
-  // private SideCamera sideCamera = new SideCamera(0, 1); 
+  // private SideCamera sideCamera = new SideCamera(0, 1);
     
   private final AutoPicker autoPicker; 
 

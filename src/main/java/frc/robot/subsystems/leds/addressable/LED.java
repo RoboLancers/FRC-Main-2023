@@ -1,31 +1,91 @@
 package frc.robot.subsystems.leds.addressable;
 
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.util.Color;
+
+import java.util.List;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.subsystems.gyro.Gyro;
+import frc.robot.subsystems.leds.addressable.patterns.FadeLEDPattern;
+import frc.robot.subsystems.leds.addressable.patterns.LEDPattern;
+import frc.robot.subsystems.leds.addressable.patterns.MorseCodePattern;
+import frc.robot.subsystems.leds.addressable.patterns.SolidLEDPattern;
 
 public class LED extends SubsystemBase {
-    private AddressableLED LED; 
+    private List<LEDStrip> ledStrips;
 
-    private AddressableLEDBuffer buffer; 
+    // private Gyro gyro;
 
-    private LEDWriter writer; 
-    public LED(int port, int length) {
-        this.LED = new AddressableLED(port);
-        this.buffer = new AddressableLEDBuffer(length); 
-        setWriter(new LEDWriter.EmptyLEDWriter()); 
-        this.LED.start();
+    private Timer timer;
+
+    public LED(Gyro gyro, LEDPattern pattern) {
+        this.ledStrips = List.of(
+            new LEDStrip(Constants.LEDs.kLed1Port, Constants.LEDs.kLed1Size),
+            new LEDStrip(Constants.LEDs.kLed2Port, Constants.LEDs.kLed2Size)
+        );
+
+        // default pattern should be goose
+        if (pattern == null)
+            setPattern(new SolidLEDPattern(Color.kOrange));
+        else 
+            setPattern(pattern);
+
+        this.timer = new Timer();
+        this.timer.start();
+        // this.gyro = gyro;
     }
 
-    public void setWriter(LEDWriter writer) {
-        if (this.writer != null) this.writer.deactivate();
-        this.writer = writer; 
-        this.writer.activate();
+    public void setPattern(LEDPattern pattern) {
+        for (LEDStrip strip : this.ledStrips)
+            strip.setPattern(pattern);
+        this.timer.restart();
+    }
+
+    public void weDiedLol(boolean morse, String message) {
+        if (!morse)
+            setPattern(new FadeLEDPattern(1, Color.kRed, Color.kBlack));
+        else
+            setPattern(new MorseCodePattern(Color.kRed, Color.kBlue, message));
+    }
+
+    public void setAllianceColor() {
+        setPattern(new SolidLEDPattern(DriverStation.getAlliance() == Alliance.Red ? Color.kRed : Color.kBlue));
+    }
+
+    public void cube() {
+        setPattern(new SolidLEDPattern(Color.kPurple));
+    }
+
+    public void cone() {
+        setPattern(new SolidLEDPattern(Color.kYellow));
     }
 
     @Override
     public void periodic() {
-        if (this.writer != null) this.writer.update(buffer);
-        this.LED.setData(buffer);
+
+        if (DriverStation.isDisabled()) {
+            setPattern(new FadeLEDPattern(2.5, Color.kOrange, Color.kWhite));
+        }
+
+        // ordering of pattern changes is concerning (least to most urgent?)
+        // need arm instance for armMode??? (not great)
+        // which is why you probably shouldln't poll for these things
+        // update it from their separate methods
+        // (FSM WHEN?!?!?)
+
+        // if (Math.abs(this.gyro.getPitch()) > 45)
+        // weDiedLol(true, SmartDashboard.getString("Morse Message",
+        // Constants.LEDs.kDefaultMessage));
+
+        // if (this.pattern != null)
+        // this.pattern.update(buffer, timer.get());
+
+        // this.LED.setData(buffer);
+        for (int i = 0; i < ledStrips.size(); i++) {
+            ledStrips.get(i).update(timer.get());
+        }
     }
 }

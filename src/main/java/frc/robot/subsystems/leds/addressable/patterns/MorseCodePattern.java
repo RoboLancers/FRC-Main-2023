@@ -17,11 +17,15 @@ public class MorseCodePattern extends TimedPattern {
     }
 
     public MorseCodePattern(Color c, String input, double morseCodeTimeout1, double morseCodeTimeout2) {
-    super(StringToMorse.convert(input).chars()
-            .mapToObj(character -> new TimedPattern.TimedLEDPattern(
+        super();
+        StringToMorse.convert(input).chars()
+            .forEach(character -> {
+                addPattern(
                     new SolidLEDPattern(character == '.' || character == '-' ? c : Color.kBlack),
                     character == '.' ? morseCodeTimeout1 : character == '-' ? morseCodeTimeout2 : 1
-                    )).toList());
+                ); 
+                timedWait(0.5);
+            }); 
     }
 
 

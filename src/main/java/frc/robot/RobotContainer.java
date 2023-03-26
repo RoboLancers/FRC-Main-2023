@@ -1,17 +1,24 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.simulation.AddressableLEDSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.leds.addressable.LED;
+import frc.robot.subsystems.leds.addressable.LEDStrip;
+import frc.robot.subsystems.leds.addressable.patterns.EscalatingRandomColorPattern;
+import frc.robot.subsystems.leds.addressable.patterns.MorseCodePattern;
+import frc.robot.subsystems.leds.addressable.patterns.RainbowPattern;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.commands.TeleopDrive;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.commands.MoveToPos;
 import frc.robot.subsystems.arm.commands.RunToSetpoints;
-import frc.robot.subsystems.leds.addressable.LED;
 import frc.robot.util.Controller;
 import frc.robot.util.DriverController;
 import frc.robot.util.InstantiatorCommand;
@@ -31,7 +38,10 @@ public class RobotContainer {
     
   private final AutoPicker autoPicker; 
 
+  private final LED leds = new LED(gyro, null); 
+
   public RobotContainer() {
+    // AddressableLEDSim ledSim = new AddressableLEDSim(leds.getLedStrips().get(0).led); <-- simulation purposes
 
     this.autoPicker = new AutoPicker(drivetrain, arm, gyro, intake); 
 

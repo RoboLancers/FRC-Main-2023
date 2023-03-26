@@ -13,6 +13,7 @@ public class LEDStrip {
     public LEDStrip(int port, int length) {
         this.led = new AddressableLED(port);
         this.ledBuffer = new AddressableLEDBuffer(length);
+        this.led.setLength(length);
         this.led.start();
     }
 

@@ -22,7 +22,7 @@ public class FadeLEDPattern extends LEDPattern {
         double b = time < getLoopTime() / 2 ? MathUtil.interpolate(c1.blue, c2.blue, time * 2 / getLoopTime()) : MathUtil.interpolate(c2.blue, c1.blue, (time - getLoopTime() / 2) * 2 / getLoopTime()); 
 
         for (int i = 0; i < buf.getLength(); i++) {
-            buf.setRGB(i, (int) r, (int) g, (int) b);
+            buf.setRGB(i, (int) (r * 255), (int) (g * 255), (int) (b * 255));
         }
     }
     

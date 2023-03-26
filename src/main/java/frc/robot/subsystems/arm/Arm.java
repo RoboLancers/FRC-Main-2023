@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants;
 import frc.robot.Constants.Arm.Position;
+import frc.robot.util.enums.ArmMode;
 
 public class Arm extends SubsystemBase {
    public CANSparkMax anchorMotor, floatingMotor;
@@ -23,7 +24,7 @@ public class Arm extends SubsystemBase {
    public double anchorSetpoint = Constants.Arm.Anchor.kContracted;
    public double floatingSetpoint = Constants.Arm.Floating.kContracted;
 
-   public boolean armMode = true; // true: cube, false: cone
+   public ArmMode armMode = ArmMode.CUBE;
 
    // TODO: port
    public DigitalInput anchorLimitSwitch;
@@ -182,7 +183,7 @@ public class Arm extends SubsystemBase {
 
       SmartDashboard.putBoolean("limit switch contacted", !this.anchorLimitSwitch.get()); 
 
-      SmartDashboard.putBoolean("on cube", this.armMode);
+      SmartDashboard.putString("on cube", this.armMode.toString());
 
       SmartDashboard.putNumber("Anchor Angle", this.getAnchorAngle());
       SmartDashboard.putNumber("Floating Angle", this.getFloatingAngle());

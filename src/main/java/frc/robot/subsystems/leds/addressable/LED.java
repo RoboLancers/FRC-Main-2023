@@ -8,34 +8,32 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.subsystems.leds.addressable.patterns.FadeLEDPattern;
 import frc.robot.subsystems.leds.addressable.patterns.LEDPattern;
 import frc.robot.subsystems.leds.addressable.patterns.MorseCodePattern;
 import frc.robot.subsystems.leds.addressable.patterns.SolidLEDPattern;
+import frc.robot.subsystems.leds.addressable.patterns.TimedPattern;
 
 public class LED extends SubsystemBase {
     private List<LEDStrip> ledStrips;
 
-    // private Gyro gyro;
-
     private Timer timer;
 
-    public LED(Gyro gyro, LEDPattern pattern) {
+    public LED() {
+        // default pattern should be goose
+        this(new SolidLEDPattern(Color.kOrange)); 
+    }
+
+    public LED(LEDPattern pattern) {
         this.ledStrips = List.of(
             new LEDStrip(Constants.LEDs.kLed1Port, Constants.LEDs.kLed1Size),
             new LEDStrip(Constants.LEDs.kLed2Port, Constants.LEDs.kLed2Size)
         );
 
-        // default pattern should be goose
-        if (pattern == null)
-            setPattern(new SolidLEDPattern(Color.kOrange));
-        else 
-            setPattern(pattern);
+        setPattern(pattern);
 
         this.timer = new Timer();
         this.timer.start();
-        // this.gyro = gyro;
     }
 
     public void setPattern(LEDPattern pattern) {
@@ -56,7 +54,7 @@ public class LED extends SubsystemBase {
     }
 
     public void cube() {
-        setPattern(new SolidLEDPattern(Color.kPurple));
+        setPattern(new TimedPattern(new SolidLEDPattern(Color.kPurple)));
     }
 
     public void cone() {
@@ -66,7 +64,7 @@ public class LED extends SubsystemBase {
     @Override
     public void periodic() {
 
-        if (DriverStation.isDisabled()) {
+        if (DriverStation.isDisabled() || DriverStation.isEStopped()) {
             setPattern(new FadeLEDPattern(2.5, Color.kOrange, Color.kWhite));
         }
 
@@ -76,14 +74,11 @@ public class LED extends SubsystemBase {
         // update it from their separate methods
         // (FSM WHEN?!?!?)
 
+        // TODO: impl tipped, balanced, default goooose orange heartbeat (FadedLEDPattern?)
         // if (Math.abs(this.gyro.getPitch()) > 45)
         // weDiedLol(true, SmartDashboard.getString("Morse Message",
         // Constants.LEDs.kDefaultMessage));
 
-        // if (this.pattern != null)
-        // this.pattern.update(buffer, timer.get());
-
-        // this.LED.setData(buffer);
         for (int i = 0; i < ledStrips.size(); i++) {
             ledStrips.get(i).update(timer.get());
         }

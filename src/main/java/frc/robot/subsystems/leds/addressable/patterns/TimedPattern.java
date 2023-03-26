@@ -10,8 +10,8 @@ import edu.wpi.first.wpilibj.util.Color;
 public class TimedPattern extends LEDPattern {
     private List<TimedLEDPattern> patterns = new ArrayList<>(); 
 
-    public TimedPattern() {
-        this(new ArrayList<>()); 
+    public TimedPattern(TimedLEDPattern... patterns) {
+        this(List.of(patterns)); 
     }
 
     public TimedPattern(List<TimedLEDPattern> patterns) {

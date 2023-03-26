@@ -224,4 +224,8 @@ public final class Constants {
         public static final double kPositionTolerance = 2.0; // TODO: tune this, also keep in mind gyro alignment is trash
         public static final double kVelocityTolerance = 1.0; // TODO: tune this, 1 degree per second seems pretty reasonable for stopped state
     }
+
+
+    // ! TODO: get this value from Electrical/Mechanical
+    public static int LED_PWM_PORT = 0;
 }

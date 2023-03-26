@@ -20,6 +20,8 @@ import frc.robot.team254.DriveMotionPlanner;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 
 public class PathWeaverTrajectory {
+
+    //TODO make actual paths, this format is just for reference on how it should be used
     private double max_vel = Constants.Trajectory.kMaxSpeedMetersPerSecond;
     private double max_accel = Constants.Trajectory.kMaxAccelerationMetersPerSecondSquared;
     private Drivetrain drivetrain;

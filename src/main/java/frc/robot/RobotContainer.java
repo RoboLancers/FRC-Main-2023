@@ -24,6 +24,7 @@ import frc.robot.util.DriverController;
 import frc.robot.util.InstantiatorCommand;
 import frc.robot.util.ManipulatorController;
 import frc.robot.util.DriverController.Mode;
+import frc.robot.util.enums.ArmMode;
 
 public class RobotContainer {
   private final DriverController driverController = new DriverController(0);
@@ -35,13 +36,12 @@ public class RobotContainer {
   private Intake intake = new Intake();
   // private PoseTracker tracker = new PoseTracker(); 
   // private SideCamera sideCamera = new SideCamera(0, 1);
+  private LED led = new LED();
     
   private final AutoPicker autoPicker; 
 
-  private final LED leds = new LED(gyro, null); 
-
   public RobotContainer() {
-    // AddressableLEDSim ledSim = new AddressableLEDSim(leds.getLedStrips().get(0).led); <-- simulation purposes
+    // AddressableLEDSim ledSim = new AddressableLEDSim(led.getLedStrips().get(0).led); // <-- simulation purposes
 
     this.autoPicker = new AutoPicker(drivetrain, arm, gyro, intake); 
 
@@ -74,9 +74,15 @@ public class RobotContainer {
     Controller.onHold(manipulatorController.outtakeElementTriggerSlow, new RunCommand(intake::outtakeSlow));
 
     // manipulator toggle cube
-    Controller.onPress(manipulatorController.RightBumper, new InstantCommand(() -> { this.arm.armMode = true; }));
+    Controller.onPress(manipulatorController.RightBumper, new InstantCommand(() -> {
+      this.arm.armMode = ArmMode.CUBE;
+      this.led.cube();
+    }));
     // manipulator toggle cone
-    Controller.onPress(manipulatorController.LeftBumper, new InstantCommand(() -> { this.arm.armMode = false; }));
+    Controller.onPress(manipulatorController.LeftBumper, new InstantCommand(() -> {
+      this.arm.armMode = ArmMode.CONE;
+      this.led.cone();
+    }));
 
     /*
       Manipulator Arm State
@@ -87,11 +93,11 @@ public class RobotContainer {
     Controller.onPress(manipulatorController.B, new MoveToPos(arm, Constants.Arm.Position.CONTRACTED));
     // mid
     Controller.onPress(manipulatorController.X, new InstantiatorCommand(() -> {
-      return new MoveToPos(arm, () -> arm.armMode ? Constants.Arm.Position.MID_CUBE : (arm.isAt(Constants.Arm.Position.MID_CONE) ? Constants.Arm.Position.MID_CONE_AIMING : Constants.Arm.Position.MID_CONE));
+      return new MoveToPos(arm, () -> arm.armMode == ArmMode.CUBE ? Constants.Arm.Position.MID_CUBE : (arm.isAt(Constants.Arm.Position.MID_CONE) ? Constants.Arm.Position.MID_CONE_AIMING : Constants.Arm.Position.MID_CONE));
     }));
     // high
     Controller.onPress(manipulatorController.Y, new InstantiatorCommand(() -> {
-      return new MoveToPos(arm, () -> arm.armMode ? Constants.Arm.Position.HIGH_CUBE : (arm.isAt(Constants.Arm.Position.HIGH_CONE) ? Constants.Arm.Position.HIGH_CONE_AIMING : Constants.Arm.Position.HIGH_CONE));
+      return new MoveToPos(arm, () -> arm.armMode == ArmMode.CUBE ? Constants.Arm.Position.HIGH_CUBE : (arm.isAt(Constants.Arm.Position.HIGH_CONE) ? Constants.Arm.Position.HIGH_CONE_AIMING : Constants.Arm.Position.HIGH_CONE));
     }));
     // station
     Controller.onPress(driverController.A, new MoveToPos(arm, Constants.Arm.Position.STATION));

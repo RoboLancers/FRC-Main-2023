@@ -3,7 +3,6 @@ package frc.robot.subsystems.leds.addressable.patterns;
 import edu.wpi.first.wpilibj.util.Color;
 
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.DriverStation;
 
 public class EscalatingRandomColorPattern extends LEDPattern {
 

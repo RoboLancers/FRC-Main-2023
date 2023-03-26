@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.subsystems.leds.addressable.patterns.LEDPattern;
 
 public class LED extends SubsystemBase {
@@ -17,7 +16,12 @@ public class LED extends SubsystemBase {
 
     private Timer timer = new Timer();
 
-    public LED(Gyro gyro, LEDPattern pattern) {
+    public LED() {
+        // default pattern should be goose
+        this(Constants.LEDs.Patterns.kDefault); 
+    }
+
+    public LED(LEDPattern pattern) {
         this.ledStrips = List.of(
             new LEDStrip(Constants.LEDs.kLed1Port, Constants.LEDs.kLed1Size)
             // new LEDStrip(Constants.LEDs.kLed2Port, Constants.LEDs.kLed2Size)
@@ -26,12 +30,7 @@ public class LED extends SubsystemBase {
         this.timer = new Timer();
         this.timer.start();
 
-        // default pattern should be goose
-        if (pattern == null) {
-            setPattern(Constants.LEDs.Patterns.kDefault); 
-        } else {
-            setPattern(pattern);
-        }
+        setPattern(pattern);
         // this.gyro = gyro;
     }
 
@@ -65,25 +64,22 @@ public class LED extends SubsystemBase {
     @Override
     public void periodic() {
 
-        // if (DriverStation.isDisabled()) {
-        //     System.out.println("disabled");
-        //     setPattern(new FadeLEDPattern(2.5, Color.kOrange, Color.kWhite));
-        // }
+        if (DriverStation.isDisabled()) {
+            setPattern(Constants.LEDs.Patterns.kIdle);
+        }
+
+        // TODO: create patterns for emergency stop, autonomous
 
         // ordering of pattern changes is concerning (least to most urgent?)
         // need arm instance for armMode??? (not great)
         // which is why you probably shouldln't poll for these things
         // update it from their separate methods
-        // (FSM WHEN?!?!?)
 
+        // TODO: impl tipped, balanced, default goooose orange heartbeat (FadedLEDPattern?)
         // if (Math.abs(this.gyro.getPitch()) > 45)
         // weDiedLol(true, SmartDashboard.getString("Morse Message",
         // Constants.LEDs.kDefaultMessage));
 
-        // if (this.pattern != null)
-        // this.pattern.update(buffer, timer.get());
-
-        // this.LED.setData(buffer);
         for (int i = 0; i < ledStrips.size(); i++) {
             ledStrips.get(i).update(timer.get());
         }

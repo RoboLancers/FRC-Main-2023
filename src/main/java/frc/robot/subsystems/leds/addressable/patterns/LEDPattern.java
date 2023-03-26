@@ -1,6 +1,6 @@
 package frc.robot.subsystems.leds.addressable.patterns;
 
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import frc.robot.subsystems.leds.addressable.AddressableLEDBufferSection;
 
 public abstract class LEDPattern {
 
@@ -10,10 +10,10 @@ public abstract class LEDPattern {
         this.loopTime = loopTime;
     }
 
-    protected abstract void updateLEDs(AddressableLEDBuffer buffer, double time);
+    protected abstract void updateLEDs(AddressableLEDBufferSection buffer, double time);
     
-    public void update(AddressableLEDBuffer buffer, double time) {
-        updateLEDs(buffer, time % loopTime);
+    public void update(AddressableLEDBufferSection buffer, double time) {
+        updateLEDs(buffer, loopTime == 0 ? time : time % loopTime);
     }
 
     public double getLoopTime() {
@@ -30,6 +30,6 @@ public abstract class LEDPattern {
         }
 
         @Override
-        protected void updateLEDs(AddressableLEDBuffer buffer, double time) {}
+        protected void updateLEDs(AddressableLEDBufferSection buffer, double time) {}
     }
 }

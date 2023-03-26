@@ -1,7 +1,7 @@
 package frc.robot.subsystems.leds.addressable.patterns;
 
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
+import frc.robot.subsystems.leds.addressable.AddressableLEDBufferSection;
 
 public class SolidLEDPattern extends LEDPattern {
 
@@ -17,7 +17,7 @@ public class SolidLEDPattern extends LEDPattern {
     }
 
     @Override
-    protected void updateLEDs(AddressableLEDBuffer buf, double time) {
+    protected void updateLEDs(AddressableLEDBufferSection buf, double time) {
         for (int i = 0; i < buf.getLength(); i++) {
             buf.setLED(i, color);
         }

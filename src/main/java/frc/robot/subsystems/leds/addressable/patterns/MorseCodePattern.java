@@ -10,10 +10,17 @@ public class MorseCodePattern extends TimedPattern {
     }
 
     public MorseCodePattern(Color c1, Color c2, String input, double morseCodeTimeout) {
-        super(StringToMorse.convert(input).chars()
-                .mapToObj(character -> new TimedPattern.TimedLEDPattern(
+        super(); 
+
+        StringToMorse.convert(input).chars()
+                .forEach(character -> {
+                    addPattern(
                         new SolidLEDPattern(character == '.' ? c1 : character == '-' ? c2 : Color.kBlack),
-                        morseCodeTimeout)).toList());
+                        morseCodeTimeout
+                    ); 
+                    timedWait(0.5);
+                });
+                timedWait(5);
     }
 
     public MorseCodePattern(Color c, String input, double morseCodeTimeout1, double morseCodeTimeout2) {
@@ -26,6 +33,7 @@ public class MorseCodePattern extends TimedPattern {
                 ); 
                 timedWait(0.5);
             }); 
+            timedWait(5);
     }
 
 

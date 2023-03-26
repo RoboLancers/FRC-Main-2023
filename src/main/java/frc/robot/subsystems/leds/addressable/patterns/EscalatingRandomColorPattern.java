@@ -1,8 +1,7 @@
 package frc.robot.subsystems.leds.addressable.patterns;
 
 import edu.wpi.first.wpilibj.util.Color;
-
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import frc.robot.subsystems.leds.addressable.AddressableLEDBufferSection;
 
 public class EscalatingRandomColorPattern extends LEDPattern {
 
@@ -14,7 +13,7 @@ public class EscalatingRandomColorPattern extends LEDPattern {
     }
 
     @Override
-    protected void updateLEDs(AddressableLEDBuffer buffer, double time) {
+    protected void updateLEDs(AddressableLEDBufferSection buffer, double time) {
         int indexStart = (int) (time * buffer.getLength() / getLoopTime()); 
         for (int i = 0; i < buffer.getLength(); i++) buffer.setLED(i, Color.kBlack);
 

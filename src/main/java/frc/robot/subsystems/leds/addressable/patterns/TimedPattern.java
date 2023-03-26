@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
+import frc.robot.subsystems.leds.addressable.AddressableLEDBufferSection;
 
 public class TimedPattern extends LEDPattern {
-    private List<TimedLEDPattern> patterns = new ArrayList<>(); 
+    private List<TimedLEDPattern> patterns; 
+
+    public TimedPattern() {
+        this(new ArrayList<>()); 
+    }
 
     public TimedPattern(TimedLEDPattern... patterns) {
         this(List.of(patterns)); 
@@ -38,7 +42,7 @@ public class TimedPattern extends LEDPattern {
     }
 
     @Override
-    protected void updateLEDs(AddressableLEDBuffer buffer, double time) {
+    protected void updateLEDs(AddressableLEDBufferSection buffer, double time) {
         double total = 0; 
         for (TimedLEDPattern pattern : patterns) {
             if (total <= time && total + pattern.getTime() >= time) {

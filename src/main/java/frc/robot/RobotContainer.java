@@ -41,7 +41,7 @@ public class RobotContainer {
   private final AutoPicker autoPicker; 
 
   public RobotContainer() {
-    // AddressableLEDSim ledSim = new AddressableLEDSim(led.getLedStrips().get(0).led); // <-- simulation purposes
+    // AddressableLEDSim ledSim = new AddressableLEDSim(led.getLed()); // <-- simulation purposes
 
     this.autoPicker = new AutoPicker(drivetrain, arm, gyro, intake); 
 

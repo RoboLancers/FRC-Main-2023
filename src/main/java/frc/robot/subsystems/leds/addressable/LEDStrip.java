@@ -1,24 +1,19 @@
 package frc.robot.subsystems.leds.addressable;
 
-import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import frc.robot.subsystems.leds.addressable.patterns.LEDPattern;
 
 public class LEDStrip {
-    public AddressableLED led;
-    public AddressableLEDBuffer ledBuffer;
+    public AddressableLEDBufferSection ledBuffer;
 
     private LEDPattern pattern;
 
-    public LEDStrip(int port, int length) {
-        this.led = new AddressableLED(port);
-        this.ledBuffer = new AddressableLEDBuffer(length);
-        this.led.setLength(length);
-        this.led.start();
+    public LEDStrip(AddressableLEDBuffer buffer, int start, int end) {
+        this.ledBuffer = new AddressableLEDBufferSection(buffer, start, end);
     }
 
-    public LEDStrip(int port, int length, LEDPattern pattern) {
-        this(port, length);
+    public LEDStrip(AddressableLEDBuffer buffer, int port, int length, LEDPattern pattern) {
+        this(buffer, port, length);
         this.pattern = pattern;
     }
 
@@ -27,9 +22,6 @@ public class LEDStrip {
     }
 
     public void update(double time) {
-        if (pattern != null) {
-            pattern.update(ledBuffer, time);
-        }
-        led.setData(ledBuffer);
+        if (pattern != null) pattern.update(ledBuffer, time);
     }
 }

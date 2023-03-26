@@ -1,6 +1,6 @@
 package frc.robot.subsystems.leds.addressable.patterns;
 
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import frc.robot.subsystems.leds.addressable.AddressableLEDBufferSection;
 
 public class RainbowPattern extends LEDPattern {
 
@@ -9,7 +9,7 @@ public class RainbowPattern extends LEDPattern {
     }
 
     @Override
-    protected void updateLEDs(AddressableLEDBuffer buffer, double time) {
+    protected void updateLEDs(AddressableLEDBufferSection buffer, double time) {
         for (int i = 0; i < buffer.getLength(); i++) {
             buffer.setHSV(i, (int) ((i + time * buffer.getLength() / getLoopTime() ) * 180 / buffer.getLength()) % 180, 255, 128);
         }

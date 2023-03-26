@@ -14,6 +14,7 @@ public class LED extends SubsystemBase {
         this.LED = new AddressableLED(port);
         this.buffer = new AddressableLEDBuffer(length); 
         setWriter(new LEDWriter.EmptyLEDWriter()); 
+        this.LED.start();
     }
 
     public void setWriter(LEDWriter writer) {

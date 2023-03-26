@@ -1,5 +1,6 @@
-package frc.robot.subsystems.leds;
+package frc.robot.subsystems.leds.addressable;
 
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Timer;
 
 public abstract class LEDWriter {
@@ -12,10 +13,10 @@ public abstract class LEDWriter {
         this.timer = new Timer(); 
     }
 
-    protected abstract double updateLEDs(double time);
+    protected abstract void updateLEDs(AddressableLEDBuffer buffer, double time);
     
-    public double update() {
-        return updateLEDs(timer.get() % loopTime);
+    public void update(AddressableLEDBuffer buffer) {
+        updateLEDs(buffer, timer.get() % loopTime);
     }
 
     public void activate() {
@@ -34,8 +35,6 @@ public abstract class LEDWriter {
         }
 
         @Override
-        protected double updateLEDs(double time) {
-            return 0.99; // black
-        }
+        protected void updateLEDs(AddressableLEDBuffer buffer, double time) {}
     }
 }

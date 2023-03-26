@@ -1,6 +1,6 @@
-package frc.robot.subsystems.leds;
+package frc.robot.subsystems.leds.blinkin;
 
-public class PWMLEDWriter extends LEDWriter {
+public class PWMLEDWriter extends BlinkinLEDWriter {
 
     private final double pattern; 
 

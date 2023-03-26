@@ -1,18 +1,18 @@
-package frc.robot.subsystems.leds;
+package frc.robot.subsystems.leds.blinkin;
 
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class LED extends SubsystemBase {
+public class BlinkinLED extends SubsystemBase {
     private PWMSparkMax LED; 
 
-    private LEDWriter writer; 
-    public LED(int port, int length) {
+    private BlinkinLEDWriter writer; 
+    public BlinkinLED(int port) {
         this.LED = new PWMSparkMax(port);
-        setWriter(new LEDWriter.EmptyLEDWriter()); 
+        setWriter(new BlinkinLEDWriter.EmptyBlinkinLEDWriter()); 
     }
 
-    public void setWriter(LEDWriter writer) {
+    public void setWriter(BlinkinLEDWriter writer) {
         if (this.writer != null) this.writer.deactivate();
         this.writer = writer; 
         this.writer.activate();

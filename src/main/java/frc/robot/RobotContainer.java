@@ -1,5 +1,16 @@
 package frc.robot;
 
+import java.util.ResourceBundle.Control;
+
+import org.bananasamirite.robotmotionprofile.Waypoint;
+
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.simulation.AddressableLEDSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -40,6 +51,17 @@ public class RobotContainer {
     
   private final AutoPicker autoPicker; 
 
+  //Camera 
+  private UsbCamera intakeCamera = new UsbCamera("Intake Camera ", 0);
+  private UsbCamera stationCamera = new UsbCamera("Station Camera ", 1);
+  private enum CameraMode{
+    INTAKE,
+    STATION,
+  }
+  private CameraMode cameraMode = CameraMode.INTAKE;
+  private final NetworkTableEntry cameraSelection = NetworkTableInstance.getDefault().getTable("").getEntry("CameraSelection");
+
+
   public RobotContainer() {
     // AddressableLEDSim ledSim = new AddressableLEDSim(led.getLed()); // <-- simulation purposes
 
@@ -51,6 +73,9 @@ public class RobotContainer {
 
       this.intake.setDefaultCommand(new RunCommand(intake::off, intake));
 
+      CameraServer.startAutomaticCapture(0);
+      this.cameraSelection.setString(intakeCamera.getName());
+
       configureButtonBindings();
       configureAutos(); 
       doSendables();
@@ -61,7 +86,13 @@ public class RobotContainer {
     Controller.onHold(driverController.RightBumper, new InstantCommand(() -> driverController.setSlowMode(Mode.SLOW)));
     Controller.onRelease(driverController.RightBumper, new InstantCommand(() -> driverController.setSlowMode(Mode.NORMAL)));
 
-    // zero the arm
+    // TODO: test this, driver camera switch
+    // Controller.onPress(driverController.LeftBumper, new InstantCommand(() -> setCamera()));
+
+    // this is not working, manipulator grid align
+    // Controller.onBothPress(manipulatorController.LeftBumper, manipulatorController.RightBumper, new ScanAndAlign(drivetrain, arm, poseTracker, manipulatorController));
+
+    // this don't really work as desired, zero the arm
     // Controller.onPress(manipulatorController.RightTrigger, new Zero(arm));
 
     // driver intake
@@ -135,6 +166,21 @@ public class RobotContainer {
 
     // SmartDashboard.putNumber("turn by", 30); 
     // Controller.onPress(driverController.XX, new TurnBy(drivetrain, () -> ControllerUtils.clamp(SmartDashboard.getNumber("turn by", 30), -90, 90)));
+  }
+
+  public void setCamera(){
+    if(cameraMode == CameraMode.INTAKE){
+      cameraMode = CameraMode.STATION;
+      intakeCamera.setConnectionStrategy(ConnectionStrategy.kForceClose);
+      CameraServer.startAutomaticCapture(1);
+      cameraSelection.setString(stationCamera.getName());
+    }
+    else if(cameraMode == CameraMode.STATION){
+      cameraMode = CameraMode.INTAKE;
+      stationCamera.setConnectionStrategy(ConnectionStrategy.kForceClose);
+      CameraServer.startAutomaticCapture(0);
+      cameraSelection.setString(intakeCamera.getName());
+    }
   }
 
   public void configureAutos() {

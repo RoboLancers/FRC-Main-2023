@@ -54,6 +54,7 @@ public class DriverController extends Controller {
 
     public double getThrottle() {
         double throttle = -getLeftStickY() * throttleMultiplier;
+        // return throttle; 
         double effThrottle = 0; 
         if (mode == Mode.SLOW) {
             effThrottle = throttle;
@@ -77,8 +78,9 @@ public class DriverController extends Controller {
     }
 
     public double getTurn() {
-        if (turnMultiplier != Constants.Drivetrain.kTurnMultiplierSM) turnMultiplier = getQuickTurn() ? Constants.Drivetrain.kQuickTurnMultiplier : MathUtil.clamp(((Constants.Drivetrain.kFastThrottleTurnMultiplier - Constants.Drivetrain.kSlowThrottleTurnMultiplier) * (Math.abs(lastEffThrottle / throttleMultiplier) - 1) + Constants.Drivetrain.kFastThrottleTurnMultiplier), Constants.Drivetrain.kFastThrottleTurnMultiplier, Constants.Drivetrain.kSlowThrottleTurnMultiplier); 
-        return turnFilter.calculate(-getRightStickX() * turnMultiplier); 
+        // if (turnMultiplier != Constants.Drivetrain.kTurnMultiplierSM) turnMultiplier = getQuickTurn() ? Constants.Drivetrain.kQuickTurnMultiplier : MathUtil.clamp(((Constants.Drivetrain.kFastThrottleTurnMultiplier - Constants.Drivetrain.kSlowThrottleTurnMultiplier) * (Math.abs(lastEffThrottle / throttleMultiplier) - 1) + Constants.Drivetrain.kFastThrottleTurnMultiplier), Constants.Drivetrain.kFastThrottleTurnMultiplier, Constants.Drivetrain.kSlowThrottleTurnMultiplier); 
+        // return turnFilter.calculate(-getRightStickX() * turnMultiplier); 
+        return -getRightStickX() * turnMultiplier; 
     }
 
     public boolean getQuickTurn() {

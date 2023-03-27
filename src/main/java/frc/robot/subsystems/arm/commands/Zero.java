@@ -14,6 +14,7 @@ public class Zero extends SequentialCommandGroup {
             new InstantCommand(() -> arm.toggleSoftLimits(false)),
             new ParallelRaceGroup(
                 new RunCommand(() -> arm.anchorMotor.set(-0.05)),
+                // new WaitUntilCommand(() -> !arm.anchorLimitSwitch.get())
                 new WaitCommand(2.0)
             ),
             new InstantCommand(() -> {

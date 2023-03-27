@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants;
 import frc.robot.Constants.Arm.Position;
+import frc.robot.util.enums.ArmMode;
 
 public class Arm extends SubsystemBase {
    public CANSparkMax anchorMotor, floatingMotor;
@@ -23,7 +24,7 @@ public class Arm extends SubsystemBase {
    public double anchorSetpoint = Constants.Arm.Anchor.kContracted;
    public double floatingSetpoint = Constants.Arm.Floating.kContracted;
 
-   public boolean armMode = true; // true: cube, false: cone
+   public ArmMode armMode = ArmMode.CUBE;
 
    // TODO: port
    public DigitalInput anchorLimitSwitch;
@@ -104,7 +105,7 @@ public class Arm extends SubsystemBase {
       this.floatingPIDController.setD(Constants.Arm.Floating.kD);
       this.floatingPIDController.setFF(Constants.Arm.Floating.kFF);
 
-      this.floatingPIDController.setOutputRange(-0.3, 0.4);
+      this.floatingPIDController.setOutputRange(Constants.Arm.Floating.kMaxDownwardOutput, Constants.Arm.Floating.kMaxUpwardOutput);
 
       // this.anchorPIDController.setFeedbackDevice(anchorEncoder);
       this.floatingPIDController.setFeedbackDevice(floatingEncoder); 
@@ -175,11 +176,14 @@ public class Arm extends SubsystemBase {
       // TODO: comment out tuneControllers() at comp
       // tuneControllers();
 
-      // if(this.anchorLimitSwitch.get()) {
+      // ! this will fucking break everything if our limit switch unplugs
+      // if(!this.anchorLimitSwitch.get()) {
       //    this.anchorEncoder.setPosition(Constants.Arm.Anchor.kContracted);
       // }
 
-      SmartDashboard.putBoolean("on cube", this.armMode);
+      SmartDashboard.putBoolean("limit switch contacted", !this.anchorLimitSwitch.get()); 
+
+      SmartDashboard.putString("on cube", this.armMode.toString());
 
       SmartDashboard.putNumber("Anchor Angle", this.getAnchorAngle());
       SmartDashboard.putNumber("Floating Angle", this.getFloatingAngle());

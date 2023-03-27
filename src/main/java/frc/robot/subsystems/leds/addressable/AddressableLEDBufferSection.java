@@ -15,10 +15,14 @@ public class AddressableLEDBufferSection {
         this.end = end; 
     }
 
+    public AddressableLEDBufferSection getSection(int start, int end) {
+        return new AddressableLEDBufferSection(buffer, getOffsetIndex(start), getOffsetIndex(end)); 
+    }
+
     private int getOffsetIndex(int i) {
         int index = start + i; 
-        if (index >= end) throw new ArrayIndexOutOfBoundsException(); 
-        return index;  
+        if (index > end) throw new ArrayIndexOutOfBoundsException(); 
+        return index; 
     }
 
     public void setRGB(int i, int r, int g, int b) {
@@ -39,5 +43,13 @@ public class AddressableLEDBufferSection {
 
     public int getLength() {
         return this.end - this.start; 
+    }
+
+    public int getStart() {
+        return start; 
+    }
+
+    public int getEnd() {
+        return end; 
     }
 }

@@ -14,7 +14,7 @@ public class LEDStrip {
 
     public LEDStrip(AddressableLEDBuffer buffer, int port, int length, LEDPattern pattern) {
         this(buffer, port, length);
-        this.pattern = pattern;
+        this.pattern = pattern; 
     }
 
     public void setPattern(LEDPattern pattern) {
@@ -24,4 +24,6 @@ public class LEDStrip {
     public void update(double time) {
         if (pattern != null) pattern.update(ledBuffer, time);
     }
+
+    
 }

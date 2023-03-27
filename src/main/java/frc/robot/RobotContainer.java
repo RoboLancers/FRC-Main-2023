@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.simulation.AddressableLEDSim;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -10,10 +11,9 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.leds.addressable.LED;
-import frc.robot.subsystems.leds.addressable.LEDStrip;
 import frc.robot.subsystems.leds.addressable.patterns.EscalatingRandomColorPattern;
-import frc.robot.subsystems.leds.addressable.patterns.MorseCodePattern;
-import frc.robot.subsystems.leds.addressable.patterns.RainbowPattern;
+import frc.robot.subsystems.leds.addressable.patterns.LEDPattern;
+import frc.robot.subsystems.leds.addressable.patterns.SplitPattern;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.commands.TeleopDrive;
 import frc.robot.subsystems.arm.Arm;
@@ -37,11 +37,14 @@ public class RobotContainer {
   // private PoseTracker tracker = new PoseTracker(); 
   // private SideCamera sideCamera = new SideCamera(0, 1);
   private LED led = new LED();
-    
+
   private final AutoPicker autoPicker; 
+  
+  private final SendableChooser<LEDPattern> patternChooser = new SendableChooser<>(); 
 
   public RobotContainer() {
     // AddressableLEDSim ledSim = new AddressableLEDSim(led.getLed()); // <-- simulation purposes
+    // led.setPattern(Constants.LEDs.Patterns.kBalanceFinished);
 
     this.autoPicker = new AutoPicker(drivetrain, arm, gyro, intake); 
 
@@ -52,7 +55,7 @@ public class RobotContainer {
       this.intake.setDefaultCommand(new RunCommand(intake::off, intake));
 
       configureButtonBindings();
-      configureAutos(); 
+      configurePatterns(); 
       doSendables();
     }
 
@@ -137,20 +140,25 @@ public class RobotContainer {
     // Controller.onPress(driverController.XX, new TurnBy(drivetrain, () -> ControllerUtils.clamp(SmartDashboard.getNumber("turn by", 30), -90, 90)));
   }
 
-  public void configureAutos() {
+  public void configurePatterns() {
 
-    /*
-    
-      TESTING ONLY
+    Constants.LEDs.Patterns.kTeleop
+      .addCondition(
+        () -> arm.armMode == ArmMode.CONE, 
+        Constants.LEDs.Patterns.kCone
+        )
+      .addCondition(
+        () -> arm.armMode == ArmMode.CUBE, 
+        Constants.LEDs.Patterns.kCube
+      );
 
-    */
-
-    // this.autoPicker.getAutoChooser().addOption("test pathfollowing", Constants.Trajectory.trajectoryCreator.createCommand(drivetrain, new Waypoint[] {
-    //   new Waypoint(0, 0, 0, 1, 1),
-    //   new Waypoint(1, -1, 0, 1, 1), 
-    //   new Waypoint(2, 0, Math.toRadians(180), 1, 1)
-    // }, new TrajectoryConfig(2, 0.75)));
-    // autoChooser.addOption("test drivetrain", new TurnToAngle(drivetrain, () -> SmartDashboard.getNumber("turn angle", 0)));
+    this.patternChooser.addOption("Idle", Constants.LEDs.Patterns.kIdle);
+    this.patternChooser.addOption("Balance Done", Constants.LEDs.Patterns.kBalanceFinished);
+    this.patternChooser.addOption("Tipped", Constants.LEDs.Patterns.kDead);
+    this.patternChooser.addOption("Teleop", Constants.LEDs.Patterns.kTeleop);
+    // this.patternChooser.addOption("Cube", Constants.LEDs.Patterns.kCube);
+    this.patternChooser.addOption("Tipped Alternate", Constants.LEDs.Patterns.kDeadAlternate);
+    this.patternChooser.addOption("custom teleop", new SplitPattern(0, 5, Constants.LEDs.Patterns.kTeleop, 5, 20, Constants.LEDs.Patterns.kIdle));
   }
 
   public Command getAutonomousCommand() {
@@ -161,5 +169,11 @@ public class RobotContainer {
     SmartDashboard.putData(this.autoPicker.getAutoChooser());
     SmartDashboard.putData(this.autoPicker.getScoringPosition1());
     SmartDashboard.putData(this.autoPicker.getScoringPosition2());
+    SmartDashboard.putData(this.patternChooser);
   }
+
+  public void periodic() {
+    this.led.setPattern(this.patternChooser.getSelected());
+  }
+
 }

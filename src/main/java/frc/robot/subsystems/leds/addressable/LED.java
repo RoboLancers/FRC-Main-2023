@@ -48,6 +48,7 @@ public class LED extends SubsystemBase {
         this.led.start();
 
         setPattern(pattern);
+        
         // this.gyro = gyro;
     }
 
@@ -81,9 +82,9 @@ public class LED extends SubsystemBase {
     @Override
     public void periodic() {
 
-        if (DriverStation.isDisabled()) {
-            setPattern(Constants.LEDs.Patterns.kDead);
-        }
+        // if (DriverStation.isDisabled()) {
+        //     setPattern(Constants.LEDs.Patterns.kDead);
+        // }
 
         // TODO: create patterns for emergency stop, autonomous
 

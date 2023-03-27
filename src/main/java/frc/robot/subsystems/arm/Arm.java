@@ -34,7 +34,7 @@ public class Arm extends SubsystemBase {
       this.floatingMotor = new CANSparkMax(Constants.Arm.Ports.kFloatingPort, CANSparkMax.MotorType.kBrushless);
       this.configureMotors();
 
-      this.anchorEncoder = this.anchorMotor.getEncoder(); ; // this.anchorMotor.getAlternateEncoder(Type.kQuadrature, 8192); 
+      this.anchorEncoder = this.anchorMotor.getEncoder(); // this.anchorMotor.getAlternateEncoder(Type.kQuadrature, 8192); 
       this.floatingEncoder = this.floatingMotor.getAlternateEncoder(Type.kQuadrature, 8192); // this.floatingMotor.getEncoder();
       this.configureEncoders();
 
@@ -183,7 +183,7 @@ public class Arm extends SubsystemBase {
 
       SmartDashboard.putBoolean("limit switch contacted", !this.anchorLimitSwitch.get()); 
 
-      SmartDashboard.putString("on cube", this.armMode.toString());
+      SmartDashboard.putString("arm mode", this.armMode.toString());
 
       SmartDashboard.putNumber("Anchor Angle", this.getAnchorAngle());
       SmartDashboard.putNumber("Floating Angle", this.getFloatingAngle());

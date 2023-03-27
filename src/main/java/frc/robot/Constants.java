@@ -7,6 +7,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.Intake.ScoreSpeed;
+import frc.robot.subsystems.leds.addressable.patterns.ConditionalPattern;
 import frc.robot.subsystems.leds.addressable.patterns.FadeLEDPattern;
 import frc.robot.subsystems.leds.addressable.patterns.LEDPattern;
 import frc.robot.subsystems.leds.addressable.patterns.MorseCodePattern;
@@ -143,6 +144,7 @@ public final class Constants {
             public static final LEDPattern kIdle = new FadeLEDPattern(2.5, Color.kWhite, Color.kOrange); 
             public static final LEDPattern kCube = new SolidLEDPattern(Color.kPurple); 
             public static final LEDPattern kCone = new SolidLEDPattern(Color.kYellow); 
+            public static final ConditionalPattern kTeleop = new ConditionalPattern(); 
             public static final LEDPattern kDead = new MorseCodePattern(Color.kRed, Color.kBlue, "sos"); 
             public static final LEDPattern kDeadAlternate = new FadeLEDPattern(1, Color.kRed, Color.kBlack); 
             public static final LEDPattern kBalanceFinished = new RainbowPattern(0.5); 

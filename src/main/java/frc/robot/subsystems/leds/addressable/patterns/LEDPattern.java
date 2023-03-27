@@ -1,6 +1,8 @@
 package frc.robot.subsystems.leds.addressable.patterns;
 
+import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.subsystems.leds.addressable.AddressableLEDBufferSection;
+import frc.robot.subsystems.leds.addressable.BufferUtil;
 
 public abstract class LEDPattern {
 
@@ -30,6 +32,10 @@ public abstract class LEDPattern {
         }
 
         @Override
-        protected void updateLEDs(AddressableLEDBufferSection buffer, double time) {}
+        protected void updateLEDs(AddressableLEDBufferSection buffer, double time) {
+            BufferUtil.setAll(buffer, Color.kBlack);
+        }
     }
+
+    public static final LEDPattern kEmpty = new EmptyLEDPattern();  
 }

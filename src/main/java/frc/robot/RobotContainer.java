@@ -45,7 +45,6 @@ public class RobotContainer {
   private Drivetrain drivetrain = new Drivetrain(gyro);
   private Arm arm = new Arm();
   private Intake intake = new Intake();
-  // private PoseTracker tracker = new PoseTracker(); 
   // private SideCamera sideCamera = new SideCamera(0, 1);
   private LED led = new LED();
     
@@ -54,10 +53,7 @@ public class RobotContainer {
   //Camera 
   private UsbCamera intakeCamera = new UsbCamera("Intake Camera ", 0);
   private UsbCamera stationCamera = new UsbCamera("Station Camera ", 1);
-  private enum CameraMode{
-    INTAKE,
-    STATION,
-  }
+  private enum CameraMode { INTAKE, STATION }
   private CameraMode cameraMode = CameraMode.INTAKE;
   private final NetworkTableEntry cameraSelection = NetworkTableInstance.getDefault().getTable("").getEntry("CameraSelection");
 
@@ -67,19 +63,19 @@ public class RobotContainer {
 
     this.autoPicker = new AutoPicker(drivetrain, arm, gyro, intake); 
 
-      this.drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, driverController));
+    this.drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, driverController));
 
-      this.arm.setDefaultCommand(new RunToSetpoints(arm));
+    this.arm.setDefaultCommand(new RunToSetpoints(arm));
 
-      this.intake.setDefaultCommand(new RunCommand(intake::off, intake));
+    this.intake.setDefaultCommand(new RunCommand(intake::off, intake));
 
-      CameraServer.startAutomaticCapture(0);
-      this.cameraSelection.setString(intakeCamera.getName());
+    CameraServer.startAutomaticCapture(0);
+    this.cameraSelection.setString(intakeCamera.getName());
 
-      configureButtonBindings();
-      configureAutos(); 
-      doSendables();
-    }
+    configureButtonBindings();
+    configureAutos(); 
+    doSendables();
+  }
 
   private void configureButtonBindings() {
     // driver slow mode
@@ -88,12 +84,6 @@ public class RobotContainer {
 
     // TODO: test this, driver camera switch
     // Controller.onPress(driverController.LeftBumper, new InstantCommand(() -> setCamera()));
-
-    // this is not working, manipulator grid align
-    // Controller.onBothPress(manipulatorController.LeftBumper, manipulatorController.RightBumper, new ScanAndAlign(drivetrain, arm, poseTracker, manipulatorController));
-
-    // this don't really work as desired, zero the arm
-    // Controller.onPress(manipulatorController.RightTrigger, new Zero(arm));
 
     // driver intake
     Controller.onHold(driverController.RightTrigger, new RunCommand(intake::intakeFast, intake));
@@ -135,8 +125,7 @@ public class RobotContainer {
     // shelf
     Controller.onPress(driverController.B, new MoveToPos(arm, Constants.Arm.Position.SHELF));
 
-    // Controller.onBothPress(driverController.LeftBumper, driverController.RightBumper, new InstantiatorCommand(() -> new GridAlign(drivetrain, tracker, 1, 0.5)));
-
+    // TODO: test this stuff and retune
     // driver turning
     // Controller.onPress(driverController.X, new TurnToAngle(drivetrain, 0)); // align with grid
     // Controller.onPress(driverController.Y, new TurnToAngle(drivetrain, 90 * (DriverStation.getAlliance() == Alliance.Red ? -1 : 1))); // align with park

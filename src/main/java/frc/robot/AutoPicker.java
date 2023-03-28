@@ -46,7 +46,7 @@ public class AutoPicker {
 
     private void configureAutos() {
         // ! Pick one of these in comp
-        autoChooser.addOption("No Bump Auto", new InstantiatorCommand(() -> new TopLaneAuto(drivetrain, arm, intake, scorePosition1Chooser.getSelected(), scorePosition2Chooser.getSelected())));
+        autoChooser.addOption("No Bump Auto", new InstantiatorCommand(() -> new TopLaneAuto(drivetrain, arm, gyro, intake, scorePosition1Chooser.getSelected(), scorePosition2Chooser.getSelected())));
         autoChooser.addOption("Mid Auto", new InstantiatorCommand(() -> new MidLaneAuto(drivetrain, gyro, arm, intake, scorePosition1Chooser.getSelected())));
         autoChooser.addOption("Bump Auto", new InstantiatorCommand(() -> new BottomLaneAuto(drivetrain, arm, intake, scorePosition1Chooser.getSelected())));
     }

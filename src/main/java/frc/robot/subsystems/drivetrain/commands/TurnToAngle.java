@@ -24,14 +24,13 @@ public class TurnToAngle extends CommandBase {
                 Constants.Drivetrain.kTurnI,
                 Constants.Drivetrain.kTurnD
             ); 
-            this.pidController.setTolerance(Constants.Drivetrain.kTurnErrorThreshold, Constants.Drivetrain.kTurnVelocityThreshold);
+            this.pidController.setTolerance(Constants.Drivetrain.kTurnErrorThreshold);
             this.pidController.enableContinuousInput(-180.0, 180.0);
-
-            SmartDashboard.putNumber("Angular kP", 0.0); 
-            SmartDashboard.putNumber("Angular kI", 0.0); 
-            SmartDashboard.putNumber("Angular kD", 0.0); 
-
-            SmartDashboard.putNumber("Angular FF", 0); 
+            
+            SmartDashboard.putNumber("Angular kP", SmartDashboard.getNumber("Angular kP", Constants.Drivetrain.kTurnP)); 
+            SmartDashboard.putNumber("Angular kI", SmartDashboard.getNumber("Angular kI", Constants.Drivetrain.kTurnI)); 
+            SmartDashboard.putNumber("Angular kD", SmartDashboard.getNumber("Angular kD", Constants.Drivetrain.kTurnD)); 
+            SmartDashboard.putNumber("Angular kFF", SmartDashboard.getNumber("Angular kFF", Constants.Drivetrain.kTurnFF)); 
 
             SmartDashboard.putBoolean("Angular Running", true);
     
@@ -60,12 +59,15 @@ public class TurnToAngle extends CommandBase {
 
             double output = pidController.calculate(drivetrain.getYaw(), setpoint.getAsDouble()); 
             //  + SmartDashboard.getNumber("Angular kFF", 0) * Math.signum(pidController.getPositionError());
-            if (Math.abs(output) < Constants.Drivetrain.kTurnFF) output = Math.signum(output) * SmartDashboard.getNumber("Angular kFF", 0);  
+            if (Math.abs(output) < Constants.Drivetrain.kTurnFF) output = Math.signum(output) * Constants.Drivetrain.kTurnFF;  
+
+            output = MathUtil.clamp(output, -0.26, 0.26); 
             SmartDashboard.putNumber("setpoint", setpoint.getAsDouble()); 
             SmartDashboard.putNumber("error", pidController.getPositionError()); 
             // SmartDashboard.putNumber("", output); 
             SmartDashboard.putNumber("output", output); 
-            drivetrain.arcadeDrive(0, MathUtil.clamp(output, -Constants.Drivetrain.kQuickTurnMultiplier, Constants.Drivetrain.kQuickTurnMultiplier));
+            SmartDashboard.putNumber("angle velo", pidController.getVelocityError()); 
+            drivetrain.arcadeDrive(0, output);
         }
     
         @Override

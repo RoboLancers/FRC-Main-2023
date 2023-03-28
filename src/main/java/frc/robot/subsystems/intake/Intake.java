@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -16,6 +17,9 @@ public class Intake extends SubsystemBase {
         this.motor = new CANSparkMax(Constants.Intake.kPort, MotorType.kBrushless);
         this.motor.setIdleMode(IdleMode.kBrake);
         this.motor.setSmartCurrentLimit(30);
+
+        // SmartDashboard.putNumber("intake-fast", SmartDashboard.getNumber("intake-fast", Constants.Intake.kHighPower));
+        // SmartDashboard.putNumber("intake-slow", SmartDashboard.getNumber("intake-slow", Constants.Intake.kLowPower));
     }
 
     @Override

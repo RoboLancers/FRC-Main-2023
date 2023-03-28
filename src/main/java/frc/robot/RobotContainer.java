@@ -1,5 +1,16 @@
 package frc.robot;
 
+import java.util.ResourceBundle.Control;
+
+import org.bananasamirite.robotmotionprofile.Waypoint;
+
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.simulation.AddressableLEDSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -34,7 +45,6 @@ public class RobotContainer {
   private Drivetrain drivetrain = new Drivetrain(gyro);
   private Arm arm = new Arm();
   private Intake intake = new Intake();
-  // private PoseTracker tracker = new PoseTracker(); 
   // private SideCamera sideCamera = new SideCamera(0, 1);
   private LED led = new LED();
 
@@ -42,30 +52,41 @@ public class RobotContainer {
   
   private final SendableChooser<LEDPattern> patternChooser = new SendableChooser<>(); 
 
+  //Camera 
+  private UsbCamera intakeCamera = new UsbCamera("Intake Camera ", 0);
+  private UsbCamera stationCamera = new UsbCamera("Station Camera ", 1);
+  private enum CameraMode { INTAKE, STATION }
+  private CameraMode cameraMode = CameraMode.INTAKE;
+  private final NetworkTableEntry cameraSelection = NetworkTableInstance.getDefault().getTable("").getEntry("CameraSelection");
+
+
   public RobotContainer() {
     // AddressableLEDSim ledSim = new AddressableLEDSim(led.getLed()); // <-- simulation purposes
     // led.setPattern(Constants.LEDs.Patterns.kBalanceFinished);
 
     this.autoPicker = new AutoPicker(drivetrain, arm, gyro, intake); 
 
-      this.drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, driverController));
+    this.drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, driverController));
 
-      this.arm.setDefaultCommand(new RunToSetpoints(arm));
+    this.arm.setDefaultCommand(new RunToSetpoints(arm));
 
-      this.intake.setDefaultCommand(new RunCommand(intake::off, intake));
+    this.intake.setDefaultCommand(new RunCommand(intake::off, intake));
 
-      configureButtonBindings();
-      configurePatterns(); 
-      doSendables();
-    }
+    CameraServer.startAutomaticCapture(0);
+    this.cameraSelection.setString(intakeCamera.getName());
+
+    configureButtonBindings();
+    configurePatterns(); 
+    doSendables();
+  }
 
   private void configureButtonBindings() {
     // driver slow mode
     Controller.onHold(driverController.RightBumper, new InstantCommand(() -> driverController.setSlowMode(Mode.SLOW)));
     Controller.onRelease(driverController.RightBumper, new InstantCommand(() -> driverController.setSlowMode(Mode.NORMAL)));
 
-    // zero the arm
-    // Controller.onPress(manipulatorController.RightTrigger, new Zero(arm));
+    // TODO: test this, driver camera switch
+    // Controller.onPress(driverController.LeftBumper, new InstantCommand(() -> setCamera()));
 
     // driver intake
     Controller.onHold(driverController.RightTrigger, new RunCommand(intake::intakeFast, intake));
@@ -107,8 +128,7 @@ public class RobotContainer {
     // shelf
     Controller.onPress(driverController.B, new MoveToPos(arm, Constants.Arm.Position.SHELF));
 
-    // Controller.onBothPress(driverController.LeftBumper, driverController.RightBumper, new InstantiatorCommand(() -> new GridAlign(drivetrain, tracker, 1, 0.5)));
-
+    // TODO: test this stuff and retune
     // driver turning
     // Controller.onPress(driverController.X, new TurnToAngle(drivetrain, 0)); // align with grid
     // Controller.onPress(driverController.Y, new TurnToAngle(drivetrain, 90 * (DriverStation.getAlliance() == Alliance.Red ? -1 : 1))); // align with park
@@ -138,6 +158,21 @@ public class RobotContainer {
 
     // SmartDashboard.putNumber("turn by", 30); 
     // Controller.onPress(driverController.XX, new TurnBy(drivetrain, () -> ControllerUtils.clamp(SmartDashboard.getNumber("turn by", 30), -90, 90)));
+  }
+
+  public void setCamera() {
+    if(cameraMode == CameraMode.INTAKE) {
+      cameraMode = CameraMode.STATION;
+      intakeCamera.setConnectionStrategy(ConnectionStrategy.kForceClose);
+      CameraServer.startAutomaticCapture(1);
+      cameraSelection.setString(stationCamera.getName());
+    }
+    else if(cameraMode == CameraMode.STATION) {
+      cameraMode = CameraMode.INTAKE;
+      stationCamera.setConnectionStrategy(ConnectionStrategy.kForceClose);
+      CameraServer.startAutomaticCapture(0);
+      cameraSelection.setString(intakeCamera.getName());
+    }
   }
 
   public void configurePatterns() {

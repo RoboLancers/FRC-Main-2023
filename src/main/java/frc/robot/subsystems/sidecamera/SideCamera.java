@@ -1,7 +1,7 @@
 package frc.robot.subsystems.sidecamera;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.ShoulderCamera;
+import frc.robot.util.ShoulderCamera;
 
 public class SideCamera extends SubsystemBase {
     private ShoulderCamera leftCamera;

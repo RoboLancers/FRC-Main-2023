@@ -172,8 +172,8 @@ public final class Constants {
         public static final double ksVoltSecondsPerMeter = 1.8493; // 1.7848;
         public static final double kaVoltSecondsSquaredPerMeter = 0.4429; // 0.47551;
 
-        public static final double kMaxSpeedMetersPerSecond = 2.5;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 0.8;
+        public static final double kMaxSpeedMetersPerSecond = 3;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 2.5;
 
         public static final double kMaxVoltage = 10;
 
@@ -249,12 +249,12 @@ public final class Constants {
         public static final double kTurnFilter = 3;
 
         // TODO: TUNE THESE ON MONDAY FIRST THING
-        public static final double kTurnP = 0.00385;
+        public static final double kTurnP = 0.003;
         public static final double kTurnI = 0;
-        public static final double kTurnD = 0.0001;
-        public static final double kTurnFF = 0.09;
+        public static final double kTurnD = 0.0006;
+        public static final double kTurnFF = 0.105; // 0.045
         public static final double kTurnErrorThreshold = 2;
-        public static final double kTurnVelocityThreshold = 2;
+        public static final double kTurnVelocityThreshold = 0;
     }
 
     public static class Balance {

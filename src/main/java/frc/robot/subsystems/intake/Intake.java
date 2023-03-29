@@ -3,7 +3,6 @@ package frc.robot.subsystems.intake;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,9 +17,10 @@ public class Intake extends SubsystemBase {
     
     public Intake() {
         this.motor.setIdleMode(IdleMode.kBrake);
-        // TODO: tune these
-        this.motor.setSmartCurrentLimit(40);
-        this.motor.setOpenLoopRampRate(0.5); 
+        this.motor.setSmartCurrentLimit(30);
+
+        // SmartDashboard.putNumber("intake-fast", SmartDashboard.getNumber("intake-fast", Constants.Intake.kHighPower));
+        // SmartDashboard.putNumber("intake-slow", SmartDashboard.getNumber("intake-slow", Constants.Intake.kLowPower));
     }
 
     @Override

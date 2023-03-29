@@ -3,6 +3,8 @@ package frc.robot;
 import java.util.ResourceBundle.Control;
 
 import org.bananasamirite.robotmotionprofile.Waypoint;
+import org.opencv.osgi.OpenCVInterface;
+import org.opencv.osgi.OpenCVNativeLoader;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
@@ -12,6 +14,8 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.simulation.AddressableLEDSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,8 +29,13 @@ import frc.robot.subsystems.leds.addressable.LED;
 import frc.robot.subsystems.leds.addressable.patterns.EscalatingRandomColorPattern;
 import frc.robot.subsystems.leds.addressable.patterns.LEDPattern;
 import frc.robot.subsystems.leds.addressable.patterns.SplitPattern;
+import frc.robot.subsystems.leds.addressable.patterns.MorseCodePattern;
+import frc.robot.subsystems.leds.addressable.patterns.RainbowPattern;
+import frc.robot.subsystems.sidecamera.SideCamera; 
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.commands.TeleopDrive;
+import frc.robot.subsystems.drivetrain.commands.TurnBy;
+import frc.robot.subsystems.drivetrain.commands.TurnToAngle;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.commands.MoveToPos;
 import frc.robot.subsystems.arm.commands.RunToSetpoints;
@@ -45,7 +54,7 @@ public class RobotContainer {
   private Drivetrain drivetrain = new Drivetrain(gyro);
   private Arm arm = new Arm();
   private Intake intake = new Intake();
-  // private SideCamera sideCamera = new SideCamera(0, 1);
+  private SideCamera sideCamera = new SideCamera(0, 1);
   private LED led = new LED();
 
   private final AutoPicker autoPicker; 
@@ -53,11 +62,11 @@ public class RobotContainer {
   private final SendableChooser<LEDPattern> patternChooser = new SendableChooser<>(); 
 
   //Camera 
-  private UsbCamera intakeCamera = new UsbCamera("Intake Camera ", 0);
-  private UsbCamera stationCamera = new UsbCamera("Station Camera ", 1);
-  private enum CameraMode { INTAKE, STATION }
-  private CameraMode cameraMode = CameraMode.INTAKE;
-  private final NetworkTableEntry cameraSelection = NetworkTableInstance.getDefault().getTable("").getEntry("CameraSelection");
+  // private UsbCamera intakeCamera = new UsbCamera("Intake Camera ", 0);
+  // private UsbCamera stationCamera = new UsbCamera("Station Camera ", 1);
+  // private enum CameraMode { INTAKE, STATION }
+  // private CameraMode cameraMode = CameraMode.INTAKE;
+  // private final NetworkTableEntry cameraSelection = NetworkTableInstance.getDefault().getTable("").getEntry("CameraSelection");
 
 
   public RobotContainer() {
@@ -72,8 +81,8 @@ public class RobotContainer {
 
     this.intake.setDefaultCommand(new RunCommand(intake::off, intake));
 
-    CameraServer.startAutomaticCapture(0);
-    this.cameraSelection.setString(intakeCamera.getName());
+    // CameraServer.startAutomaticCapture(0);
+    // this.cameraSelection.setString(intakeCamera.getName());
 
     configureButtonBindings();
     configurePatterns(); 
@@ -89,8 +98,8 @@ public class RobotContainer {
     // Controller.onPress(driverController.LeftBumper, new InstantCommand(() -> setCamera()));
 
     // driver intake
-    Controller.onHold(driverController.RightTrigger, new RunCommand(intake::intakeFast, intake));
-    Controller.onHold(driverController.LeftTrigger, new RunCommand(intake::outtakeFast, intake));
+    // Controller.onHold(driverController.RightTrigger, new RunCommand(intake::intakeFast, intake));
+    // Controller.onHold(driverController.LeftTrigger, new RunCommand(intake::outtakeFast, intake));
     // manipulator intake
     Controller.onHold(manipulatorController.intakeElementTriggerFast, new RunCommand(intake::intakeFast));
     Controller.onHold(manipulatorController.outtakeElementTriggerFast, new RunCommand(intake::outtakeFast));
@@ -128,14 +137,23 @@ public class RobotContainer {
     // shelf
     Controller.onPress(driverController.B, new MoveToPos(arm, Constants.Arm.Position.SHELF));
 
+    Controller.onPress(driverController.X, new InstantCommand(() -> {
+      gyro.reset();
+    }, gyro));
+
+
+
+    // Controller.onPress(driverController.LeftTrigger, new TurnBy(drivetrain, 90));
+    // Controller.onPress(driverController.RightTrigger, new TurnBy(drivetrain, -90));
+
     // TODO: test this stuff and retune
     // driver turning
     // Controller.onPress(driverController.X, new TurnToAngle(drivetrain, 0)); // align with grid
     // Controller.onPress(driverController.Y, new TurnToAngle(drivetrain, 90 * (DriverStation.getAlliance() == Alliance.Red ? -1 : 1))); // align with park
 
-    // SmartDashboard.putNumber("turn by", 0); 
+    SmartDashboard.putNumber("turn by", 0); 
 
-    // Controller.onBothPress(driverController.LeftTrigger, driverController.RightTrigger, new TurnBy(drivetrain, () -> SmartDashboard.getNumber("turn by", 0)));
+    Controller.onBothPress(driverController.LeftTrigger, driverController.RightTrigger, new TurnToAngle(drivetrain, () -> SmartDashboard.getNumber("turn by", 0)));
     // Controller.onPress(driverController., getAutonomousCommand());
 
     /*
@@ -160,20 +178,20 @@ public class RobotContainer {
     // Controller.onPress(driverController.XX, new TurnBy(drivetrain, () -> ControllerUtils.clamp(SmartDashboard.getNumber("turn by", 30), -90, 90)));
   }
 
-  public void setCamera() {
-    if(cameraMode == CameraMode.INTAKE) {
-      cameraMode = CameraMode.STATION;
-      intakeCamera.setConnectionStrategy(ConnectionStrategy.kForceClose);
-      CameraServer.startAutomaticCapture(1);
-      cameraSelection.setString(stationCamera.getName());
-    }
-    else if(cameraMode == CameraMode.STATION) {
-      cameraMode = CameraMode.INTAKE;
-      stationCamera.setConnectionStrategy(ConnectionStrategy.kForceClose);
-      CameraServer.startAutomaticCapture(0);
-      cameraSelection.setString(intakeCamera.getName());
-    }
-  }
+  // public void setCamera(){
+  //   if(cameraMode == CameraMode.INTAKE){
+  //     cameraMode = CameraMode.STATION;
+  //     intakeCamera.setConnectionStrategy(ConnectionStrategy.kForceClose);
+  //     stationCamera = CameraServer.startAutomaticCapture(1);
+  //     cameraSelection.setString(stationCamera.getName());
+  //   }
+  //   else if(cameraMode == CameraMode.STATION){
+  //     cameraMode = CameraMode.INTAKE;
+  //     stationCamera.setConnectionStrategy(ConnectionStrategy.kForceClose);
+  //     CameraServer.startAutomaticCapture(0);
+  //     cameraSelection.setString(intakeCamera.getName());
+  //   }
+  // }
 
   public void configurePatterns() {
 

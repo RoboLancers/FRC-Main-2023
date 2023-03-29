@@ -31,10 +31,10 @@ public class TurnBy extends CommandBase {
             this.pidController.setTolerance(Constants.Drivetrain.kTurnErrorThreshold, Constants.Drivetrain.kTurnVelocityThreshold);
             // this.pidController.enableContinuousInput(-180.0, 180.0);
 
-            SmartDashboard.putNumber("Angular kP", SmartDashboard.getNumber("Angular kP", 0)); 
-            SmartDashboard.putNumber("Angular kI", SmartDashboard.getNumber("Angular kI", 0)); 
-            SmartDashboard.putNumber("Angular kD", SmartDashboard.getNumber("Angular kD", 0)); 
-            SmartDashboard.putNumber("Angular kFF", SmartDashboard.getNumber("Angular kFF", 0)); 
+            SmartDashboard.putNumber("Angular kP", SmartDashboard.getNumber("Angular kP", Constants.Drivetrain.kTurnP)); 
+            SmartDashboard.putNumber("Angular kI", SmartDashboard.getNumber("Angular kI", Constants.Drivetrain.kTurnI)); 
+            SmartDashboard.putNumber("Angular kD", SmartDashboard.getNumber("Angular kD", Constants.Drivetrain.kTurnD)); 
+            SmartDashboard.putNumber("Angular kFF", SmartDashboard.getNumber("Angular kFF", Constants.Drivetrain.kTurnFF)); 
 
             SmartDashboard.putBoolean("Angular Running", true);
     
@@ -59,7 +59,8 @@ public class TurnBy extends CommandBase {
 
             double output = pidController.calculate(drivetrain.getHeading(), setpoint.getAsDouble() + this.initialAngle); 
             //  + SmartDashboard.getNumber("Angular kFF", 0) * Math.signum(pidController.getPositionError());
-            if (Math.abs(output) < Constants.Drivetrain.kTurnFF) output = Math.signum(output) * Constants.Drivetrain.kTurnFF;  
+            if (Math.abs(output) < Constants.Drivetrain.kTurnFF) output = Math.signum(output) * Constants.Drivetrain.kTurnFF; 
+            // * Constants.Drivetrain.kTurnFF;  
             SmartDashboard.putNumber("setpoint", setpoint.getAsDouble() + this.initialAngle); 
             SmartDashboard.putNumber("error", pidController.getPositionError()); 
             // SmartDashboard.putNumber("", output); 

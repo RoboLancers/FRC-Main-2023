@@ -17,7 +17,7 @@ public class ShoulderCamera {
 
     private CvSource outputStream; 
 
-    private Mat cameraMat = new Mat(); 
+    private Mat cameraMat;  
 
     private boolean isEnabled = false; 
     

@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.util.Color;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstraint;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.Intake.ScoreSpeed;
@@ -173,17 +174,20 @@ public final class Constants {
         public static final double kMaxAccelerationMetersPerSecondSquared = 2.5;
 
         public static final double kMaxVoltage = 10;
-
+        public static final double maxCentripetalAccel = 1.53;
         // TODO: redo drivetrain angular characterization
         public static final double kTrackWidthMeters = 0.59261; // 1.2546; // Units.inchesToMeters(23);
         public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(
                 kTrackWidthMeters);
 
+
+
         public static final TrajectoryCreator trajectoryCreator = new TrajectoryCreator(
                 kDriveKinematics,
                 new DifferentialDriveVoltageConstraint(
                         new SimpleMotorFeedforward(ksVolts, ksVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter),
-                        kDriveKinematics, kMaxVoltage));
+                        kDriveKinematics, kMaxVoltage),
+                new CentripetalAccelerationConstraint(maxCentripetalAccel));
 
         public static final double kRamseteB = 2;
         public static final double kRamseteZeta = 0.7;

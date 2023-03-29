@@ -38,8 +38,18 @@ public class TopLaneAuto extends SequentialCommandGroup {
         Waypoint ALIGN_POINT = new Waypoint(-2.54, -3.36 * allianceMultiplier, 0, 1, 1); 
         Waypoint endWaypoint; 
 
+        //reversed forward 
+        Waypoint START_BETWEEN_TOP = new Waypoint(-4.33, -3.06 * allianceMultiplier,0, 1, 1);
 
+        //reversed forward and right -90 heading
+        Waypoint SIDE_TOP_PIECE = new Waypoint(-6.7, -2.44 * allianceMultiplier, -90, 1, 1);
 
+        //forward
+        Waypoint INTAKE_POINT = new Waypoint(-6.9, -2.44 * allianceMultiplier, 0, 1, 1);
+
+        //forward and left +90 heading
+        Waypoint INTAKE_BETWEEN_END = new Waypoint(-7.1, -1.44 * allianceMultiplier, 90, 1, 1);
+        
         switch (scoreFirst) {
             case HIGH_CUBE: 
             case MID_CUBE:
@@ -58,13 +68,13 @@ public class TopLaneAuto extends SequentialCommandGroup {
             case HIGH_CUBE: 
             case MID_CUBE:
             case LOW_CUBE: 
-                endWaypoint = new Waypoint(-1.86, -3.64 * allianceMultiplier, 0, 1, 1); 
+                endWaypoint = new Waypoint(-2.26, -1.56 * allianceMultiplier, 0, 1, 1); 
                 break;
             case HIGH_CONE: 
             case MID_CONE:
             case LOW_CONE:
-            default:
-                endWaypoint = new Waypoint(-1.86, -3.06 * allianceMultiplier, 0, 1, 1); 
+            default: 
+                endWaypoint = new Waypoint(-2.26, -0.98 * allianceMultiplier, 0, 1, 1); 
                 break; 
         }
 
@@ -75,27 +85,35 @@ public class TopLaneAuto extends SequentialCommandGroup {
             new Score(arm, intake, scoreFirst), 
         Constants.Trajectory.trajectoryCreator.createCommand(drivetrain, new Waypoint[] {
             startWaypoint, 
-            TOP_PIECE
-        }, new TrajectoryConfig(Constants.Trajectory.kMaxSpeedMetersPerSecond, Constants.Trajectory.kMaxAccelerationMetersPerSecondSquared).setReversed(true)),
-        // new ParallelRaceGroup(
-            new TurnToAngle(drivetrain, 180), 
-            // new WaitCommand(2)
-        // ), 
+            START_BETWEEN_TOP
+        }, new TrajectoryConfig(Constants.Trajectory.kMaxSpeedMetersPerSecond, Constants.Trajectory.kMaxAccelerationMetersPerSecondSquared).setReversed(true), 0, 3),
+     
+         Constants.Trajectory.trajectoryCreator.createCommand(drivetrain, new Waypoint[] {
+            START_BETWEEN_TOP, 
+            SIDE_TOP_PIECE
+        }, new TrajectoryConfig(Constants.Trajectory.kMaxSpeedMetersPerSecond, Constants.Trajectory.kMaxAccelerationMetersPerSecondSquared).setReversed(true), 3, 0),
+     
         new MoveToPos(arm, Constants.Arm.Position.GROUND),
-        new ParallelCommandGroup(new MoveForward(drivetrain, 0.5), new IntakeElement(intake, ScoreSpeed.FAST)), 
+
         new ParallelCommandGroup(
-            new MoveToPos(arm, Constants.Arm.Position.CONTRACTED),
-            new MoveBackward(drivetrain, 0.5)
+            Constants.Trajectory.trajectoryCreator.createCommand(drivetrain, new Waypoint[] {
+                SIDE_TOP_PIECE, 
+                INTAKE_POINT
+                }, new TrajectoryConfig(Constants.Trajectory.kMaxSpeedMetersPerSecond, Constants.Trajectory.kMaxAccelerationMetersPerSecondSquared).setReversed(true), 0, 2),
+            new IntakeElement(intake, ScoreSpeed.FAST)
+            ), 
+        new ParallelCommandGroup(
+            Constants.Trajectory.trajectoryCreator.createCommand(drivetrain, new Waypoint[] {
+                INTAKE_POINT, 
+                INTAKE_BETWEEN_END
+            }, new TrajectoryConfig(Constants.Trajectory.kMaxSpeedMetersPerSecond, Constants.Trajectory.kMaxAccelerationMetersPerSecondSquared).setReversed(true), 2, 3),
+            new MoveToPos(arm, Constants.Arm.Position.CONTRACTED)
         ),
-        // new ParallelRaceGroup(
-            new TurnToAngle(drivetrain, 0), 
-            // new WaitCommand(2)
-        // ),
+
         Constants.Trajectory.trajectoryCreator.createCommand(drivetrain, new Waypoint[] {
-            TOP_PIECE, 
-            // ALIGN_POINT, 
+            INTAKE_BETWEEN_END, 
             endWaypoint
-        }, new TrajectoryConfig(Constants.Trajectory.kMaxSpeedMetersPerSecond, Constants.Trajectory.kMaxAccelerationMetersPerSecondSquared).setReversed(false)), 
+        }, new TrajectoryConfig(Constants.Trajectory.kMaxSpeedMetersPerSecond, Constants.Trajectory.kMaxAccelerationMetersPerSecondSquared).setReversed(false), 3, 0), 
         new Score(arm, intake, scoreSecond)
         );
         // addCommands(new Score(arm, intake, scoreFirst), new MoveBackward(drivetrain, 4));

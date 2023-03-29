@@ -18,8 +18,8 @@ public class TrajectoryCreator {
     private DifferentialDriveKinematics kinematics;
     private DifferentialDriveVoltageConstraint voltageConstraint;
     private CentripetalAccelerationConstraint centripetalAccelerationConstraint;
-    private double startVel = 0;
-    private double endVel = 0;
+    private double startVel;
+    private double endVel;
     
     public TrajectoryCreator(DifferentialDriveKinematics kinematics, DifferentialDriveVoltageConstraint voltageConstraint, CentripetalAccelerationConstraint centripetalAccelerationConstraint) {
         this.kinematics = kinematics;

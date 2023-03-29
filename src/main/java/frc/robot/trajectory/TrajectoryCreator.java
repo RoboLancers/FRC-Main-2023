@@ -6,6 +6,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
+import frc.robot.commands.trajectory.SimulateTrajectoryCommand;
 import frc.robot.commands.trajectory.TrajectoryCommand;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 
@@ -62,7 +63,8 @@ public class TrajectoryCreator {
                 //     // RamseteCommand passes volts to the callback
                 //     drivetrain::tankDriveVolts,
                 //     drivetrain);
-                return new TrajectoryCommand(drivetrain, create(waypoints, config));
+                return new TrajectoryCommand(drivetrain, create(waypoints, config)); 
+                // return new SimulateTrajectoryCommand(create(waypoints, config), drivetrain.getField());
     }
 
     public TrajectoryCommand createCommand(Drivetrain drivetrain, Waypoint[] waypoints, TrajectoryConfig config) {

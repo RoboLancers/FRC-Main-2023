@@ -22,6 +22,7 @@ import frc.robot.subsystems.drivetrain.commands.TurnToAngle;
 import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.commands.IntakeElement;
+import frc.robot.subsystems.intake.commands.IntakeFor;
 
 public class TopLaneAuto extends SequentialCommandGroup {
 
@@ -34,7 +35,9 @@ public class TopLaneAuto extends SequentialCommandGroup {
         final double allianceMultiplier = DriverStation.getAlliance() == Alliance.Red ? 1 : -1; 
 
         Waypoint startWaypoint; 
-        Waypoint TOP_PIECE = new Waypoint(-6.2, -3.44 * allianceMultiplier, 0, 1, 1); 
+        Waypoint OUT_FIELD = new Waypoint(-4.28, -3.31 * allianceMultiplier, 0, 1, 0.5); 
+        Waypoint PRE_TOP_PIECE = new Waypoint(-7.03, -2.55 * allianceMultiplier, Math.toRadians(-90 * allianceMultiplier), 0.5, 1); 
+        Waypoint TOP_PIECE = new Waypoint(-7.05, -3 * allianceMultiplier, Math.toRadians(-90 * allianceMultiplier), 0.6, 1); 
         Waypoint ALIGN_POINT = new Waypoint(-2.54, -3.36 * allianceMultiplier, 0, 1, 1); 
         Waypoint endWaypoint; 
 
@@ -70,33 +73,29 @@ public class TopLaneAuto extends SequentialCommandGroup {
 
         addCommands(
             // new InstantCommand(() -> {
-            //     gyro.reset();
+            //     gyro.zeroYaw();
             // }), 
-            new Score(arm, intake, scoreFirst), 
-        Constants.Trajectory.trajectoryCreator.createCommand(drivetrain, new Waypoint[] {
-            startWaypoint, 
-            TOP_PIECE
-        }, new TrajectoryConfig(Constants.Trajectory.kMaxSpeedMetersPerSecond, Constants.Trajectory.kMaxAccelerationMetersPerSecondSquared).setReversed(true)),
-        // new ParallelRaceGroup(
-            new TurnToAngle(drivetrain, 180), 
-            // new WaitCommand(2)
-        // ), 
-        new MoveToPos(arm, Constants.Arm.Position.GROUND),
-        new ParallelCommandGroup(new MoveForward(drivetrain, 0.5), new IntakeElement(intake, ScoreSpeed.FAST)), 
-        new ParallelCommandGroup(
-            new MoveToPos(arm, Constants.Arm.Position.CONTRACTED),
-            new MoveBackward(drivetrain, 0.5)
-        ),
-        // new ParallelRaceGroup(
-            new TurnToAngle(drivetrain, 0), 
-            // new WaitCommand(2)
-        // ),
-        Constants.Trajectory.trajectoryCreator.createCommand(drivetrain, new Waypoint[] {
-            TOP_PIECE, 
-            // ALIGN_POINT, 
-            endWaypoint
-        }, new TrajectoryConfig(Constants.Trajectory.kMaxSpeedMetersPerSecond, Constants.Trajectory.kMaxAccelerationMetersPerSecondSquared).setReversed(false)), 
-        new Score(arm, intake, scoreSecond)
+            new Score(arm, intake, scoreFirst),
+            new ParallelCommandGroup(
+                Constants.Trajectory.trajectoryCreator.createCommand(drivetrain, new Waypoint[] {
+                    startWaypoint, 
+                    OUT_FIELD, 
+                    PRE_TOP_PIECE, 
+                }, new TrajectoryConfig(Constants.Trajectory.kMaxSpeedMetersPerSecond, Constants.Trajectory.kMaxAccelerationMetersPerSecondSquared).setReversed(true)),
+                new MoveToPos(arm, Constants.Arm.Position.GROUND)
+            ),
+            new ParallelCommandGroup(
+                Constants.Trajectory.trajectoryCreator.createCommand(drivetrain, new Waypoint[] {
+                    PRE_TOP_PIECE, 
+                    TOP_PIECE, 
+                    OUT_FIELD, 
+                    endWaypoint
+                }, new TrajectoryConfig(Constants.Trajectory.kMaxSpeedMetersPerSecond, Constants.Trajectory.kMaxAccelerationMetersPerSecondSquared).setReversed(false)),
+                new SequentialCommandGroup(
+                    new IntakeFor(intake, ScoreSpeed.FAST, 2), 
+                    new MoveToPos(arm, Constants.Arm.Position.CONTRACTED)
+                )
+            )
         );
         // addCommands(new Score(arm, intake, scoreFirst), new MoveBackward(drivetrain, 4));
     }

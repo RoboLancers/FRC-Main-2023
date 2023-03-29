@@ -9,17 +9,9 @@ import frc.robot.Constants;
 import frc.robot.Constants.Intake.ScoreSpeed;
 import frc.robot.subsystems.intake.Intake;
 
-public class OuttakeElement extends SequentialCommandGroup {
+public class OuttakeElement extends OuttakeFor {
     public OuttakeElement(Intake intake, ScoreSpeed speed) {
-        addCommands(new ParallelRaceGroup(new RunCommand(() -> {
-            if (speed == ScoreSpeed.FAST) {
-                intake.outtakeFast();
-            } else {
-                intake.outtakeSlow();
-            }
-        }), new WaitCommand(Constants.Intake.kAutoOuttakeSeconds)), new InstantCommand(intake::off, intake));
-
-        addRequirements(intake);
+        super(intake, speed, Constants.Intake.kAutoOuttakeSeconds); 
     }
     
 }

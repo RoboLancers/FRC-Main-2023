@@ -173,12 +173,12 @@ public final class Constants {
         public static final double kaVoltSecondsSquaredPerMeter = 0.4429; // 0.47551;
 
         public static final double kMaxSpeedMetersPerSecond = 3;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 2.5;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 2.0;
 
-        public static final double kMaxVoltage = 10;
+        public static final double kMaxVoltage = 9; // 10;
 
         // TODO: redo drivetrain angular characterization
-        public static final double kTrackWidthMeters = 0.59261; // 1.2546; // Units.inchesToMeters(23);
+        public static final double kTrackWidthMeters = 1.2546; // 0.59261; // Units.inchesToMeters(23);
         public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(
                 kTrackWidthMeters);
 

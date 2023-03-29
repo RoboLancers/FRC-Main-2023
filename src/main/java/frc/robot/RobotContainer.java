@@ -54,8 +54,8 @@ public class RobotContainer {
   private Drivetrain drivetrain = new Drivetrain(gyro);
   private Arm arm = new Arm();
   private Intake intake = new Intake();
-  private SideCamera sideCamera = new SideCamera(0, 1);
-  private LED led = new LED();
+  // private SideCamera sideCamera = new SideCamera(0, 1);
+  // private LED led = new LED();
 
   private final AutoPicker autoPicker; 
   
@@ -109,12 +109,12 @@ public class RobotContainer {
     // manipulator toggle cube
     Controller.onPress(manipulatorController.RightBumper, new InstantCommand(() -> {
       this.arm.armMode = ArmMode.CUBE;
-      this.led.cube();
+      // this.led.cube();
     }));
     // manipulator toggle cone
     Controller.onPress(manipulatorController.LeftBumper, new InstantCommand(() -> {
       this.arm.armMode = ArmMode.CONE;
-      this.led.cone();
+      // this.led.cone();
     }));
 
     /*
@@ -222,11 +222,11 @@ public class RobotContainer {
     SmartDashboard.putData(this.autoPicker.getAutoChooser());
     SmartDashboard.putData(this.autoPicker.getScoringPosition1());
     SmartDashboard.putData(this.autoPicker.getScoringPosition2());
-    SmartDashboard.putData(this.patternChooser);
+    // SmartDashboard.putData(this.patternChooser);
   }
 
   public void periodic() {
-    this.led.setPattern(this.patternChooser.getSelected());
+    // this.led.setPattern(this.patternChooser.getSelected());
   }
 
 }

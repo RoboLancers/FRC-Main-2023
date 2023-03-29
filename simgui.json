@@ -17,6 +17,26 @@
       "/SmartDashboard/SendableChooser[2]": "String Chooser",
       "/SmartDashboard/SendableChooser[3]": "String Chooser",
       "/SmartDashboard/field": "Field2d"
+    },
+    "windows": {
+      "/SmartDashboard/field": {
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    },
+    "transitory": {
+      "SmartDashboard": {
+        "field": {
+          "open": true
+        },
+        "open": true
+      }
     }
   }
 }

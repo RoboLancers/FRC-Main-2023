@@ -1,32 +1,47 @@
 package frc.robot.subsystems.leds.addressable.patterns;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import frc.robot.subsystems.leds.addressable.AddressableLEDBufferSection;
 
 public class SplitPattern extends LEDPattern {
 
-    private final int start1; 
-    private final int end1; 
-    private final int start2; 
-    private final int end2;  
+    private final List<SplitPatternSection> patterns = new ArrayList<>(); 
 
-    private final LEDPattern pattern1; 
-    private final LEDPattern pattern2; 
-
-    public SplitPattern(int start1, int end1, LEDPattern pattern1, int start2, int end2, LEDPattern pattern2) {
+    public SplitPattern() {
         super(0);
-        this.start1 = start1; 
-        this.end1 = end1; 
-        this.start2 = start2; 
-        this.end2 = end2; 
-
-        this.pattern1 = pattern1; 
-        this.pattern2 = pattern2; 
     }
 
     @Override
     protected void updateLEDs(AddressableLEDBufferSection buffer, double time) {
-        pattern1.update(buffer.getSection(start1, end1), time);
-        pattern2.update(buffer.getSection(start2, end2), time);
+        for (SplitPatternSection section : this.patterns) section.update(buffer, time);
+    }
+
+    public SplitPattern addSplit(int start, int end, LEDPattern pattern) {
+        this.patterns.add(new SplitPatternSection(start, end, pattern)); 
+        return this; 
+    }
+
+    public SplitPattern clear() {
+        this.patterns.clear();
+        return this; 
+    }
+
+    private static class SplitPatternSection {
+        private final LEDPattern pattern; 
+        private final int start; 
+        private final int end;
+        
+        public SplitPatternSection(int start, int end, LEDPattern pattern) {
+            this.start = start;
+            this.end = end; 
+            this.pattern = pattern; 
+        }
+
+        public void update(AddressableLEDBufferSection buffer, double time) {
+            pattern.update(buffer.getSection(start, end), time);
+        }
     }
     
     

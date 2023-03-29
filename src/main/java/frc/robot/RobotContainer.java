@@ -193,7 +193,7 @@ public class RobotContainer {
     this.patternChooser.addOption("Teleop", Constants.LEDs.Patterns.kTeleop);
     // this.patternChooser.addOption("Cube", Constants.LEDs.Patterns.kCube);
     this.patternChooser.addOption("Tipped Alternate", Constants.LEDs.Patterns.kDeadAlternate);
-    this.patternChooser.addOption("custom teleop", new SplitPattern(0, 5, Constants.LEDs.Patterns.kTeleop, 5, 20, Constants.LEDs.Patterns.kIdle));
+    this.patternChooser.addOption("custom teleop", new SplitPattern().addSplit(0, 5, Constants.LEDs.Patterns.kTeleop).addSplit(5, 10, Constants.LEDs.Patterns.kIdle).addSplit(10, 15, Constants.LEDs.Patterns.kDead).addSplit(15, 20, Constants.LEDs.Patterns.kBalanceFinished));
   }
 
   public Command getAutonomousCommand() {

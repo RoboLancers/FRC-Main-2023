@@ -5,6 +5,7 @@ import edu.wpi.first.math.spline.Spline;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstraint;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import frc.robot.commands.trajectory.TrajectoryCommand;
 import frc.robot.subsystems.drivetrain.Drivetrain;
@@ -16,14 +17,19 @@ import org.bananasamirite.robotmotionprofile.Waypoint;
 public class TrajectoryCreator {
     private DifferentialDriveKinematics kinematics;
     private DifferentialDriveVoltageConstraint voltageConstraint;
-    public TrajectoryCreator(DifferentialDriveKinematics kinematics, DifferentialDriveVoltageConstraint voltageConstraint) {
+    private CentripetalAccelerationConstraint centripetalAccelerationConstraint;
+    private double startVel = 0;
+    private double endVel = 0;
+    
+    public TrajectoryCreator(DifferentialDriveKinematics kinematics, DifferentialDriveVoltageConstraint voltageConstraint, CentripetalAccelerationConstraint centripetalAccelerationConstraint) {
         this.kinematics = kinematics;
         this.voltageConstraint = voltageConstraint;
+        this.centripetalAccelerationConstraint = centripetalAccelerationConstraint;
     }
 
     public Trajectory create(List<Waypoint> waypoints, TrajectoryConfig config) {
 
-        config.addConstraint(voltageConstraint).setKinematics(kinematics); 
+        config.addConstraint(voltageConstraint).setKinematics(kinematics).addConstraint(centripetalAccelerationConstraint).setStartVelocity(startVel).setEndVelocity(endVel);
 
         TrajectoryGenerator.ControlVectorList controlVectors = new TrajectoryGenerator.ControlVectorList();
         for (Waypoint w : waypoints) {
@@ -66,6 +72,14 @@ public class TrajectoryCreator {
     }
 
     public TrajectoryCommand createCommand(Drivetrain drivetrain, Waypoint[] waypoints, TrajectoryConfig config) {
+        this.startVel = 0;
+        this.endVel = 0;
+        return createCommand(drivetrain, List.of(waypoints), config); 
+    }
+
+    public TrajectoryCommand createCommand(Drivetrain drivetrain, Waypoint[] waypoints, TrajectoryConfig config, double startVel, double endVel) {
+        this.startVel = startVel;
+        this.endVel = endVel;
         return createCommand(drivetrain, List.of(waypoints), config); 
     }
 }

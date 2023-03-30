@@ -176,7 +176,7 @@ public final class Constants {
         public static final double kMaxSpeedMetersPerSecond = 2.75;
         public static final double kMaxAccelerationMetersPerSecondSquared = 1.75;
 
-        public static final double kMaxVoltage = 10;
+        public static final double kMaxVoltage = 9;
         public static final double kMaxCentripetalAccel = 0.8;
 
         // TODO: redo drivetrain angular characterization

@@ -40,8 +40,10 @@ public class TopLaneAuto extends SequentialCommandGroup {
 
         Waypoint startWaypoint; 
         Waypoint OUT_FIELD = new Waypoint(-4.28, -3.31 * allianceMultiplier, 0, 1.5, 0.5); 
-        Waypoint PRE_TOP_PIECE = new Waypoint(-7.39, -2.0 * allianceMultiplier, Math.toRadians(-90 * allianceMultiplier), 0.5, 1); 
-        Waypoint TOP_PIECE = new Waypoint(-7.39, -3 * allianceMultiplier, Math.toRadians(-90 * allianceMultiplier), 0.6, 1); 
+        // increase 7.34 -> increase dist from grid
+        Waypoint PRE_TOP_PIECE = new Waypoint(-7.34, -2.0 * allianceMultiplier, Math.toRadians(-90 * allianceMultiplier), 0.5, 1); 
+        // increase 7.34 -> increase dist from grid
+        Waypoint TOP_PIECE = new Waypoint(-7.34, -3 * allianceMultiplier, Math.toRadians(-90 * allianceMultiplier), 0.6, 1); 
         Waypoint ALIGN_POINT = new Waypoint(-2.54, -3.36 * allianceMultiplier, 0, 1, 1); 
         Waypoint endWaypoint; 
 
@@ -80,11 +82,17 @@ public class TopLaneAuto extends SequentialCommandGroup {
             //     gyro.zeroYaw();
             // }), 
             new Score(arm, intake, scoreFirst),
+            new ParallelCommandGroup(
                 Constants.Trajectory.trajectoryCreator.createCommand(drivetrain, new Waypoint[] {
                     startWaypoint, 
                     OUT_FIELD, 
                     PRE_TOP_PIECE, 
-                }, new TrajectoryConfig(Constants.Trajectory.kMaxSpeedMetersPerSecond, Constants.Trajectory.kMaxAccelerationMetersPerSecondSquared).setReversed(true), true),
+                }, new TrajectoryConfig(Constants.Trajectory.kMaxSpeedMetersPerSecond, Constants.Trajectory.kMaxAccelerationMetersPerSecondSquared).setReversed(true), true), 
+                new SequentialCommandGroup(
+                    new WaitCommand(0.75), 
+                    new MoveToPos(arm, Constants.Arm.Position.GROUND)
+                )
+            ),
             new ParallelCommandGroup(
                 Constants.Trajectory.trajectoryCreator.createCommand(drivetrain, new Waypoint[] {
                     PRE_TOP_PIECE, 
@@ -93,7 +101,6 @@ public class TopLaneAuto extends SequentialCommandGroup {
                     endWaypoint
                 }, new TrajectoryConfig(Constants.Trajectory.kMaxSpeedMetersPerSecond, Constants.Trajectory.kMaxAccelerationMetersPerSecondSquared).setReversed(false), false),
                 new SequentialCommandGroup(
-                    new MoveToPos(arm, Constants.Arm.Position.GROUND),
                     new IntakeFor(intake, ScoreSpeed.FAST, 1.5), 
                     new MoveToPos(arm, Constants.Arm.Position.CONTRACTED)
                 )

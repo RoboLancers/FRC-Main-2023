@@ -98,8 +98,8 @@ public class RobotContainer {
     // Controller.onPress(driverController.LeftBumper, new InstantCommand(() -> setCamera()));
 
     // driver intake
-    // Controller.onHold(driverController.RightTrigger, new RunCommand(intake::intakeFast, intake));
-    // Controller.onHold(driverController.LeftTrigger, new RunCommand(intake::outtakeFast, intake));
+    Controller.onHold(driverController.RightTrigger, new RunCommand(intake::intakeFast, intake));
+    Controller.onHold(driverController.LeftTrigger, new RunCommand(intake::outtakeFast, intake));
     // manipulator intake
     Controller.onHold(manipulatorController.intakeElementTriggerFast, new RunCommand(intake::intakeFast));
     Controller.onHold(manipulatorController.outtakeElementTriggerFast, new RunCommand(intake::outtakeFast));

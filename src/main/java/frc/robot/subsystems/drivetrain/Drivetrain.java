@@ -200,6 +200,7 @@ public class Drivetrain extends SubsystemBase {
 
     // Resets the record values of both sides of encoders.
     public void resetEncoders() {
+        System.out.println("resetting encoders");
         leftEncoder.setPosition(0);
         rightEncoder.setPosition(0);
     }

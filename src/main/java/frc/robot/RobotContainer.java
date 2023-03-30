@@ -54,7 +54,7 @@ public class RobotContainer {
   private Drivetrain drivetrain = new Drivetrain(gyro);
   private Arm arm = new Arm();
   private Intake intake = new Intake();
-  // private SideCamera sideCamera = new SideCamera(0, 1);
+  private SideCamera sideCamera = new SideCamera(0, 1);
   // private LED led = new LED();
 
   private final AutoPicker autoPicker; 

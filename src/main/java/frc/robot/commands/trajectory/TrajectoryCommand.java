@@ -38,12 +38,20 @@ public class TrajectoryCommand extends CommandBase
     private final NetworkTableEntry velocity;
     private final NetworkTableEntry robotVelocity;
 
-    public TrajectoryCommand(Drivetrain drivetrain, Trajectory trajectory)
+    private final boolean zero; 
+
+    public TrajectoryCommand(Drivetrain drivetrain, Trajectory trajectory) {
+        this(drivetrain, trajectory, true); 
+    }
+
+    public TrajectoryCommand(Drivetrain drivetrain, Trajectory trajectory, boolean zero)
     {
         this.subsystem = drivetrain;
         this.timer = new Timer();
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(drivetrain);
+
+        this.zero = zero; 
 
         this.trajectory = trajectory;
         this.maxTime = trajectory.getTotalTimeSeconds();
@@ -78,7 +86,7 @@ public class TrajectoryCommand extends CommandBase
                 )
         );
 
-        subsystem.resetOdometry(initialState.poseMeters);
+        if (zero) subsystem.resetOdometry(initialState.poseMeters);
     }
 
     @Override

@@ -17,23 +17,20 @@ public class ShoulderCamera {
 
     private CvSource outputStream; 
 
-    private Mat cameraMat;  
+    private Mat cameraMat; 
+
+    private String name; 
+
+    private int xLeft; 
+    private int xRight; 
 
     private boolean isEnabled = false; 
     
     private Thread cameraUpdateThread = new Thread(() -> {
-            // This cannot be 'true'. The program will never exit if it is. This
-            // lets the robot stop this thread when restarting robot code or
-            // deploying.
             while (!Thread.interrupted()) {
-
                 if (!isEnabled) continue;
-                // Tell the CvSink to grab a frame from the camera and put it
-                // in the source mat.  If there is an error notify the output.
                 if (sink.grabFrame(cameraMat) == 0) {
-                    // Send the output the error.
                     outputStream.notifyError(sink.getError());
-                    // skip the rest of the current iteration
                     continue;
                 }
 
@@ -43,25 +40,35 @@ public class ShoulderCamera {
             }
     }); 
 
-    public ShoulderCamera(String name, int port, int width, int height) {
+    public ShoulderCamera(String name, int port, int width, int height, int xLeft, int xRight) {
         this.camera = CameraServer.startAutomaticCapture(port); 
         this.sink = CameraServer.getVideo(camera); 
+        this.name = name; 
+        this.xLeft = xLeft;
+        this.xRight = xRight;
 
         this.outputStream = CameraServer.putVideo(name, width, height); 
+
+        cameraMat = new Mat(); 
 
         setEnabled(true);
 
         cameraUpdateThread.start();
+
+        SmartDashboard.putNumber("x0-" + name, xLeft); 
+        SmartDashboard.putNumber("y0-" + name, 0); 
+        SmartDashboard.putNumber("x1-" + name, xRight); 
+        SmartDashboard.putNumber("y1-" + name, 180); 
     }
 
     private void processCameraFrame(Mat mat) {
         Imgproc.rectangle(mat, new Point(
-            SmartDashboard.getNumber("x0", 0), 
-            SmartDashboard.getNumber("y0", 0)
+            SmartDashboard.getNumber("x0-" + name, xLeft), 
+            SmartDashboard.getNumber("y0-" + name, 0)
             ), new Point(
-                SmartDashboard.getNumber("x1", 50), 
-                SmartDashboard.getNumber("y1", 50)
-                ), new Scalar(255, 255, 255));
+                SmartDashboard.getNumber("x1-" + name, xRight), 
+                SmartDashboard.getNumber("y1-" + name, 180)
+                ), new Scalar(50, 50, 255));
     }
 
     public void setEnabled(boolean enabled) {

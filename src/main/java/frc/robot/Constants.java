@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.util.Color;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstraint;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.Intake.ScoreSpeed;
@@ -25,7 +26,7 @@ public final class Constants {
             public static final double kI = 0.0;
             public static final double kD = 0.0;
             public static final double kFF = 0.042;
-            public static double kErrorThreshold = 5.0;
+            public static double kErrorThreshold = 10.0;
             public static double kMaxDownwardOutput = -0.4;
             public static double kMaxUpwardOutput = 0.5;
 
@@ -42,7 +43,7 @@ public final class Constants {
             public static final double kI = 0.0;
             public static final double kD = 0.0;
             public static final double kFF = 0.0;
-            public static double kErrorThreshold = 5.0;
+            public static double kErrorThreshold = 10.0;
             public static double kMaxDownwardOutput = -0.5;
             public static double kMaxUpwardOutput = 0.5;
 
@@ -63,7 +64,7 @@ public final class Constants {
             // into the validity of setpoints after this change
 
             CONTRACTED(16.0, 22.0),
-            GROUND(16.0, 113.0), // 113
+            GROUND(16.0, 114.5), // 113
 
             MID_CUBE(16.0, 40.0),
             HIGH_CUBE(55.0, 82.0),
@@ -156,8 +157,8 @@ public final class Constants {
     public static class Intake {
         public static final int kIntakePort = 24;
         public static final int kBeambreakPort = 1; 
-        public static final double kLowPower = 0.2;
-        public static final double kHighPower = 0.9;
+        public static final double kLowPower = 0.2*10.5/12;
+        public static final double kHighPower = 0.9*10.5/12;
         public static final double kAutoIntakeSeconds = 0.5;
         public static final double kAutoOuttakeSeconds = 0.5;
 
@@ -172,13 +173,14 @@ public final class Constants {
         public static final double ksVoltSecondsPerMeter = 1.8493; // 1.7848;
         public static final double kaVoltSecondsSquaredPerMeter = 0.4429; // 0.47551;
 
-        public static final double kMaxSpeedMetersPerSecond = 3;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 2.0;
+        public static final double kMaxSpeedMetersPerSecond = 2.75;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 1.75;
 
-        public static final double kMaxVoltage = 9; // 10;
+        public static final double kMaxVoltage = 10;
+        public static final double kMaxCentripetalAccel = 0.8;
 
         // TODO: redo drivetrain angular characterization
-        public static final double kTrackWidthMeters = 1.2546; // 0.59261; // Units.inchesToMeters(23);
+        public static final double kTrackWidthMeters = 0.59261; // 1.2546;  // Units.inchesToMeters(23);
         public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(
                 kTrackWidthMeters);
 
@@ -186,7 +188,8 @@ public final class Constants {
                 kDriveKinematics,
                 new DifferentialDriveVoltageConstraint(
                         new SimpleMotorFeedforward(ksVolts, ksVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter),
-                        kDriveKinematics, kMaxVoltage));
+                        kDriveKinematics, kMaxVoltage),
+                        new CentripetalAccelerationConstraint(kMaxCentripetalAccel));
 
         public static final double kRamseteB = 2;
         public static final double kRamseteZeta = 0.7;
@@ -265,5 +268,12 @@ public final class Constants {
                                                              // trash
         // public static final double kVelocityTolerance = 1.0; // TODO: tune this, 1
         // degree per second seems pretty reasonable for stopped state
+    }
+
+    public static class SideCamera {
+        public static final int leftXLow = 85; 
+        public static final int leftXHigh = 92; 
+        public static final int rightXLow = 180 - leftXHigh; 
+        public static final int rightXHigh = 180 - leftXLow;  
     }
 }

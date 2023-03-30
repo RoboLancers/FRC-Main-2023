@@ -6,7 +6,9 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.Intake.ScoreSpeed;
 import frc.robot.subsystems.arm.Arm;
@@ -14,8 +16,10 @@ import frc.robot.subsystems.arm.commands.MoveToPos;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.commands.MoveForward;
 import frc.robot.subsystems.drivetrain.commands.TurnBy;
+import frc.robot.subsystems.drivetrain.commands.TurnToAngle;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.commands.IntakeElement;
+import frc.robot.subsystems.intake.commands.IntakeFor;
 
 public class BottomLaneAuto extends SequentialCommandGroup {
     public BottomLaneAuto(Drivetrain drivetrain, Arm arm, Intake intake, Constants.Arm.ScoringPosition position) {
@@ -25,7 +29,9 @@ public class BottomLaneAuto extends SequentialCommandGroup {
         final double allianceMultiplier = DriverStation.getAlliance() == Alliance.Red ? 1 : -1; 
 
         Waypoint startWaypoint; 
-        Waypoint BOTTOM_PIECE = new Waypoint(-5.9, -7.14 * allianceMultiplier, 0, 1, 1); 
+        Waypoint BEFORE_BUMP = new Waypoint(-3.0, -7.66 * allianceMultiplier, 0, 1, 1); 
+        Waypoint PAST_BUMP = new Waypoint(-5.0, -7.66 * allianceMultiplier, 0, 1, 1); 
+        Waypoint BOTTOM_PIECE = new Waypoint(-5.0, -7.14 * allianceMultiplier, 0, 1, 1); 
 
         switch (position) {
             case HIGH_CUBE: 
@@ -44,11 +50,16 @@ public class BottomLaneAuto extends SequentialCommandGroup {
         addCommands(new Score(arm, intake, position), 
             Constants.Trajectory.trajectoryCreator.createCommand(drivetrain, new Waypoint[] {
                 startWaypoint, 
-                BOTTOM_PIECE
-            }, new TrajectoryConfig(Constants.Trajectory.kMaxSpeedMetersPerSecond, Constants.Trajectory.kMaxAccelerationMetersPerSecondSquared).setReversed(true)),
-            new TurnBy(drivetrain, 180), 
+                BEFORE_BUMP,
+                PAST_BUMP 
+                // BOTTOM_PIECE
+            }, new TrajectoryConfig(1, 0.75).setReversed(true)),
+            new ParallelRaceGroup(
+                new WaitCommand(2), 
+                new TurnToAngle(drivetrain, 180)
+            ), 
             new MoveToPos(arm, Constants.Arm.Position.GROUND),
-            new ParallelCommandGroup(new MoveForward(drivetrain, 0.5), new IntakeElement(intake, ScoreSpeed.FAST)), 
+            new ParallelRaceGroup(new MoveForward(drivetrain, 2), new IntakeFor(intake, ScoreSpeed.FAST, 5)), 
             new MoveToPos(arm, Constants.Arm.Position.CONTRACTED)
         );
 

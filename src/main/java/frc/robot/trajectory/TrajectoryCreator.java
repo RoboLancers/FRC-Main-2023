@@ -5,7 +5,9 @@ import edu.wpi.first.math.spline.Spline;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstraint;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
+import frc.robot.commands.trajectory.SimulateTrajectoryCommand;
 import frc.robot.commands.trajectory.TrajectoryCommand;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 
@@ -16,14 +18,17 @@ import org.bananasamirite.robotmotionprofile.Waypoint;
 public class TrajectoryCreator {
     private DifferentialDriveKinematics kinematics;
     private DifferentialDriveVoltageConstraint voltageConstraint;
-    public TrajectoryCreator(DifferentialDriveKinematics kinematics, DifferentialDriveVoltageConstraint voltageConstraint) {
+    private CentripetalAccelerationConstraint centripetalAccelerationConstraint;
+    public TrajectoryCreator(DifferentialDriveKinematics kinematics, DifferentialDriveVoltageConstraint voltageConstraint, CentripetalAccelerationConstraint centripetalAccelerationConstraint) {
         this.kinematics = kinematics;
         this.voltageConstraint = voltageConstraint;
+        this.centripetalAccelerationConstraint = centripetalAccelerationConstraint;
     }
 
     public Trajectory create(List<Waypoint> waypoints, TrajectoryConfig config) {
 
-        config.addConstraint(voltageConstraint).setKinematics(kinematics); 
+        config.addConstraint(voltageConstraint).setKinematics(kinematics). 
+        addConstraint(centripetalAccelerationConstraint); 
 
         TrajectoryGenerator.ControlVectorList controlVectors = new TrajectoryGenerator.ControlVectorList();
         for (Waypoint w : waypoints) {
@@ -40,7 +45,7 @@ public class TrajectoryCreator {
         return create(List.of(waypoints), config); 
     }
 
-    public TrajectoryCommand createCommand(Drivetrain drivetrain, List<Waypoint> waypoints, TrajectoryConfig config) {
+    public TrajectoryCommand createCommand(Drivetrain drivetrain, List<Waypoint> waypoints, TrajectoryConfig config, boolean zero) {
                 // Trajectory t = create(maxVel, maxAccel, waypoints, reversed);
 
                 // TrajectoryConfig config = new TrajectoryConfig(maxVel, maxAccel).setKinematics(kinematics).addConstraint(voltageConstraint);
@@ -62,10 +67,15 @@ public class TrajectoryCreator {
                 //     // RamseteCommand passes volts to the callback
                 //     drivetrain::tankDriveVolts,
                 //     drivetrain);
-                return new TrajectoryCommand(drivetrain, create(waypoints, config));
+                return new TrajectoryCommand(drivetrain, create(waypoints, config), zero); 
+                // return new SimulateTrajectoryCommand(create(waypoints, config), drivetrain.getField());
     }
 
     public TrajectoryCommand createCommand(Drivetrain drivetrain, Waypoint[] waypoints, TrajectoryConfig config) {
-        return createCommand(drivetrain, List.of(waypoints), config); 
+        return createCommand(drivetrain, waypoints, config, true); 
+    }
+
+    public TrajectoryCommand createCommand(Drivetrain drivetrain, Waypoint[] waypoints, TrajectoryConfig config, boolean zero) {
+        return createCommand(drivetrain, List.of(waypoints), config, zero); 
     }
 }

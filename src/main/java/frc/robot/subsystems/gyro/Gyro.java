@@ -1,6 +1,8 @@
 package frc.robot.subsystems.gyro;
 
 import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,7 +19,7 @@ public class Gyro extends SubsystemBase {
     private double lastPitch;
     private double pitchVelocity;
 
-    public Gyro(){
+    public Gyro() {
         this.pitchOffset = 0;
         this.initialized = false;
 
@@ -25,15 +27,35 @@ public class Gyro extends SubsystemBase {
         this.lastPitch = this._gyro.getPitch();
         this.pitchVelocity = 0;
         
-        _gyro.calibrate();
+        _gyro.reset();
     }
 
-    public double getPitch(){
+    public double getPitch() {
         return _gyro.getPitch() - this.pitchOffset;
     }
 
-    public double getPitchVelocity(){
+    public double getPitchVelocity() {
         return this.pitchVelocity;
+    }
+
+    public Rotation2d getRotation2d() {
+        return this._gyro.getRotation2d();
+    }
+
+    public double getYaw() {
+        return this._gyro.getYaw(); 
+    }
+
+    public double getRate() {
+        return this._gyro.getRate();
+    }
+
+    public void zeroYaw() {
+        this._gyro.zeroYaw();
+    }
+
+    public void reset() {
+        this._gyro.reset();
     }
 
     @Override

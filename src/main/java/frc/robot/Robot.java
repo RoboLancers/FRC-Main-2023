@@ -18,6 +18,7 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     m_robotContainer.doSendables();
+    m_robotContainer.periodic();
 
   }
   

@@ -27,7 +27,7 @@ public class RobotTrajectoryCommand extends SequentialCommandGroup {
                             ((WaypointTask) e).getConstraints().getMaxAcceleration()
                         ).setReversed(
                             ((WaypointTask) e).getReversed()
-                        )
+                        ), true
                 );
             }
             if (e instanceof CommandTask && !((CommandTask) e).getWaypoint().getCommandName().equals("")) {

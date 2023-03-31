@@ -64,9 +64,9 @@ public final class Constants {
             // into the validity of setpoints after this change
 
             CONTRACTED(16.0, 22.0),
-            GROUND(16.0, 114.5), // 113
+            GROUND(16.0, 113.0), // 113
 
-            MID_CUBE(16.0, 40.0),
+            MID_CUBE(25.0, 60.0),
             HIGH_CUBE(55.0, 82.0),
 
             HIGH_CONE(96.0, 134.0),
@@ -177,7 +177,7 @@ public final class Constants {
         public static final double kMaxAccelerationMetersPerSecondSquared = 1.75;
 
         public static final double kMaxVoltage = 9;
-        public static final double kMaxCentripetalAccel = 0.8;
+        public static final double kMaxCentripetalAccel = 0.75;
 
         // TODO: redo drivetrain angular characterization
         public static final double kTrackWidthMeters = 0.59261; // 1.2546;  // Units.inchesToMeters(23);

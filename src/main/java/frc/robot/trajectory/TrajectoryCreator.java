@@ -27,8 +27,7 @@ public class TrajectoryCreator {
 
     public Trajectory create(List<Waypoint> waypoints, TrajectoryConfig config) {
 
-        config.addConstraint(voltageConstraint).setKinematics(kinematics). 
-        addConstraint(centripetalAccelerationConstraint); 
+        config.addConstraint(voltageConstraint).setKinematics(kinematics).addConstraint(centripetalAccelerationConstraint); 
 
         TrajectoryGenerator.ControlVectorList controlVectors = new TrajectoryGenerator.ControlVectorList();
         for (Waypoint w : waypoints) {

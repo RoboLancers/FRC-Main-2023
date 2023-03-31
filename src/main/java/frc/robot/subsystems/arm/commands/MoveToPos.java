@@ -18,11 +18,7 @@ public class MoveToPos extends SequentialCommandGroup {
     }
 
     public MoveToPos(Arm arm, double anchor, double floating) {
-        addCommands(
-            new MoveFloating(arm, Constants.Arm.Floating.kContracted),
-            new MoveAnchor(arm, anchor),
-            new MoveFloating(arm, floating)
-        );
+        this(arm, () -> anchor, () -> floating); 
     }
 
     public MoveToPos(Arm arm, DoubleSupplier anchorSetpoint, DoubleSupplier floatingSetpoint) {

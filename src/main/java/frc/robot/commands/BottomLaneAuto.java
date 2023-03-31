@@ -5,6 +5,7 @@ import org.bananasamirite.robotmotionprofile.Waypoint;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -30,7 +31,7 @@ public class BottomLaneAuto extends SequentialCommandGroup {
 
         Waypoint startWaypoint; 
         Waypoint BEFORE_BUMP = new Waypoint(-3.0, -7.66 * allianceMultiplier, 0, 1, 1); 
-        Waypoint PAST_BUMP = new Waypoint(-5.0, -7.66 * allianceMultiplier, 0, 1, 1); 
+        Waypoint PAST_BUMP = new Waypoint(-6.5, -7.66 * allianceMultiplier, 0, 1, 1); 
         Waypoint BOTTOM_PIECE = new Waypoint(-5.0, -7.14 * allianceMultiplier, 0, 1, 1); 
 
         switch (position) {
@@ -47,7 +48,11 @@ public class BottomLaneAuto extends SequentialCommandGroup {
                 break; 
         }
 
-        addCommands(new Score(arm, intake, position), 
+        addCommands(
+            new InstantCommand(() -> {
+                drivetrain.resetYaw();
+            }), 
+        new Score(arm, intake, position), 
             Constants.Trajectory.trajectoryCreator.createCommand(drivetrain, new Waypoint[] {
                 startWaypoint, 
                 BEFORE_BUMP,
@@ -56,10 +61,10 @@ public class BottomLaneAuto extends SequentialCommandGroup {
             }, new TrajectoryConfig(1, 0.75).setReversed(true)),
             new ParallelRaceGroup(
                 new WaitCommand(2), 
-                new TurnToAngle(drivetrain, 180)
+                new TurnToAngle(drivetrain, 160)
             ), 
             new MoveToPos(arm, Constants.Arm.Position.GROUND),
-            new ParallelRaceGroup(new MoveForward(drivetrain, 2), new IntakeFor(intake, ScoreSpeed.FAST, 5)), 
+            new ParallelRaceGroup(new MoveForward(drivetrain, 1), new IntakeFor(intake, ScoreSpeed.FAST, 5)), 
             new MoveToPos(arm, Constants.Arm.Position.CONTRACTED)
         );
 

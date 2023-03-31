@@ -15,6 +15,7 @@ import frc.robot.Constants.Intake.ScoreSpeed;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.commands.MoveToPos;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.drivetrain.commands.MoveBackward;
 import frc.robot.subsystems.drivetrain.commands.MoveForward;
 import frc.robot.subsystems.drivetrain.commands.TurnBy;
 import frc.robot.subsystems.drivetrain.commands.TurnToAngle;
@@ -52,7 +53,7 @@ public class BottomLaneAuto extends SequentialCommandGroup {
             new InstantCommand(() -> {
                 drivetrain.resetYaw();
             }), 
-        new Score(arm, intake, position), 
+            new Score(arm, intake, position), 
             Constants.Trajectory.trajectoryCreator.createCommand(drivetrain, new Waypoint[] {
                 startWaypoint, 
                 BEFORE_BUMP,
@@ -65,7 +66,20 @@ public class BottomLaneAuto extends SequentialCommandGroup {
             ), 
             new MoveToPos(arm, Constants.Arm.Position.GROUND),
             new ParallelRaceGroup(new MoveForward(drivetrain, 1), new IntakeFor(intake, ScoreSpeed.FAST, 5)), 
-            new MoveToPos(arm, Constants.Arm.Position.CONTRACTED)
+            new MoveToPos(arm, Constants.Arm.Position.CONTRACTED),
+            new MoveBackward(drivetrain, 1),
+            new ParallelRaceGroup(
+                new WaitCommand(2), 
+                new TurnToAngle(drivetrain, 0)
+            ),
+            Constants.Trajectory.trajectoryCreator.createCommand(drivetrain, new Waypoint[] {
+                PAST_BUMP, 
+                BEFORE_BUMP,
+                startWaypoint 
+                // BOTTOM_PIECE
+            }, new TrajectoryConfig(1, 0.75).setReversed(false)),
+            new Score(arm, intake, Constants.Arm.ScoringPosition.LOW_CUBE)
+
         );
 
     }

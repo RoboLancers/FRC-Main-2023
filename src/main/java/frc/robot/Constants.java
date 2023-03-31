@@ -177,7 +177,7 @@ public final class Constants {
         public static final double kMaxAccelerationMetersPerSecondSquared = 1.75;
 
         public static final double kMaxVoltage = 9;
-        public static final double kMaxCentripetalAccel = 0.8;
+        public static final double kMaxCentripetalAccel = 0.7;
 
         // TODO: redo drivetrain angular characterization
         public static final double kTrackWidthMeters = 0.59261; // 1.2546;  // Units.inchesToMeters(23);

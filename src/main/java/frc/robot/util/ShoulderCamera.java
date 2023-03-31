@@ -62,13 +62,13 @@ public class ShoulderCamera {
     }
 
     private void processCameraFrame(Mat mat) {
-        Imgproc.rectangle(mat, new Point(
-            SmartDashboard.getNumber("x0-" + name, xLeft), 
-            SmartDashboard.getNumber("y0-" + name, 0)
-            ), new Point(
-                SmartDashboard.getNumber("x1-" + name, xRight), 
-                SmartDashboard.getNumber("y1-" + name, 180)
-                ), new Scalar(50, 50, 255));
+        // Imgproc.rectangle(mat, new Point(
+        //     SmartDashboard.getNumber("x0-" + name, xLeft), 
+        //     SmartDashboard.getNumber("y0-" + name, 0)
+        //     ), new Point(
+        //         SmartDashboard.getNumber("x1-" + name, xRight), 
+        //         SmartDashboard.getNumber("y1-" + name, 180)
+        //         ), new Scalar(50, 50, 255));
     }
 
     public void setEnabled(boolean enabled) {

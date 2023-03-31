@@ -33,6 +33,9 @@ public class TopLaneAuto extends SequentialCommandGroup {
 
     public TopLaneAuto(Drivetrain drivetrain, Arm arm, Gyro gyro, Intake intake, Constants.Arm.ScoringPosition scoreFirst, Constants.Arm.ScoringPosition scoreSecond, boolean secondTop) {
 
+        // TODO: debug why cube to cone dont work
+        // WHY does robot sometimes just go to the wrong spot???
+
         SmartDashboard.putString("scoreFirst", scoreFirst.toString()); 
         SmartDashboard.putString("scoreSecond", scoreSecond.toString()); 
 
@@ -77,6 +80,9 @@ public class TopLaneAuto extends SequentialCommandGroup {
                 break; 
         }
 
+        System.out.println("initial y: " + startWaypoint.getY()); 
+        System.out.println("final y: " + endWaypoint.getY());
+
         addCommands(
             // new InstantCommand(() -> {
             //     gyro.zeroYaw();
@@ -110,7 +116,7 @@ public class TopLaneAuto extends SequentialCommandGroup {
                 endWaypoint, 
                 OUT_FIELD, 
                 PRE_TOP_PIECE
-            }, new TrajectoryConfig(Constants.Trajectory.kMaxSpeedMetersPerSecond, Constants.Trajectory.kMaxAccelerationMetersPerSecondSquared).setReversed(true), true)
+            }, new TrajectoryConfig(Constants.Trajectory.kMaxSpeedMetersPerSecond, Constants.Trajectory.kMaxAccelerationMetersPerSecondSquared).setReversed(true), false)
         );
         // addCommands(new Score(arm, intake, scoreFirst), new MoveBackward(drivetrain, 4));
     }

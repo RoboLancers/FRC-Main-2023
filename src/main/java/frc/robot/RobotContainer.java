@@ -54,7 +54,7 @@ public class RobotContainer {
   private Drivetrain drivetrain = new Drivetrain(gyro);
   private Arm arm = new Arm();
   private Intake intake = new Intake();
-  private SideCamera sideCamera = new SideCamera(0, 1);
+  // private SideCamera sideCamera = new SideCamera(0, 1);
   // private LED led = new LED();
 
   private final AutoPicker autoPicker; 
@@ -151,9 +151,9 @@ public class RobotContainer {
     // Controller.onPress(driverController.X, new TurnToAngle(drivetrain, 0)); // align with grid
     // Controller.onPress(driverController.Y, new TurnToAngle(drivetrain, 90 * (DriverStation.getAlliance() == Alliance.Red ? -1 : 1))); // align with park
 
-    SmartDashboard.putNumber("turn by", 0); 
+    // SmartDashboard.putNumber("turn by", 0); 
 
-    Controller.onBothPress(driverController.LeftTrigger, driverController.RightTrigger, new TurnToAngle(drivetrain, () -> SmartDashboard.getNumber("turn by", 0)));
+    // Controller.onBothPress(driverController.LeftTrigger, driverController.RightTrigger, new TurnToAngle(drivetrain, () -> SmartDashboard.getNumber("turn by", 0)));
     // Controller.onPress(driverController., getAutonomousCommand());
 
     /*

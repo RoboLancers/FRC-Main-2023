@@ -24,15 +24,15 @@ import frc.robot.subsystems.intake.commands.IntakeElement;
 import frc.robot.subsystems.intake.commands.IntakeFor;
 
 public class BottomLaneAuto extends SequentialCommandGroup {
-    public BottomLaneAuto(Drivetrain drivetrain, Arm arm, Intake intake, Constants.Arm.ScoringPosition position) {
+    public BottomLaneAuto(Drivetrain drivetrain, Arm arm, Intake intake, Constants.Arm.ScoringPosition position, Alliance alliance) {
 
         // addCommands(new Score(arm, intake, position), new MoveBackward(drivetrain, 5));
         
-        final double allianceMultiplier = DriverStation.getAlliance() == Alliance.Red ? 1 : -1; 
+        final double allianceMultiplier = alliance == Alliance.Red ? 1 : -1; 
 
         Waypoint startWaypoint; 
-        Waypoint BEFORE_BUMP = new Waypoint(-3.0, -7.66 * allianceMultiplier, 0, 1, 1); 
-        Waypoint PAST_BUMP = new Waypoint(-6.5, -7.66 * allianceMultiplier, 0, 1, 1); 
+        Waypoint BEFORE_BUMP = new Waypoint(-3.0, -7.51 * allianceMultiplier, 0, 1, 1); 
+        Waypoint PAST_BUMP = new Waypoint(-6.5, -7.51 * allianceMultiplier, 0, 1, 1); 
         Waypoint BOTTOM_PIECE = new Waypoint(-5.0, -7.14 * allianceMultiplier, 0, 1, 1); 
 
         switch (position) {
@@ -62,7 +62,7 @@ public class BottomLaneAuto extends SequentialCommandGroup {
             }, new TrajectoryConfig(1, 0.75).setReversed(true)),
             new ParallelRaceGroup(
                 new WaitCommand(2), 
-                new TurnToAngle(drivetrain, 160)
+                new TurnToAngle(drivetrain, 170)
             ), 
             new MoveToPos(arm, Constants.Arm.Position.GROUND),
             new ParallelRaceGroup(new MoveForward(drivetrain, 1), new IntakeFor(intake, ScoreSpeed.FAST, 5)), 

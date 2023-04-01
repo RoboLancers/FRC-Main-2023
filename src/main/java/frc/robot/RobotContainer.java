@@ -3,12 +3,15 @@ package frc.robot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.gyro.Gyro;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.sidecamera.SideCamera; 
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.commands.TeleopDrive;
+import frc.robot.subsystems.drivetrain.commands.TurnBy;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.commands.MoveToPos;
 import frc.robot.subsystems.arm.commands.RunToSetpoints;
@@ -84,6 +87,13 @@ public class RobotContainer {
     Controller.onPress(driverController.B, new MoveToPos(arm, Constants.Arm.Position.SHELF));
     // contract
     Controller.onPress(driverController.X, new MoveToPos(arm, Constants.Arm.Position.CONTRACTED));
+
+
+    // TESTING
+    // Controller.onPress(driverController.Y, new ParallelRaceGroup(
+    //   new TurnBy(drivetrain, 90),
+    //   new WaitCommand(3.0)
+    // ));
   }
 
   public Command getAutonomousCommand() {

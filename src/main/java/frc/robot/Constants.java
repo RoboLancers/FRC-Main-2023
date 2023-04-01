@@ -157,8 +157,8 @@ public final class Constants {
     public static class Intake {
         public static final int kIntakePort = 24;
         public static final int kBeambreakPort = 1; 
-        public static final double kLowPower = 0.2*10.5/12;
-        public static final double kHighPower = 0.9*10.5/12;
+        public static final double kLowPower = 0.2; // *10.5/12;
+        public static final double kHighPower = 0.9; // *10.5/12;
         public static final double kAutoIntakeSeconds = 0.5;
         public static final double kAutoOuttakeSeconds = 0.5;
 
@@ -261,9 +261,9 @@ public final class Constants {
     }
 
     public static class Balance {
-        public static final double kP = 0.0095;
+        public static final double kP = 0.011; // 0.011; // 0.0095
         public static final double kI = 0;
-        public static final double kD = 0.0003;
+        public static final double kD = 0.00031; // 0.00032; // 0.0003
         public static final double kPositionTolerance = 4.0; // TODO: tune this, also keep in mind gyro alignment is
                                                              // trash
         // public static final double kVelocityTolerance = 1.0; // TODO: tune this, 1

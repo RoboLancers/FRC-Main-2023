@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -17,10 +18,7 @@ import frc.robot.subsystems.intake.Intake;
 public class MidLaneAuto extends SequentialCommandGroup {
     public MidLaneAuto(Drivetrain drivetrain, Gyro gyro, Arm arm, Intake intake, Constants.Arm.ScoringPosition position) {
         addCommands(
-            // new Score(arm, intake, position)
-            
             new Score(arm, intake, position),
-            // TODO: tune this first such that it goes over charging, then find how much to go back
             new MoveBackward(drivetrain, 0.5), 
             new ParallelRaceGroup(
                 new TurnBy(drivetrain, 180), 
@@ -28,7 +26,7 @@ public class MidLaneAuto extends SequentialCommandGroup {
             ), 
             new ParallelRaceGroup(
                 new RunCommand(() -> {
-                    drivetrain.arcadeDrive(0.29, 0);
+                    drivetrain.arcadeDrive(0.3, 0); // 0.29
                 }, drivetrain), 
                 new ParallelRaceGroup(
                     new WaitUntilCommand(
@@ -39,9 +37,50 @@ public class MidLaneAuto extends SequentialCommandGroup {
                     new WaitCommand(2.5)
                 )
             ),
-            // new MoveBackward(drivetrain, 4) // <- this
-            // new MoveForward(drivetrain, 2),
             new Balance(drivetrain, gyro, 0)  
         );
+
+
+
+
+        /*
+         * IN DEV: taxi during auto
+         */
+
+        // addCommands(
+        //     new Score(arm, intake, position),
+        //     new WaitCommand(0.5),
+        //     new ParallelRaceGroup(
+        //         new RunCommand(() -> {
+        //             drivetrain.arcadeDrive(-0.3, 0);
+        //         }, drivetrain),
+        //         new WaitUntilCommand(
+        //             () -> {
+        //                 return Math.abs(gyro.getPitch()) > 12; 
+        //             }
+        //         )
+        //     ),
+        //     new ParallelRaceGroup(
+        //         new RunCommand(() -> {
+        //             drivetrain.arcadeDrive(-0.2, 0);
+        //         }, drivetrain),
+        //         new WaitUntilCommand(
+        //             () -> {
+        //                 return Math.abs(gyro.getPitch()) < 3; 
+        //             }
+        //         ).andThen(new WaitCommand(1.0))
+        //     ),
+        //     new ParallelRaceGroup(
+        //         new RunCommand(() -> {
+        //             drivetrain.arcadeDrive(0.3, 0);
+        //         }, drivetrain),
+        //         new WaitUntilCommand(
+        //             () -> {
+        //                 return Math.abs(gyro.getPitch()) > 12; 
+        //             }
+        //         ).andThen(new WaitCommand(1.0))
+        //     ),
+        //     new Balance(drivetrain, gyro, 0)
+        // );
     }
 }

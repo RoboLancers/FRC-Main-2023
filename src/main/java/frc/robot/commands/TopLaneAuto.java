@@ -27,27 +27,27 @@ import frc.robot.subsystems.intake.commands.IntakeFor;
 
 public class TopLaneAuto extends SequentialCommandGroup {
 
-    public TopLaneAuto(Drivetrain drivetrain, Arm arm, Gyro gyro, Intake intake, Constants.Arm.ScoringPosition scoreFirst, Constants.Arm.ScoringPosition scoreSecond) {
-        this(drivetrain, arm, gyro, intake, scoreFirst, scoreSecond, true); 
+    public TopLaneAuto(Drivetrain drivetrain, Arm arm, Gyro gyro, Intake intake, Constants.Arm.ScoringPosition scoreFirst, Constants.Arm.ScoringPosition scoreSecond, Alliance alliance) {
+        this(drivetrain, arm, gyro, intake, scoreFirst, scoreSecond, true, alliance); 
     }
 
-    public TopLaneAuto(Drivetrain drivetrain, Arm arm, Gyro gyro, Intake intake, Constants.Arm.ScoringPosition scoreFirst, Constants.Arm.ScoringPosition scoreSecond, boolean secondTop) {
+    public TopLaneAuto(Drivetrain drivetrain, Arm arm, Gyro gyro, Intake intake, Constants.Arm.ScoringPosition scoreFirst, Constants.Arm.ScoringPosition scoreSecond, boolean secondTop, Alliance alliance) {
 
         // TODO: debug why cube to cone dont work
         // WHY does robot sometimes just go to the wrong spot???
 
         SmartDashboard.putString("scoreFirst", scoreFirst.toString()); 
-        SmartDashboard.putString("scoreSecond", scoreSecond.toString()); 
+        SmartDashboard.putString("scoreSecond", scoreSecond.toString());
 
-        final double allianceMultiplier = DriverStation.getAlliance() == Alliance.Red ? 1 : -1; 
+        final double allianceMultiplier = alliance == Alliance.Red ? 1 : -1; 
 
         Waypoint startWaypoint; 
         Waypoint OUT_FIELD = new Waypoint(-4.28, -3.31 * allianceMultiplier, 0, 1.5, 0.5); 
         // increase 7.34 -> increase dist from grid
-        Waypoint PRE_TOP_PIECE = new Waypoint(-7.34, -2.0 * allianceMultiplier, Math.toRadians(-90 * allianceMultiplier), 0.5, 1); 
+        Waypoint PRE_TOP_PIECE = new Waypoint(-7.28, -2.0 * allianceMultiplier, Math.toRadians(-90 * allianceMultiplier), 0.5, 1); 
         // increase 7.34 -> increase dist from grid
-        Waypoint TOP_PIECE = new Waypoint(-7.34, -3 * allianceMultiplier, Math.toRadians(-90 * allianceMultiplier), 0.6, 1); 
-        Waypoint ALIGN_POINT = new Waypoint(-2.54, -3.36 * allianceMultiplier, 0, 1, 1); 
+        Waypoint TOP_PIECE = new Waypoint(-7.28, -3 * allianceMultiplier, Math.toRadians(-90 * allianceMultiplier), 0.6, 1); 
+        Waypoint ALIGN_POINT = new Waypoint(-2.52, -3.36 * allianceMultiplier, 0, 1, 1); 
         Waypoint endWaypoint; 
 
 
@@ -55,13 +55,14 @@ public class TopLaneAuto extends SequentialCommandGroup {
         switch (scoreFirst) {
             case HIGH_CUBE: 
             case MID_CUBE:
-            case LOW_CUBE: 
-                startWaypoint = new Waypoint(-1.86, -3.64 * allianceMultiplier, 0, 1, 1); 
+            case LOW_CUBE:
+                // -3.64 -> -3.60
+                startWaypoint = new Waypoint(-1.86, -3.68 * allianceMultiplier, 0, 1, 1); 
                 break;
             case HIGH_CONE: 
             case MID_CONE:
             case LOW_CONE:
-            default: 
+            default:
                 startWaypoint = new Waypoint(-1.86, -3.06 * allianceMultiplier, 0, 1, 1); 
                 break; 
         }
@@ -69,8 +70,9 @@ public class TopLaneAuto extends SequentialCommandGroup {
         switch (scoreSecond) {
             case HIGH_CUBE: 
             case MID_CUBE:
-            case LOW_CUBE: 
-                endWaypoint = new Waypoint(-1.8, -3.64 * allianceMultiplier, 0, 1, 1); // TODO: tune this
+            case LOW_CUBE:
+                // -3.64 -> -3.60
+                endWaypoint = new Waypoint(-1.8, -3.68 * allianceMultiplier, 0, 1, 1); // TODO: tune this
                 break;
             case HIGH_CONE: 
             case MID_CONE:
@@ -107,7 +109,7 @@ public class TopLaneAuto extends SequentialCommandGroup {
                     endWaypoint
                 }, new TrajectoryConfig(Constants.Trajectory.kMaxSpeedMetersPerSecond, Constants.Trajectory.kMaxAccelerationMetersPerSecondSquared).setReversed(false), false),
                 new SequentialCommandGroup(
-                    new IntakeFor(intake, ScoreSpeed.FAST, 1.5), 
+                    new IntakeFor(intake, ScoreSpeed.FAST, 2.0), // 1.5 -> 2.0
                     new MoveToPos(arm, Constants.Arm.Position.CONTRACTED)
                 )
             ),

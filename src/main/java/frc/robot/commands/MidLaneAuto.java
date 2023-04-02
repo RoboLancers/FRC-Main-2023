@@ -52,7 +52,7 @@ public class MidLaneAuto extends SequentialCommandGroup {
         //     new WaitCommand(0.5),
         //     new ParallelRaceGroup(
         //         new RunCommand(() -> {
-        //             drivetrain.arcadeDrive(-0.3, 0);
+        //             drivetrain.arcadeDrive(-0.33, 0);
         //         }, drivetrain),
         //         new WaitUntilCommand(
         //             () -> {
@@ -70,6 +70,7 @@ public class MidLaneAuto extends SequentialCommandGroup {
         //             }
         //         ).andThen(new WaitCommand(1.0))
         //     ),
+        //     new WaitCommand(0.25),
         //     new ParallelRaceGroup(
         //         new RunCommand(() -> {
         //             drivetrain.arcadeDrive(0.3, 0);

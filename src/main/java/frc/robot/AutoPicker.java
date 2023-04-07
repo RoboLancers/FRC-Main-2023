@@ -10,6 +10,7 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.Constants.Arm.ScoringPosition;
 import frc.robot.commands.BottomLaneAuto;
 import frc.robot.commands.MidLaneAuto;
+import frc.robot.commands.MidLaneAutoTaxi;
 import frc.robot.commands.TopLaneAuto;
 
 public class AutoPicker {
@@ -34,6 +35,8 @@ public class AutoPicker {
         Command blueNoBumpLane = new TopLaneAuto(drivetrain, arm, gyro, intake, ScoringPosition.HIGH_CONE, ScoringPosition.HIGH_CUBE, Alliance.Blue);
         Command balanceLaneCone = new MidLaneAuto(drivetrain, gyro, arm, intake, ScoringPosition.HIGH_CONE);
         Command balanceLaneCube = new MidLaneAuto(drivetrain, gyro, arm, intake, ScoringPosition.HIGH_CUBE);
+        Command taxiBalanceLaneCone = new MidLaneAutoTaxi(drivetrain, gyro, arm, intake, ScoringPosition.HIGH_CONE);
+        Command taxiBalanceLaneCube = new MidLaneAutoTaxi(drivetrain, gyro, arm, intake, ScoringPosition.HIGH_CUBE);
         Command redBumpLaneCone = new BottomLaneAuto(drivetrain, arm, intake, ScoringPosition.HIGH_CONE, Alliance.Red);
         Command redBumpLaneCube = new BottomLaneAuto(drivetrain, arm, intake, ScoringPosition.HIGH_CUBE, Alliance.Red);
         Command blueBumpLaneCone = new BottomLaneAuto(drivetrain, arm, intake, ScoringPosition.HIGH_CONE, Alliance.Blue);
@@ -43,6 +46,8 @@ public class AutoPicker {
         autoChooser.addOption("Blue No Bump Lane", blueNoBumpLane);
         autoChooser.addOption("Balance Lane Cone", balanceLaneCone);
         autoChooser.addOption("Balance Lane Cube", balanceLaneCube);
+        autoChooser.addOption("Taxi Balance Lane Cone", taxiBalanceLaneCone);
+        autoChooser.addOption("Taxi Balance Lane Cube", taxiBalanceLaneCube);
         autoChooser.addOption("Red Bump Lane Cone", redBumpLaneCone);
         autoChooser.addOption("Red Bump Lane Cube", redBumpLaneCube);
         autoChooser.addOption("Blue Bump Lane Cone", blueBumpLaneCone);

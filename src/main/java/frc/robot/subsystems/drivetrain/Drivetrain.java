@@ -53,7 +53,7 @@ public class Drivetrain extends SubsystemBase {
 
     public boolean isAutoSteer = false; 
 
-    private final Gyro gyro; 
+    public final Gyro gyro; 
 
     public Drivetrain(Gyro gyro) {
 

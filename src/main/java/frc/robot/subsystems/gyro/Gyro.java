@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Gyro extends SubsystemBase {
-    private AHRS _gyro = new AHRS(SPI.Port.kMXP);
+    public AHRS _gyro = new AHRS(SPI.Port.kMXP);
         
     private double pitchOffset;
     private boolean initialized;

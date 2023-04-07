@@ -20,6 +20,7 @@ public class MidLaneAuto extends SequentialCommandGroup {
         addCommands(
             new Score(arm, intake, position),
             new MoveBackward(drivetrain, 0.5), 
+            new WaitUntilCommand(drivetrain.gyro._gyro::isConnected),
             new ParallelRaceGroup(
                 new TurnBy(drivetrain, 180), 
                 new WaitCommand(2)
@@ -49,31 +50,35 @@ public class MidLaneAuto extends SequentialCommandGroup {
 
         // addCommands(
         //     new Score(arm, intake, position),
-        //     new WaitCommand(0.5),
+        //     new MoveBackward(drivetrain, 0.5), 
         //     new ParallelRaceGroup(
-        //         new RunCommand(() -> {
-        //             drivetrain.arcadeDrive(-0.33, 0);
-        //         }, drivetrain),
-        //         new WaitUntilCommand(
-        //             () -> {
-        //                 return Math.abs(gyro.getPitch()) > 12; 
-        //             }
-        //         )
+        //         new TurnBy(drivetrain, 180), 
+        //         new WaitCommand(1.5)
         //     ),
         //     new ParallelRaceGroup(
         //         new RunCommand(() -> {
-        //             drivetrain.arcadeDrive(-0.2, 0);
+        //             drivetrain.arcadeDrive(0.65, 0);
+        //         }, drivetrain),
+        //         new WaitUntilCommand(() -> Math.abs(gyro.getPitch()) > 11),
+        //         new WaitCommand(2.5)
+        //     ),
+        //     new ParallelRaceGroup(
+        //         new RunCommand(() -> {
+        //             drivetrain.arcadeDrive(0.24, 0);
         //         }, drivetrain),
         //         new WaitUntilCommand(
         //             () -> {
-        //                 return Math.abs(gyro.getPitch()) < 3; 
+        //                 return Math.abs(gyro.getPitch()) < 4; 
         //             }
-        //         ).andThen(new WaitCommand(1.0))
+        //         ).andThen(new WaitCommand(0.55))
         //     ),
-        //     new WaitCommand(0.25),
+        //     new InstantCommand(() -> drivetrain.arcadeDrive(0, 0)), 
+
+
+        //     new WaitCommand(0.65), // TODO: try 0.69420
         //     new ParallelRaceGroup(
         //         new RunCommand(() -> {
-        //             drivetrain.arcadeDrive(0.3, 0);
+        //             drivetrain.arcadeDrive(-0.31, 0); // -0.3
         //         }, drivetrain),
         //         new WaitUntilCommand(
         //             () -> {

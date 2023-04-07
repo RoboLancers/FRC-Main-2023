@@ -252,7 +252,7 @@ public final class Constants {
         public static final double kTurnFilter = 3;
 
         // TODO: TUNE THESE ON MONDAY FIRST THING
-        public static final double kTurnP = 0.003;
+        public static final double kTurnP = 0.0035; // 0.003
         public static final double kTurnI = 0;
         public static final double kTurnD = 0.0006;
         public static final double kTurnFF = 0.105; // 0.045

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.Intake.ScoreSpeed;
 import frc.robot.subsystems.arm.Arm;
@@ -90,6 +91,7 @@ public class TopLaneAuto extends SequentialCommandGroup {
             //     gyro.zeroYaw();
             // }), 
             new Score(arm, intake, scoreFirst),
+            new WaitUntilCommand(drivetrain.gyro._gyro::isConnected),
             new ParallelCommandGroup(
                 Constants.Trajectory.trajectoryCreator.createCommand(drivetrain, new Waypoint[] {
                     startWaypoint, 

@@ -102,5 +102,7 @@ public class RobotContainer {
 
   public void doSendables() {
     SmartDashboard.putData(this.autoPicker.getAutoChooser());
+
+    SmartDashboard.putBoolean("Navex sucks", !gyro._gyro.isConnected());
   }
 }

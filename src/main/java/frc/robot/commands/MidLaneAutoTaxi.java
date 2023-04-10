@@ -49,12 +49,12 @@ public class MidLaneAutoTaxi extends SequentialCommandGroup {
 
         addCommands(
             new Score(arm, intake, position),
+            new WaitUntilCommand(drivetrain.gyro._gyro::isConnected),
             new MoveBackward(drivetrain, 0.5), 
             new ParallelRaceGroup(
                 new TurnBy(drivetrain, 180), 
                 new WaitCommand(1.5)
             ),
-            new WaitUntilCommand(drivetrain.gyro._gyro::isConnected),
             new ParallelRaceGroup(
                 new RunCommand(() -> {
                     drivetrain.arcadeDrive(0.65, 0);

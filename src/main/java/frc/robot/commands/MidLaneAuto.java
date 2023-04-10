@@ -19,8 +19,8 @@ public class MidLaneAuto extends SequentialCommandGroup {
     public MidLaneAuto(Drivetrain drivetrain, Gyro gyro, Arm arm, Intake intake, Constants.Arm.ScoringPosition position) {
         addCommands(
             new Score(arm, intake, position),
-            new MoveBackward(drivetrain, 0.5), 
             new WaitUntilCommand(drivetrain.gyro._gyro::isConnected),
+            new MoveBackward(drivetrain, 0.5),
             new ParallelRaceGroup(
                 new TurnBy(drivetrain, 180), 
                 new WaitCommand(2)

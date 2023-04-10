@@ -56,8 +56,7 @@ public class Drivetrain extends SubsystemBase {
     public final Gyro gyro; 
 
     public Drivetrain(Gyro gyro) {
-
-        this.gyro = gyro; 
+        this.gyro = gyro;
 
         // inversions
         rightMotor1.setInverted(true);
